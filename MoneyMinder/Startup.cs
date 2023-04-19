@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyMinder.Data;
+using MoneyMinder.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
