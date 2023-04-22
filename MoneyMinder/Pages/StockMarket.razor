@@ -1,46 +1,69 @@
-﻿@page "/stockmarket"
+﻿@layout MainLayout
+@page "/stockmarket"
 
 @using MoneyMinder.Data
-@inject WeatherForecastService ForecastService
+@using Radzen.Blazor
+@using System.Globalization;
 
-<h1>Weather forecast</h1>
-
-<p>This component demonstrates fetching data from a service.</p>
-
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div class="container">
+    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3">Custom colors and styling</RadzenText>
+    <div class="row my-5">
+        <div class="col-sm-12">
+            <RadzenChart>
+                <RadzenAreaSeries Stroke="rgb(236,72,127)" StrokeWidth="2" Fill="rgba(236,72,127,.5)" Data="@revenue.Where(r => r.Year == 2020)" CategoryProperty="Quarter" ValueProperty="Revenue">
+                    <ChildContent>
+                        <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#fff" Stroke="rgba(236,72,127)" StrokeWidth="2" Size="8" />
+                    </ChildContent>
+                    <TooltipTemplate Context="data">
+                        Revenue for <span>@data.Quarter</span> 2020: <strong>@data.Revenue.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</strong>
+                    </TooltipTemplate>
+                </RadzenAreaSeries>
+                <RadzenCategoryAxis>
+                    <RadzenGridLines Visible="true" Stroke="#ccc" LineType="LineType.Dashed" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+                <RadzenChartTooltipOptions Style="border: 1px solid rgb(236,72,127); background: #eee; color: #000;" />
+                <RadzenLegend Visible="false" />
+            </RadzenChart>
+        </div>
+    </div>
+</div>
 
 @code {
-    private WeatherForecast[] forecasts;
+    IEnumerable<ColorScheme> colorSchemes = Enum.GetValues(typeof(ColorScheme)).Cast<ColorScheme>();
+    ColorScheme colorScheme = ColorScheme.Palette;
 
-    protected override async Task OnInitializedAsync()
+    class DataItem
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        public int Year { get; set; }
+        public string Quarter { get; set; }
+        public double Revenue { get; set; }
+    }
+
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
+
+    IList<DataItem> revenue = new List<DataItem>();
+
+    protected override void OnInitialized()
+    {
+        var random = new Random();
+
+        for (var year = 2013; year <= 2020; year++)
+        {
+            for (var quarter = 1; quarter <= 4; quarter++)
+            {
+                revenue.Add(new DataItem
+                    {
+                        Year = year,
+                        Quarter = $"Q{quarter}",
+                        Revenue = random.NextDouble() * 200000
+                    });
+            }
+        }
     }
 }

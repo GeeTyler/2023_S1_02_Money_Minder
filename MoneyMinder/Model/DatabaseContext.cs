@@ -11,5 +11,10 @@ namespace MoneyMinder.Model
         }
 
         public DbSet<User> User { get; set; }
+
+        public DbSet<Stock> Stock { get; set; }
+
+        public DbSet<BankAccount> BankAccount { get; set; }
+
     }
 }

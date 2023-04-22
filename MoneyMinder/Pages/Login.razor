@@ -1,0 +1,28 @@
+﻿@layout LoginLayout
+@page "/"
+@using MoneyMinder.Model
+
+<EditForm Model="@user">
+    <div>
+        <h2 style="font-weight:bold; color:limegreen">Money Minder Login</h2>
+    </div>
+    <br />
+    <div class="col-12 row">
+        <input class="form-control col-12" placeholder="email address" />
+    </div>
+    <br />
+    <div class="col-12 row">
+        <input type="password" class="form-control col-12" placeholder="password" />
+    </div>
+    <br />
+    <div class="col-12 row">
+        <span class="col-12"></span>
+        <input type="submit" class="form-control col-6 btn btn-primary" value="Login" />
+        <a href="/signup" class="col-3">Sign up</a>
+    </div>
+</EditForm>
+
+@code {
+    User user = new User();
+
+}

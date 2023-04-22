@@ -11,7 +11,6 @@ namespace MoneyMinder.Model
         [Required]
         public string CompanyName { get; set; }
 
-        [Required]
         public string CompanyDescription { get; set; }
 
         [Required]
