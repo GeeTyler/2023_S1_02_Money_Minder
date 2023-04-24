@@ -1,7 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
+    <PackageReference Include="Syncfusion.Blazor" Version="21.1.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\companyLabels\image.jpg" />
+  </ItemGroup>
 
 </Project>
