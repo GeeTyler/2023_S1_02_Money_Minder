@@ -1,19 +1,19 @@
-﻿@layout LoginLayout
+﻿@layout CenteredLayout
 @page "/"
 @using MoneyMinder.Model
 
 <EditForm Model="@user">
     <div>
-        <h2 style="font-weight:bold; color:limegreen">Money Minder Login</h2>
+        <h2 style="font-weight:bold; color:limegreen">Login</h2>
     </div>
-    <br />
+    <br /><br /><br /><br /><br />
     <div class="col-12 row">
-        <label for="email" class="col-1 row">Email:</label>
+        <label for="email" class="col-3 row">Email:</label>
         <input type="email" id="email" name="email" placeholder="myemail@outlook.com" required>
     </div>
     <br />
     <div class="col-12 row">
-        <label for="pass" class="col-1 row">Password:</label>
+        <label for="pass" class="col-3 row">Password:</label>
         <input type="password" id="pass" name="pass" required>
     </div>
     <br />

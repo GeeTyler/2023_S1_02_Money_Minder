@@ -1,34 +1,34 @@
-﻿@layout LoginLayout
+﻿@layout CenteredLayout
 @page "/signup"
 @using MoneyMinder.Model
 
 <EditForm Model="@user">
     <div>
-        <h2 style="font-weight:bold; color:limegreen">Money Minder Sign Up</h2>
+        <h2 style="font-weight:bold; color:limegreen">Sign Up</h2>
     </div>
-    <br />
+    <br /><br />
     <div class="col-12 row">
-        <label for="firstname" class="col-1 row">First Name:</label>
+        <label for="firstname" class="col-3 row">First Name:</label>
         <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
     </div>
     <br />
     <div class="col-12 row">
-        <label for="lastname" class="col-1 row">Last Name:</label>
+        <label for="lastname" class="col-3 row">Last Name:</label>
         <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
     </div>
     <br />
     <div class="col-12 row">
-        <label for="email" class="col-1 row">Email:</label>
+        <label for="email" class="col-3 row">Email:</label>
         <input type="email" id="email" name="email" placeholder="myemail@outlook.com" required>
     </div>
     <br />
     <div class="col-12 row">
-        <label for="pass" class="col-1 row">Password:</label>
+        <label for="pass" class="col-3 row">Password:</label>
         <input type="password" id="pass" name="pass" required>
     </div>
     <br />
     <div class="col-12 row">
-        <label for="passConfirm" class="col-1 row">Confirm Password:</label>
+        <label for="passConfirm" class="col-3 row">Confirm<br /> Password:</label>
         <input type="password" id="passConfirm" name="passConfirm" required>
     </div>
     <br />
