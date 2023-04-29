@@ -1,7 +1,14 @@
 ﻿@layout MainLayout
 @page "/BankAccounts"
 
-<h1>My Bank Accounts</h1>
+<AuthorizeView>
+    <Authorized>
+        <h1>My Bank Accounts</h1>
+    </Authorized>
+    <NotAuthorized>
+        <p role="status">You are not authorised to see this component</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 
