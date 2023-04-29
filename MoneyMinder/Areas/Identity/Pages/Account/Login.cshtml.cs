@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using static MoneyMinder.Areas.Identity.Pages.Account.RegisterModel;
@@ -23,7 +24,7 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 
         public void OnGet()
         {
-            ReturnUrl = Url.Content("~/");
+            ReturnUrl = Url.Content("/Home");
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -33,8 +34,11 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password,
-                    false, lockoutOnFailure: false);
-                if(result.Succeeded) return Redirect(ReturnUrl);
+                    isPersistent: false, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    return LocalRedirect(ReturnUrl);
+                }
             }
 
             return Page();
