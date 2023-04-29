@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MoneyMinder.Model;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using static MoneyMinder.Areas.Identity.Pages.Account.RegisterModel;
@@ -11,9 +10,9 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public LoginModel(SignInManager<User> signInManager)
+        public LoginModel(SignInManager<IdentityUser> signInManager)
         {
             _signInManager = signInManager;
         }

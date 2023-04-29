@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace MoneyMinder.Model
 {
-    public class DatabaseContext : IdentityDbContext<User>
+    public class DatabaseContext : IdentityDbContext
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base (options)
         {

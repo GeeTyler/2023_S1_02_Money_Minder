@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MoneyMinder.Model
 {
-    public class User : IdentityUser
+    public class User
     {
         [Key, EmailAddress]
-        public override string Email { get; set; }
+        public string Email { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

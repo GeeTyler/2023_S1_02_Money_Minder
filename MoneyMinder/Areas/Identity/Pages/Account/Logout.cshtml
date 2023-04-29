@@ -1,8 +1,7 @@
 ﻿@page
 @using Microsoft.AspNetCore.Identity
-@using MoneyMinder.Model
 @attribute [IgnoreAntiforgeryToken]
-@inject SignInManager<User> SignInManger
+@inject SignInManager<IdentityUser> SignInManger
 
 @functions{
     public async Task<IActionResult> OnGet()
@@ -12,6 +11,6 @@
             await SignInManger.SignOutAsync();
         }
 
-        return Redirect("/");
+        return Redirect("~/");
     }
 }
