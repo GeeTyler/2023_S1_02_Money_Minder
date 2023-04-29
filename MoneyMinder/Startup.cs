@@ -32,7 +32,7 @@ namespace MoneyMinder
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 5;

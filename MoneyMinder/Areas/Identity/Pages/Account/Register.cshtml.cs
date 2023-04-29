@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MoneyMinder.Model;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -8,10 +9,10 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
 
-        public RegisterModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public RegisterModel(SignInManager<User> signInManager, UserManager<User> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -32,7 +33,7 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
             ReturnUrl = Url.Content("/Home");
             if (ModelState.IsValid)
             {
-                var identity = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var identity = new User { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(identity, Input.Password);
 
                 if (result.Succeeded)
