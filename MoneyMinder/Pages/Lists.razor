@@ -1,0 +1,126 @@
+﻿@page "/bankaccounts/lists"
+
+<!-- Title -->
+<h1 class="list_title">Transaction List</h1>
+
+<!-- filter box -->
+<div class="t_list_filter_box">
+    <div class="t_list_selection">
+        <p>List Name: &nbsp;</p>
+
+        @if (isClicked)
+        {
+            <!-- if add btn is clicked, input should be displayed with check button-->
+            <div class="t_list_add_input_box">
+                <input type="text" class="t_list_add_input" placeholder="Enter new list name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new list name'">
+                <button class="btn t_list_add_input_check" @onclick="changeClicked">✓</button>
+            </div>
+        }
+        else
+        {
+            <select class="select t_list_selection_list" name="" id="">
+                <!-- dropdown need to be changed according to
+                the number of accounts that are recorded in database -->
+                <option value="">Home</option>
+                <option value="">Saving</option>
+                <option value="">Business</option>
+            </select>
+        }
+        <!-- plus button -->
+        <div class="btn account_add_btn" @onclick="changeClicked">+</div>
+    </div>
+
+    <!-- dropdown menu need to be implemented -->
+    <div class="time_period_filter">
+        <p>Time Period: &nbsp;</p>
+        <!-- day -->
+        <select class="select t_list_period_year" name="" id="">
+            <option value="">Year</option>
+        </select>
+        <!-- month -->
+        <select class="select t_list_period_month" name="" id="">
+            <option value="">Month</option>
+        </select>
+        <!-- year -->
+        <select class="select t_list_period_week" name="" id="">
+            <option value="">Week</option>
+        </select>
+    </div>
+</div>
+
+<!-- transaction list table -->
+<!-- prev page, nextpage tab + current balance -->
+<div class="t_list_paging_box">
+    <div class="t_list_paging">
+        <!-- prev page -->
+        <div class="paging_btn move_prev">Prev. page</div>
+        <!-- next page -->
+        <div class="paging_btn move_next">Next page</div>
+    </div>
+    <!-- current balance -->
+    <p class="t_list_current_bal">Current Balance: $680.00</p>
+</div>
+
+<!-- div that shows the content -->
+<div class="t_list_content">
+    <table class="t_list_content_table">
+        <!-- heads of each column -->
+        <thead>
+        <th class="table_date">Date</th>
+        <th class="table_desc">Description</th>
+        <th class="table_trans">Transactions</th>
+        <th class="table_bal">Balance</th>
+        <th class="table_add">+</th>
+        </thead>
+        <!-- contents of each column -->
+        <tbody>
+            <tr>
+                <td>18/04/2023</td>
+                <td>Restaurant</td>
+                <td>-$100.00</td>
+                <td>$680.00</td>
+                <td>
+                    <button class="btn">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>18/04/2023</td>
+                <td>Dairy</td>
+                <td>-$20.00</td>
+                <td>$780.00</td>
+                <td>
+                    <button class="btn">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>17/04/2023</td>
+                <td>Pub</td>
+                <td>-$200.00</td>
+                <td>$800.00</td>
+                <td>
+                    <button class="btn">+</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private bool isClicked = false;
+    private bool showSelect = false;
+
+    private void changeClicked()
+    {
+        isClicked = !isClicked;
+    }
+
+    private void ToggleSelect()
+    {
+        showSelect = !showSelect;
+    }
+
+    private void HideSelect()
+    {
+        showSelect = false;
+    }
+}
