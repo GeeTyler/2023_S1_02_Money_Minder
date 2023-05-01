@@ -1,0 +1,17 @@
+﻿@page "/BankAccounts"
+
+@inject NavigationManager NavManager
+
+<h1>My Bank Accounts</h1>
+
+<button type="button" @onclick="transfer">Transfer</button>
+
+
+@code {
+
+    private void transfer()
+    {
+        NavManager.NavigateTo("/transfer");
+    }
+
+}

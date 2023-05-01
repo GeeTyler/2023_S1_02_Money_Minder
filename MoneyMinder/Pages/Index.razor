@@ -1,52 +1,6 @@
-﻿@page "/"
-@inject NavigationManager NavManager
-@inject CompoaniesScrapper Scrapit
+﻿@layout MainLayout
+@page "/Home"
 
-<div class="searchBar">
-    <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
-    <input @bind-value="searchBox" class="enterSearch" placeholder="Search by title"/>
-</div>
-<p>Searching for word '@searching'</p>
-<p></p>
+<h1>Money Minder</h1>
 
-@if (Companys.Count > 0)
-{
-    foreach (var comp in Companys)
-    {
-        //int temp = i;
-        /*<div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(temp))">*/
-        <div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(comp))">
-            <form></form>
-            <div class="companyLabel/">
-                <img class="companyLabel" src="@imageSource" alt="Company Label" />
-                <div class="comanyInformation">
-                    <h4>@comp.ToString()</h4>
-                    <p class="darkGray">CN</p>
-                    <p> </p>
-                    <p>$54.21 NZD</p>
-                </div>
-            </div>
-        </div>
-    }
-}
-
-@code{
-    private string imageSource = "CompanyLabels/image.jpg";
-    private string CompanyName = "Company name";
-    private string searchBox = "";
-    private string searching = "empty";
-    private List<string> Companys = new List<string>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        Companys = await Scrapit.DoScrapping();
-    }
-    public void clilckedOnCompany(string company)
-    {
-        NavManager.NavigateTo("/company/" + company);
-    }
-    public void search()
-    {
-        searching = searchBox;
-    }
-}
+Welcome to our app.

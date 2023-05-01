@@ -20,11 +20,6 @@ app {
     flex-direction: column;
 }
 
-.top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
 
 .darkGray {
     color: #817D7D;
@@ -36,12 +31,14 @@ app {
     border: solid;
     position: relative;
 }
+
 .enterSearch {
     height: 35px;
     width: 96%;
     position: absolute;
     border: 0;
 }
+
 .border {
     border: solid;
 }
@@ -57,6 +54,7 @@ app {
     border: solid;
     position: relative;
 }
+
 .comanyInformation {
     position: absolute;
     width: 84.6%;
@@ -73,10 +71,16 @@ app {
     border: solid;
 }
 
-.choosenCompanyFrame{
-    height:auto;
-    width : 20%;
+.choosenCompanyFrame {
+    height: auto;
+    width: 20%;
     border: solid;
+}
+
+.top-row {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
 }
 
 .main {
@@ -100,7 +104,7 @@ app {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, green 0%, #0efa02 80%);
 }
 
     .sidebar .top-row {
@@ -108,13 +112,13 @@ app {
     }
 
     .sidebar .navbar-brand {
-        font-size: 1.1rem;
+        font-size: 1.5rem;
     }
 
     .sidebar .oi {
-        width: 2rem;
-        font-size: 1.1rem;
-        vertical-align: text-top;
+        width: 4rem;
+        font-size: 2.5rem;
+        vertical-align: middle;
         top: -2px;
     }
 
@@ -134,7 +138,7 @@ app {
         .sidebar .nav-item a {
             color: #d7d7d7;
             border-radius: 4px;
-            height: 3rem;
+            height: 6rem;
             display: flex;
             align-items: center;
             line-height: 3rem;
@@ -231,6 +235,6 @@ app {
 
     .sidebar .collapse {
         /* Never collapse the sidebar for wide screens */
-    display: block;
-}
+        display: block;
+    }
 }
