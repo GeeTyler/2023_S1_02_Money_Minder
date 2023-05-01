@@ -51,13 +51,27 @@ namespace MoneyMinder.Migrations
                 columns: table => new
                 {
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    AccountNum = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Balance = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BankAccount", x => x.Email);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MarketPriceData",
+                columns: table => new
+                {
+                    StockCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MarketPrice = table.Column<float>(type: "real", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Volume = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MarketPriceData", x => x.StockCode);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +86,22 @@ namespace MoneyMinder.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stock", x => x.StockCode);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    AccountNum = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountTransferredTo = table.Column<int>(type: "int", nullable: false),
+                    DateandTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Balance = table.Column<double>(type: "float", nullable: false),
+                    TransactionAmount = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.AccountNum);
                 });
 
             migrationBuilder.CreateTable(
@@ -255,7 +285,13 @@ namespace MoneyMinder.Migrations
                 name: "BankAccount");
 
             migrationBuilder.DropTable(
+                name: "MarketPriceData");
+
+            migrationBuilder.DropTable(
                 name: "Stock");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "User");

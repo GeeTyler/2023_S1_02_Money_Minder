@@ -10,7 +10,7 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230429001938_initial")]
+    [Migration("20230501013252_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,11 +222,11 @@ namespace MoneyMinder.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("AccountNum")
+                        .HasColumnType("int");
+
                     b.Property<float>("Balance")
                         .HasColumnType("real");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -235,6 +235,25 @@ namespace MoneyMinder.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("BankAccount");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Model.MarketPriceData", b =>
+                {
+                    b.Property<string>("StockCode")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("MarketPrice")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Volume")
+                        .HasColumnType("int");
+
+                    b.HasKey("StockCode");
+
+                    b.ToTable("MarketPriceData");
                 });
 
             modelBuilder.Entity("MoneyMinder.Model.Stock", b =>
@@ -255,6 +274,30 @@ namespace MoneyMinder.Migrations
                     b.HasKey("StockCode");
 
                     b.ToTable("Stock");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Model.Transactions", b =>
+                {
+                    b.Property<int>("AccountNum")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AccountTransferredTo")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("DateandTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("TransactionAmount")
+                        .HasColumnType("float");
+
+                    b.HasKey("AccountNum");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("MoneyMinder.Model.User", b =>

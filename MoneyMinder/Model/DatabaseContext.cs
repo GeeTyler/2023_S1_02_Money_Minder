@@ -17,5 +17,9 @@ namespace MoneyMinder.Model
 
         public DbSet<BankAccount> BankAccount { get; set; }
 
+        public DbSet<Transactions> Transactions { get; set; }
+
+        public DbSet<MarketPriceData> MarketPriceData { get; set; }
+
     }
 }

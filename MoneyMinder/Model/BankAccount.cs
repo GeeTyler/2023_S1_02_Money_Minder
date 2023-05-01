@@ -7,7 +7,7 @@ namespace MoneyMinder.Model
         [Key, EmailAddress]
         public string Email { get; set; }
         [Required]
-        public int Id { get; set; }
+        public int AccountNum { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
