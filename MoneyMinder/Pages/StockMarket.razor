@@ -3,34 +3,6 @@
 @inject NavigationManager NavManager
 @inject CompoaniesScrapper Scrapit
 
-
-<!--<div class="container">
-    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3">Custom colors and styling</RadzenText>
-    <div class="row my-5">
-        <div class="col-sm-12">
-            <RadzenChart>
-                <RadzenAreaSeries Stroke="rgb(236,72,127)" StrokeWidth="2" Fill="rgba(236,72,127,.5)" Data="@revenue.Where(r => r.Year == 2020)" CategoryProperty="Quarter" ValueProperty="Revenue">
-                    <ChildContent>
-                        <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#fff" Stroke="rgba(236,72,127)" StrokeWidth="2" Size="8" />
-                    </ChildContent>
-                    <TooltipTemplate Context="data">
-                        Revenue for <span>@data.Quarter</span> 2020: <strong>@data.Revenue.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</strong>
-                    </TooltipTemplate>
-                </RadzenAreaSeries>
-                <RadzenCategoryAxis>
-                    <RadzenGridLines Visible="true" Stroke="#ccc" LineType="LineType.Dashed" />
-                </RadzenCategoryAxis>
-                <RadzenValueAxis>
-                    <RadzenGridLines Visible="true" />
-                </RadzenValueAxis>
-                <RadzenChartTooltipOptions Style="border: 1px solid rgb(236,72,127); background: #eee; color: #000;" />
-                <RadzenLegend Visible="false" />
-            </RadzenChart>
-        </div>
-    </div>
-</div>-->
-
-
 <div class="searchBar">
     <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
     <input @bind-value="searchBox" class="enterSearch" placeholder="Search by title" />
