@@ -1,0 +1,28 @@
+﻿@page "/"
+@model MoneyMinder.Areas.Identity.Pages.Account.LoginModel
+
+<div class="row" style="margin:50px">
+    <div class="col-12 row">
+        <section>
+            <form id="account" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-floating col-8 row" style="margin:50px">
+                    <label asp-for="Input.Email" class="form-label">Email:</label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating col-8 row" style="margin:50px">
+                    <label asp-for="Input.Password" class="form-label">Password:</label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div style="margin:10px">
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary"> Log In</button>
+                </div>
+                <div style="margin:10px">
+                    <a href="/Register" class="col-3">Sign up</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
