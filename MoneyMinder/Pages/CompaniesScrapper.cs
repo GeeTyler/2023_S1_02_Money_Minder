@@ -75,12 +75,12 @@ namespace MoneyMinder.Pages
                     StockCode = companys[n],
                     CompanyName = companys[n + 1],
                     MarketPrice = companys[n + 2],
-                    CompanyDescription = Convert.ToString(companys.Count),
                     MarketCap = companys[n + 3]
                 };
 
                 _db.Stock.Add(stck);
                 _db.SaveChanges();
+
                 if (n + 3 >= (companys.Count) - 3)
                 {
                     return;
