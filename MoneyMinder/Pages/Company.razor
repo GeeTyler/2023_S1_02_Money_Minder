@@ -1,0 +1,48 @@
+﻿@page "/company/{Text}"
+
+
+<style>
+    table{
+        position: absolute;
+        border:solid;
+        background-color: #E9E9E9;
+        top: 0%;
+        left: 25%;
+        
+    }
+    tr{
+        border: solid;
+    }
+</style>
+<h3>@Text</h3>
+<div class="priceHistory">
+    <div class="choosenCompanyFrame">
+        <h6>CN</h6>
+        <p>$1.543</p>
+        <p>+0.05%, +0.23%</p>
+    </div>
+
+    <table style="width:50%">
+        <tr>
+            <th>Date</th>
+            <th>Changes</th>
+            <th>Current Value</th>
+        </tr>
+        @for (int i = 0; i < 100; i += 10)
+        {
+            <tr>
+                <td>@i/@i/@i</td>
+                <td>+@i%/0.@i</td>
+                <td>$@i.@i</td>
+            </tr>
+        }
+    </table>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Text{ get; set; }
+
+   
+}
