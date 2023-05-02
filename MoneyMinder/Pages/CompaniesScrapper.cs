@@ -49,6 +49,22 @@ namespace MoneyMinder.Pages
 
             string tempStorage = "";
 
+            foreach (var item in table)
+            {
+                tempStorage += (item.InnerText);
+            }
+            string[] temp = tempStorage.Split("\n");
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*"))
+                {
+                    companys.Add(temp[i].Trim());
+                }
+            }
+            
+            /**
+            string tempStorage = "";
+
             foreach(var item in table)
             {
                 tempStorage += (item.InnerText);
@@ -90,7 +106,7 @@ namespace MoneyMinder.Pages
                 {
                     n += 3;
                 }
-            }
+            }**/
         }
     }
 }
