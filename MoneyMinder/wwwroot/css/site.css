@@ -109,6 +109,8 @@ app {
     height: 130px;
     border: solid;
     position: relative;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .comanyInformation {
