@@ -34,9 +34,6 @@
 }
 
 @code {
-    //IEnumerable<ColorScheme> colorSchemes = Enum.GetValues(typeof(ColorScheme)).Cast<ColorScheme>();
-    //ColorScheme colorScheme = ColorScheme.Palette;
-
     private string imageSource = "CompanyLabels/image.jpg";
     private string CompanyName = "Company name";
     private string searchBox = "";
@@ -55,47 +52,4 @@
     {
         searching = searchBox;
     }
-
-    //commented original code!!!!
-    /*
-     * @layout MainLayout //add as 1st row
-     *
-     * @using MoneyMinder.Data
-    @using Radzen.Blazor
-    @using System.Globalization;
-    */
-    /*class DataItem
-    {
-        public int Year { get; set; }
-        public string Quarter { get; set; }
-        public double Revenue { get; set; }
-    }
-
-    /*string FormatAsUSD(object value)
-    {
-        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
-    }
-
-    IList<DataItem> revenue = new List<DataItem>();
-
-    /*protected override void OnInitialized()
-    {
-        var random = new Random();
-
-        for (var year = 2013; year <= 2020; year++)
-        {
-            for (var quarter = 1; quarter <= 4; quarter++)
-            {
-                revenue.Add(new DataItem
-                    {
-                        Year = year,
-                        Quarter = $"Q{quarter}",
-                        Revenue = random.NextDouble() * 200000
-                    });
-            }
-        }
-    }*/
-
-
-   
 }

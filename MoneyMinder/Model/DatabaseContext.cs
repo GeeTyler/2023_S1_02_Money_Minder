@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace MoneyMinder.Model
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : IdentityDbContext
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base (options)
         {
@@ -15,6 +16,10 @@ namespace MoneyMinder.Model
         public DbSet<Stock> Stock { get; set; }
 
         public DbSet<BankAccount> BankAccount { get; set; }
+
+        public DbSet<Transactions> Transactions { get; set; }
+
+        public DbSet<MarketPriceData> MarketPriceData { get; set; }
 
     }
 }
