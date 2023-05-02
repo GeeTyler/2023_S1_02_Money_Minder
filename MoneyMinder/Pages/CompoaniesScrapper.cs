@@ -26,7 +26,16 @@ namespace MoneyMinder.Pages
             HtmlDocument doc = new HtmlDocument();
             doc.Load(stream);
 
-            var table = doc.DocumentNode.Descendants("td").Where(node=>!node.GetAttributeValue("role","").Contains("row")).ToList();
+
+            var table = doc.DocumentNode.Descendants("td").Where(node=>!node.GetAttributeValue("role","").Contains("row")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("Change")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("Volume")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("Value")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("Type")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("GreenBond")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("TradeCount")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("CurrencyCode")).
+                Where(node => !node.GetAttributeValue("data-title", "").Contains("IndexedCapitalisation")).ToList();
             var HeaderName = doc.DocumentNode.SelectNodes("//table[@class='no-style']");
 
             string tempStorage = "";
@@ -55,6 +64,7 @@ namespace MoneyMinder.Pages
                     fixedOrder.Add(companys[i].Trim());
                 }
             }
+
 
             return fixedOrder;
         }
