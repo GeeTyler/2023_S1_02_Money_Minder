@@ -266,8 +266,13 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("MarketPrice")
-                        .HasColumnType("real");
+                    b.Property<string>("MarketCap")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MarketPrice")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StockCode");
 

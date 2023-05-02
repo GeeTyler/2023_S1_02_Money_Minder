@@ -14,6 +14,9 @@ namespace MoneyMinder.Model
         public string CompanyDescription { get; set; }
 
         [Required]
-        public float MarketPrice { get; set; }
+        public string MarketPrice { get; set; }
+
+        [Required]
+        public string MarketCap { get; set; }
     }
 }

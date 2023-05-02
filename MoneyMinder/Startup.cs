@@ -35,7 +35,7 @@ namespace MoneyMinder
             services.AddServerSideBlazor();
 
             //dima's addition
-            services.AddSingleton<CompoaniesScrapper>();
+            services.AddScoped<CompaniesScrapper>();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {

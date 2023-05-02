@@ -81,7 +81,8 @@ namespace MoneyMinder.Migrations
                     StockCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompanyDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MarketPrice = table.Column<float>(type: "real", nullable: false)
+                    MarketPrice = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MarketCap = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

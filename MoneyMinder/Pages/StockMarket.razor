@@ -1,7 +1,7 @@
 ﻿@page "/stockmarket"
 
 @inject NavigationManager NavManager
-@inject CompoaniesScrapper Scrapit
+@inject CompaniesScrapper Scrapit
 
 <div class="searchBar">
     <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
@@ -42,7 +42,7 @@
 
     protected override async Task OnInitializedAsync()
        {
-       Companys = await Scrapit.DoScrapping();
+            await Scrapit.DoScrapping();
        }
     public void clilckedOnCompany(string company)
     {

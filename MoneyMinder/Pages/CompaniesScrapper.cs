@@ -8,12 +8,22 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using MoneyMinder.Model;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MoneyMinder.Pages
 {
-    public class CompoaniesScrapper
+    public class CompaniesScrapper
     {
-        public async Task<List<string>>DoScrapping()
+        private readonly DatabaseContext _db;
+
+        public CompaniesScrapper(DatabaseContext db)
+        {
+            _db = db;
+        }
+
+        public async Task DoScrapping()
         {
             List <string> companys = new List<string>();
 
@@ -36,7 +46,6 @@ namespace MoneyMinder.Pages
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("TradeCount")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("CurrencyCode")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("IndexedCapitalisation")).ToList();
-            var HeaderName = doc.DocumentNode.SelectNodes("//table[@class='no-style']");
 
             string tempStorage = "";
 
@@ -45,28 +54,43 @@ namespace MoneyMinder.Pages
                 tempStorage += (item.InnerText);
             }
             string[] temp = tempStorage.Split("\n");
-            for (int i = 0; i < temp.Length; i++)
+
+            for (int i = 0; i < table.Count; i++)
             {
-                if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*"))
+                if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*") || !string.IsNullOrWhiteSpace(temp[i]))
                 {
                     companys.Add(temp[i].Trim());
                 }
             }
-            List<string> fixedOrder = new List<string>();
-            for(int i = 0; i < companys.Count; i++)
+
+            if (_db.Stock.Count() != 0)
             {
-                if ((i + 1) % 7 == 0)
+                _db.Stock.RemoveRange(_db.Stock);
+                _db.SaveChanges();
+            }
+
+            for (int n = 0; n < companys.Count; n++)
+            {
+                var stck = new Stock()
                 {
-                    i += 6;
+                    StockCode = companys[n],
+                    CompanyName = companys[n + 1],
+                    MarketPrice = companys[n + 2],
+                    MarketCap = companys[n + 3],
+                };
+
+                await _db.Stock.AddAsync(stck);
+                await _db.SaveChangesAsync();
+
+                if (n + 3 > companys.Count - 3) 
+                {
+                    return;
                 }
                 else
                 {
-                    fixedOrder.Add(companys[i].Trim());
+                    n += 3;
                 }
             }
-
-
-            return fixedOrder;
         }
     }
 }
