@@ -97,6 +97,9 @@
 </AuthorizeView>
 
 @code {
+    [Parameter]
+    public string Text { get; set; }
+
     private bool isChecked = false;
     private string searchBox = "";
     private string searching = "empty";
