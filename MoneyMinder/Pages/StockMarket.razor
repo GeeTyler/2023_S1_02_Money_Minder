@@ -1,7 +1,9 @@
 ﻿@page "/stockmarket"
-
+@using Microsoft.EntityFrameworkCore
+@using MoneyMinder.Model
+@using MoneyMinder.Data
 @inject NavigationManager NavManager
-@inject CompaniesScrapper Scrapit
+@inject IDataAccessService DataAccessService
 
 <div class="searchBar">
     <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
@@ -10,40 +12,38 @@
 <p>Searching for word '@searching'</p>
 <p></p>
 
-@if (true)
-{
-    //foreach (var comp in Companys)
-    for (int i = 0;i<3;i++)
+    @foreach (var item in Stocks)
     {
-        //int temp = i;
-        /*<div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(temp))">*/
-        <div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(CompanyName))">
+        <div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(item.CompanyName))">
             
             <form></form>
             <div class="companyLabel/">
                 <img class="companyLabel" src="@imageSource" alt="Company Label" />
                 <div class="comanyInformation">
-                    <h4>@CompanyName</h4>
-                    <p class="darkGray">CN</p>
+                    <h4>@item.CompanyName</h4>
+                    <p class="darkGray">@item.StockCode</p>
                     <p> </p>
-                    <p>$54.21 NZD</p>
+                    <p>@item.MarketPrice</p>
+                    <p>@item.MarketCap</p>
                 </div>
             </div>
         </div>
     }
-}
 
 @code {
+
     private string imageSource = "CompanyLabels/image.jpg";
-    private string CompanyName = "Company name";
     private string searchBox = "";
     private string searching = "empty";
     private List<string> Companys = new List<string>();
 
-    protected override async Task OnInitializedAsync()
-       {
-            await Scrapit.DoScrapping();
-       }
+    public List<Stock> Stocks;
+
+    protected override void OnInitialized()
+    {
+        Stocks =  DataAccessService.GetStocks();
+    }
+
     public void clilckedOnCompany(string company)
     {
         NavManager.NavigateTo("/company/" + company);
@@ -52,4 +52,8 @@
     {
         searching = searchBox;
     }
+
+
+
+
 }
