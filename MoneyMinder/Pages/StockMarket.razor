@@ -12,8 +12,8 @@
 
 <br />
 
-    @foreach (var item in Stocks)
-    {
+@foreach (var item in Stocks)
+{
         <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.CompanyName))">
             <div>
                 <img class="companyLabel" src="@imageSource" alt="Company Label" />
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-    }
+}
 
 @code {
 
