@@ -13,6 +13,8 @@
 }
 
 .transaction_label {
+    display: flex;
+    flex-wrap: wrap;
     margin-left: 20px;
     color: #D20202;
 }
@@ -27,7 +29,7 @@
     background-color: transparent;
 }
 
-.account_filter_box {
+.account_filter_container {
     border: 1px solid black;
     display: flex;
     flex-wrap: wrap;
@@ -37,41 +39,22 @@
     margin-top: 1.5rem;
 }
 
-.account_selection {
+.transaction_search {
     display: flex;
     flex-wrap: wrap;
 }
 
-.select {
-    border: 1px solid black;
-    border-radius: 0;
+.search_icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
-
-.account_selection_list {
-    padding: 0;
-}
-
-.account_add_input_box {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.account_add_input {
-    padding: 0;
-    outline: none;
-    border: 1px solid black;
-    border-radius: 0;
-}
-
-    .account_add_input:focus {
-        outline: none;
-    }
 
 .btn {
     margin: 0;
     padding: 0;
-    width: 21.33px;
-    height: 21.33px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     border: 1px solid black;
     border-radius: 0;
@@ -81,29 +64,43 @@
     margin-left: 8px;
 }
 
+.search_input {
+    padding: 0;
+    outline: none;
+    border: 1px solid black;
+    border-radius: 0;
+}
+
+    .search_input:focus {
+        outline: none;
+    }
+
+
 .time_period_filter {
     margin-left: 2rem;
     display: flex;
     flex-wrap: wrap;
 }
 
-.account_paging_box {
+.list_tab_container {
     margin-top: 1.5rem;
+    height: 36px;
     display: flex;
     flex-wrap: wrap;
 }
 
-.account_paging {
+.list_tab {
     display: flex;
     flex-wrap: wrap;
 }
 
-.paging_btn {
-    width: 80px;
+.tab_btn {
+    width: 160px;
     height: 36px;
     text-align: center;
     border: 1px solid black;
     line-height: 2rem;
+    cursor: pointer;
 }
 
 .account_current_bal {
@@ -114,4 +111,58 @@
 .account_content {
     background-color: #e9e9e9;
     border: 1px solid black;
+}
+
+.account_content_table {
+    width: 100%;
+}
+
+.table_date {
+    width: 100px;
+}
+
+/*
+.table_description{
+
+}
+
+.table_transaction{
+
+}
+
+.table_category{
+
+}
+*/
+
+.table_balance {
+    width: 200px;
+}
+
+/* .table_percentage{
+
+} */
+
+/* .table_add {
+    width: 24px;
+    text-align: center;
+} */
+
+th, td {
+    border-bottom: 1px solid #444444;
+    padding: 10px;
+}
+
+/* td select{
+    background-color: transparent;
+    border-color: transparent;
+}
+
+td select:focus{
+    border: none;
+} */
+
+#select_account {
+    position: absolute;
+    z-index: 1;
 }

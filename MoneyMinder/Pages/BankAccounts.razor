@@ -1,139 +1,50 @@
 ﻿@layout MainLayout
-@page "/BankAccounts"
+@page "/bankaccounts"
+
+@inject NavigationManager NavManager
 
 <AuthorizeView>
     <Authorized>
-        <!-- account information part -->
-        <div class="account_info">
-            <p class="account_num">Account Number: 00-0000-0000000-00</p>
-            <!-- Block further transaction when it is not clicked -->
-            <!-- Transaction blocked when clicked -->
-
-            <label class="transaction_label" for="">
-                @if (isChecked)
-                {
-                    <p style="color: #D20202;">Transaction blocked</p>
-                }
-                else
-                {
-                    <p style="color: #02D20A;">Block further transaction</p>
-                }
-                <input class="transaction" type="checkbox" name="" id="" @bind="isChecked">
-            </label>
-        </div>
-        <p class="account_holder">Account Holder: Account Holder</p>
-        <div class="account_name">
-            <p>Account Name: Temp Account</p>
-            <!-- change button for modal need to be implemented -->
-            <button class="account_change_btn">change</button>
-        </div>
-        <!-- account selection part -->
-
-        <div class="account_filter_box">
-            <div class="account_selection">
-                <p>Account: &nbsp;</p>
-                @if (isClicked)
-                {
-                    <!-- if add btn is clicked, input should be displayed with check button-->
-                    <div class="account_add_input_box">
-                        <input type="text" class="account_add_input" placeholder="Enter new acc. number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new acc. number'">
-                        <button class="btn account_add_input_check" @onclick="changeClicked">✓</button>
+        @if (true)
+        {
+            <h1 class="bankaccounts_title">My accounts</h1>
+            //foreach (var comp in Companys)
+            for (int i = 0; i < 3; i++)
+            {
+                //int temp = i;
+                /*<div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(temp))">*/
+                /*<div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(CompanyName))">*/
+                <div class="bank_account_frame" type="button" @onclick="@(e=>clilckedOnAccount(AccountName))">
+                    <form></form>
+                    <div class="bank_account_label">
+                        <img class="bank_account_label_img" src="@imageSource" alt="Bank Account Label" />
+                        <div class="bank_account_content">
+                            <h4>@AccountName </h4>
+                            <p class="darkGray">CN</p>
+                            <p> </p>
+                            <p>$54.21 NZD</p>
+                        </div>
+                        <!-- if click view transacton, then it goes to account detail -->
+                        <!-- or we can just delete view button and move page directly if user click the frame -->
+                        <div class="bank_account_view_account">
+                            <button class="view_account_btn">View Account</button>
+                        </div>
                     </div>
-                }
-                else
-                {
-                    <select class="select account_selection_list" name="" id="">
-                        <!-- dropdown need to be changed according to
-                        the number of accounts that are recorded in database -->
-                        <option value="">00-0000-0000000-00</option>
-                        <option value="">00-0000-0000000-01</option>
-                        <option value="">00-0000-0000000-02</option>
-                    </select>
-                }
-                <!-- plus button -->
-                <div class="btn account_add_btn" @onclick="changeClicked">+</div>
-            </div>
-
-            <!-- dropdown menu need to be implemented -->
-            <div class="time_period_filter">
-                <p>Time Period: &nbsp;</p>
-                <!-- day -->
-                <select class="select account_period_year" name="" id="">
-                    <option value="">Year</option>
-                </select>
-                <!-- month -->
-                <select class="select account_period_month" name="" id="">
-                    <option value="">Month</option>
-                </select>
-                <!-- year -->
-                <select class="select account_period_week" name="" id="">
-                    <option value="">Week</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- prev page, nextpage, lists tab + current balance -->
-        <div class="account_paging_box">
-            <div class="account_paging">
-                <!-- prev page -->
-                <div class="paging_btn move_prev">Prev. page</div>
-                <!-- next page -->
-                <div class="paging_btn move_next">Next page</div>
-                <!-- lists -->
-                <div class="paging_btn move_list" onclick="location.href='bankaccounts/lists';">Lists</div>
-            </div>
-            <!-- current balance -->
-            <p class="account_current_bal">Current Balance: $680.00</p>
-        </div>
-        <!-- div that shows the content of each tabs -->
-        <div class="account_content">
-            <table class="account_content_table">
-                <!-- heads of each column -->
-                    <th class="table_date">Date</th>
-                    <th class="table_desc">Description</th>
-                    <th class="table_trans">Transactions</th>
-                    <th class="table_bal">Balance</th>
-                    <th class="table_add">+</th>
-                <!-- contents of each column -->
-                <tbody>
-                    <tr>
-                        <td>18/04/2023</td>
-                        <td>Restaurant</td>
-                        <td>-$100.00</td>
-                        <td>$680.00</td>
-                        <td>
-                            @if (showSelect)
-                            {
-                                <select @onblur="HideSelect" id="select_account">
-                                    <option value="option1">00-0000-0000000-00</option>
-                                    <option value="option2">00-0000-0000000-01</option>
-                                    <option value="option3">00-0000-0000000-02</option>
-                                </select>
-                            }
-                            <button class="btn" @onclick="ToggleSelect">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>18/04/2023</td>
-                        <td>Dairy</td>
-                        <td>-$20.00</td>
-                        <td>$780.00</td>
-                        <td>
-                            <button class="btn">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>17/04/2023</td>
-                        <td>Pub</td>
-                        <td>-$200.00</td>
-                        <td>$800.00</td>
-                        <td>
-                            <button class="btn">+</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                </div>
+            }
+        }
+        <!-- if there is no bank account registered, it should move user to register bank account page -->
+        <!--
+        else
+        {
+            <p>No Bank Account.</p>
+            <p> </p>
+            <p>Please register one</p>
+            
+            <button class="register_bank_account">Register</button>
+        }
+        register button should be implemented
+        -->
     </Authorized>
     <NotAuthorized>
         <p role="status">You are not authorised to see this component</p>
@@ -141,22 +52,27 @@
 </AuthorizeView>
 
 @code {
-    private bool isChecked = false;
-    private bool isClicked = false;
-    private bool showSelect = false;
+    private string imageSource = "CompanyLabels/image.jpg";
+    /*private string CompanyName = "Company name";*/
+    private string AccountName = "Account name";
+    /*private string searchBox = "";*/
+    /*private string searching = "empty";*/
+    /*private List<string> Companys = new List<string>();*/
 
-    private void changeClicked()
+    /*
+    protected override async Task OnInitializedAsync()
     {
-        isClicked = !isClicked;
+        Companys = await Scrapit.DoScrapping();
     }
-
-    private void ToggleSelect()
+     */
+    public void clilckedOnAccount(string account)
     {
-        showSelect = !showSelect;
+        NavManager.NavigateTo("/bankaccounts/accountdetail/" + account);
     }
-
-    private void HideSelect()
-    {
-        showSelect = false;
-    }
+    /*
+    public void search()
+        {
+        searching = searchBox;
+        }
+    */
 }

@@ -3,156 +3,63 @@
     padding: 0;
 }
 
-.account_info {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.account_num {
-    margin: 0;
-}
-
-.transaction_label {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: 20px;
-    color: #D20202;
-}
-
-.account_name {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.account_change_btn {
-    border: none;
-    background-color: transparent;
-}
-
-.account_filter_box {
-    border: 1px solid black;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    border: 1px solid black;
-    padding: 10px;
-    margin-top: 1.5rem;
-}
-
-.account_selection {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.select {
-    border: 1px solid black;
-    border-radius: 0;
-}
-
-.account_selection_list {
-    padding: 0;
-}
-
-.account_add_input_box {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.account_add_input {
-    padding: 0;
-    outline: none;
-    border: 1px solid black;
-    border-radius: 0;
-}
-
-    .account_add_input:focus {
-        outline: none;
-    }
-
-.btn {
-    margin: 0;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    border: 1px solid black;
-    border-radius: 0;
-}
-
-.account_add_btn {
-    margin-left: 8px;
-}
-
-.time_period_filter {
-    margin-left: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.account_paging_box {
-    margin-top: 1.5rem;
-    height: 36px;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.account_paging {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.paging_btn {
-    width: 80px;
-    height: 36px;
-    text-align: center;
-    border: 1px solid black;
-    line-height: 2rem;
-    cursor: pointer;
-}
-
-.account_current_bal {
-    margin-left: auto;
-    margin-top: 14px;
-}
-
-.account_content {
-    background-color: #e9e9e9;
-    border: 1px solid black;
-}
-
-.account_content_table {
-    width: 100%;
-}
-
-.table_date {
-    width: 100px;
-}
-
 /*
-.table_desc{
-
-}
-
-.table_trans{
+.bankaccounts_title{
 
 }
 */
 
-.table_bal {
-    width: 200px;
+
+.bank_account_frame {
+    width: 100%;
+    height: 130px;
+    border: solid;
+    position: relative;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-.table_add {
-    width: 24px;
+.bank_account_content {
+    width: 50%;
+}
+
+.bank_account_label {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bank_account_label_img {
+    height: auto;
+    width: 15%;
+    overflow-x: hidden;
+    border: solid;
+}
+
+.bank_account_view_account {
+    width: 30%;
     text-align: center;
 }
 
-th, td {
-    border-bottom: 1px solid #444444;
-    padding: 10px;
+.view_account_btn {
+    width: 160px;
+    height: 36px;
+    text-align: center;
+    border: 1px solid black;
+    margin-top: 36px;
+    border-radius: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+/*
+.choosenCompanyFrame {
+    height: auto;
+    width: 20%;
+    border: solid;
 }
 
-#select_account {
-    position: absolute;
-    z-index: 1;
+.top-row {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
 }
+*/

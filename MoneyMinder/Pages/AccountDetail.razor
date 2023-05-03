@@ -1,0 +1,108 @@
+﻿@layout MainLayout
+@page "/bankaccounts/accountdetail"
+
+<AuthorizeView>
+    <Authorized>
+        <!-- account information part -->
+        <div class="account_info">
+            <p class="account_num">Account Number: 00-0000-0000000-00</p>
+            <!-- Block further transaction when it is not clicked -->
+            <!-- Transaction blocked when clicked -->
+
+            <label class="transaction_label" for="">
+                @if (isChecked)
+                {
+                    <p style="color: #D20202;">Transaction blocked</p>
+                }
+                else
+                {
+                    <p style="color: #02D20A;">Block further transaction</p>
+                }
+                <input class="transaction" type="checkbox" name="" id="" @bind="isChecked">
+            </label>
+        </div>
+        <p class="account_holder">Account Holder: Account Holder</p>
+        <div class="account_name">
+            <p>Account Name: Temp Account</p>
+            <!-- if change button is clicked, input and check button should be displayed -->
+            <!-- if check button is clicked, input should disappear and new account name should be displayed -->
+            <button class="account_change_btn">change</button>
+        </div>
+        <!-- account selection part -->
+        <div class="account_filter_container">
+            <!-- search -->
+            <div class="transaction_search">
+                <img class="search_icon" src="~/interface_Images/Search.png" type="button" @onclick="search" />
+                <input @bind-value="searchBox" class="search_input" placeholder="Search by title" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search by title'" />
+            </div>
+            <!-- filter by time period -->
+            <div class="time_period_filter">
+                <p>Time Period: &nbsp;</p>
+                <!-- day -->
+                <select class="select account_period_year" name="" id="">
+                    <option value="">Year</option>
+                </select>
+                <!-- month -->
+                <select class="select account_period_month" name="" id="">
+                    <option value="">Month</option>
+                </select>
+                <!-- year -->
+                <select class="select account_period_week" name="" id="">
+                    <option value="">Week</option>
+                </select>
+            </div>
+        </div>
+        <!-- All, Necessary, Discretionary tab + current balance -->
+        <div class="list_tab_container">
+            <div class="list_tab">
+                <!-- All -->
+                <div class="tab_btn tab_all">All</div>
+                <!-- Necessary -->
+                <div class="tab_btn tab_necessary">Necessary</div>
+                <!-- Discretionary -->
+                <div class="tab_btn tab_discretionary">Discretionary</div>
+            </div>
+            <!-- current balance -->
+            <p class="account_current_bal">Current Balance: $680.00</p>
+        </div>
+        <!-- div that shows the content of each tabs -->
+        <div class="account_content">
+            <table class="account_content_table">
+                <!-- heads of each column -->
+                <th class="table_date">Date</th>
+                <th class="table_description">Description</th>
+                <th class="table_transaction">Transactions</th>
+                <!-- if category can be changed in table, we do that, but if we cannot do that, we try in modal page -->
+                <th class="table_balance">Balance</th>
+                <th class="table_percentage">%</th>
+                <!-- contents of each column -->
+                <tbody>
+                    <!-- if click one of the transaction, it should show the detail of transaction, by modal page -->
+                    <div class="transaction_container">
+                        <tr>
+                            <td>18/04/2023</td>
+                            <td>Restaurant</td>
+                            <td>-$100.00</td>
+                            <td>$680.00</td>
+                            <td>5%</td>
+                        </tr>
+                    </div>
+                </tbody>
+            </table>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p role="status">You are not authorised to see this component</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private bool isChecked = false;
+    private string searchBox = "";
+    private string searching = "empty";
+
+    public void search()
+    {
+        searching = searchBox;
+    }
+}
