@@ -11,6 +11,6 @@ namespace MoneyMinder.Model
         [Required]
         public string Name { get; set; }
         [Required]
-        public float Balance { get; set; }
+        public double Balance { get; set; }
     }
 }

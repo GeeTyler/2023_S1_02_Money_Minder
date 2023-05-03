@@ -5,6 +5,7 @@
 @using MoneyMinder.Data
 @inject NavigationManager NavManager
 @inject IDataAccessService DataAccessService
+@inject StockDataScrapper Scrapit
 
 <div class="searchBar">
     <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
@@ -15,7 +16,7 @@
 
 @foreach (var item in Stocks)
 {
-        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.CompanyName))">
+        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
             <div>
                 <img class="companyLabel" src="@imageSource" alt="Company Label" />
                 <div class="comanyInformation">
@@ -43,8 +44,10 @@
         Stocks =  DataAccessService.GetStocks();
     }
 
-    public void clickedOnCompany(string company)
+    public async Task clickedOnCompany(string company)
     {
+        DataAccessService.SetChosenStock(company);
+        await Scrapit.DoScrapping();
         NavManager.NavigateTo("/company/" + company);
     }
     public void search()

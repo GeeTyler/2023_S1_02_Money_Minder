@@ -38,13 +38,16 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
                 var identity = new IdentityUser { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(identity, Input.Password);
 
-                var registered = new User { Email = Input.Email, FirstName = Input.FirstName,
-                    LastName = Input.LastName };
-                _db.User.Add(registered);
-                _db.SaveChanges();
-
                 if (result.Succeeded)
                 {
+                    var registered = new User
+                    {
+                        Email = Input.Email,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName
+                    };
+                    _db.User.Add(registered);
+                    _db.SaveChanges();
                     await _signInManager.SignInAsync(identity, isPersistent: false);
                     return LocalRedirect(ReturnUrl);
                 }

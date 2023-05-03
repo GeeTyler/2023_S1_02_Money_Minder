@@ -17,5 +17,17 @@ namespace MoneyMinder.Data
         {
             return _db.Stock.ToList();
         }
+
+        string ChosenStockCode;
+
+        public void SetChosenStock(string Code)
+        {
+            ChosenStockCode = Code;
+        }
+
+        public string GetChosenStock() 
+        {
+            return ChosenStockCode;
+        }
     }
 }

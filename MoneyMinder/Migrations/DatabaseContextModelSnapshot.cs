@@ -223,8 +223,8 @@ namespace MoneyMinder.Migrations
                     b.Property<int>("AccountNum")
                         .HasColumnType("int");
 
-                    b.Property<float>("Balance")
-                        .HasColumnType("real");
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -237,19 +237,38 @@ namespace MoneyMinder.Migrations
 
             modelBuilder.Entity("MoneyMinder.Model.MarketPriceData", b =>
                 {
-                    b.Property<string>("StockCode")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("MarketPrice")
-                        .HasColumnType("real");
+                    b.Property<string>("AdjClose")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Volume")
-                        .HasColumnType("int");
+                    b.Property<string>("Close")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("StockCode");
+                    b.Property<string>("High")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Low")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Open")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StockCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Volume")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Date");
 
                     b.ToTable("MarketPriceData");
                 });
