@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MoneyMinder.Data;
 using MoneyMinder.Model;
 using MoneyMinder.Pages;
 using System;
@@ -33,9 +34,12 @@ namespace MoneyMinder
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
+            
 
             //dima's addition
             services.AddScoped<CompaniesScrapper>();
+            services.AddScoped<IDataAccessService, DataAccessService>();
+            services.AddHttpContextAccessor();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
