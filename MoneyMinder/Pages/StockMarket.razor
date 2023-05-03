@@ -7,24 +7,22 @@
 
 <div class="searchBar">
     <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
-    <input @bind-value="searchBox" class="enterSearch" placeholder="Search by title" />
+    <input @bind-value="searchBox" class="enterSearch" placeholder="Search for company" />
 </div>
-<p>Searching for word '@searching'</p>
-<p></p>
+
+<br />
 
     @foreach (var item in Stocks)
     {
-        <div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(item.CompanyName))">
-            
-            <form></form>
-            <div class="companyLabel/">
+        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.CompanyName))">
+            <div>
                 <img class="companyLabel" src="@imageSource" alt="Company Label" />
                 <div class="comanyInformation">
                     <h4>@item.CompanyName</h4>
-                    <p class="darkGray">@item.StockCode</p>
+                    <h5 class="darkGray">@item.StockCode</h5>
                     <p> </p>
-                    <p>@item.MarketPrice</p>
-                    <p>@item.MarketCap</p>
+                    <p> Market Price: @item.MarketPrice</p>
+                    <p> Market Capitalisation: @item.MarketCap</p>
                 </div>
             </div>
         </div>
@@ -44,7 +42,7 @@
         Stocks =  DataAccessService.GetStocks();
     }
 
-    public void clilckedOnCompany(string company)
+    public void clickedOnCompany(string company)
     {
         NavManager.NavigateTo("/company/" + company);
     }
