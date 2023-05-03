@@ -12,7 +12,7 @@ using MoneyMinder.Model;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MoneyMinder.Pages
+namespace MoneyMinder.Data
 {
     public class CompaniesScrapper
     {
@@ -25,7 +25,7 @@ namespace MoneyMinder.Pages
 
         public async Task DoScrapping()
         {
-            List <string> companys = new List<string>();
+            List<string> companys = new List<string>();
 
             //            HtmlDocument htmlDoc = new HtmlDocument();
 
@@ -42,7 +42,7 @@ namespace MoneyMinder.Pages
                 _db.SaveChanges();
             }
 
-            var table = doc.DocumentNode.Descendants("td").Where(node=>!node.GetAttributeValue("role","").Contains("row")).
+            var table = doc.DocumentNode.Descendants("td").Where(node => !node.GetAttributeValue("role", "").Contains("row")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Change")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Volume")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Value")).
@@ -54,9 +54,9 @@ namespace MoneyMinder.Pages
 
             string tempStorage = "";
 
-            foreach(var item in table)
+            foreach (var item in table)
             {
-                tempStorage += (item.InnerText);
+                tempStorage += item.InnerText;
             }
             string[] temp = tempStorage.Split("\n");
 
@@ -64,7 +64,7 @@ namespace MoneyMinder.Pages
             {
                 if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*") || !string.IsNullOrWhiteSpace(temp[i]))
                 {
-                    companys.Add(temp[i].Trim());              
+                    companys.Add(temp[i].Trim());
                 }
             }
 
@@ -81,7 +81,7 @@ namespace MoneyMinder.Pages
                 _db.Stock.Add(stck);
                 _db.SaveChanges();
 
-                if (n + 3 >= (companys.Count) - 3)
+                if (n + 3 >= companys.Count - 3)
                 {
                     return;
                 }
