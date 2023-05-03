@@ -27,8 +27,8 @@ namespace MoneyMinder.Pages
         {
             List <string> companys = new List<string>();
 
-//            HtmlDocument htmlDoc = new HtmlDocument();
-            
+            //            HtmlDocument htmlDoc = new HtmlDocument();
+
 
             HttpClient hc = new HttpClient();
             HttpResponseMessage result = await hc.GetAsync($"https://www.nzx.com/markets/NZSX");
@@ -36,6 +36,11 @@ namespace MoneyMinder.Pages
             HtmlDocument doc = new HtmlDocument();
             doc.Load(stream);
 
+            if (_db.Stock.Count() != 0)
+            {
+                _db.Stock.RemoveRange(_db.Stock);
+                _db.SaveChanges();
+            }
 
             var table = doc.DocumentNode.Descendants("td").Where(node=>!node.GetAttributeValue("role","").Contains("row")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Change")).
@@ -55,18 +60,16 @@ namespace MoneyMinder.Pages
             }
             string[] temp = tempStorage.Split("\n");
 
-            for (int i = 0; i < table.Count; i++)
+            for (int i = 0; i < temp.Length; i++)
             {
                 if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*") || !string.IsNullOrWhiteSpace(temp[i]))
                 {
-                    companys.Add(temp[i].Trim());
+                    if (temp[i].Contains('&'))
+                    {
+                        temp[i] = temp[i].Remove(temp[i].IndexOf('&') + 1, 4);
+                    }
+                    companys.Add(temp[i].Trim());              
                 }
-            }
-
-            if (_db.Stock.Count() != 0)
-            {
-                _db.Stock.RemoveRange(_db.Stock);
-                _db.SaveChanges();
             }
 
             for (int n = 0; n < companys.Count; n++)
@@ -76,13 +79,13 @@ namespace MoneyMinder.Pages
                     StockCode = companys[n],
                     CompanyName = companys[n + 1],
                     MarketPrice = companys[n + 2],
-                    MarketCap = companys[n + 3],
+                    MarketCap = companys[n + 3]
                 };
 
-                await _db.Stock.AddAsync(stck);
-                await _db.SaveChangesAsync();
+                _db.Stock.Add(stck);
+                _db.SaveChanges();
 
-                if (n + 3 > companys.Count - 3) 
+                if (n + 3 >= (companys.Count) - 3)
                 {
                     return;
                 }
