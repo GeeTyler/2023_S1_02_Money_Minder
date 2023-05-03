@@ -12,7 +12,7 @@ namespace MoneyMinder.Model
         public int AccountNum { get; set; }
 
         [Required]
-        public int AccountTransferredTo { get; set; }
+        public int AccountTransferredToOrFrom { get; set; }
 
         [Required]
         public DateTime DateandTime { get; set; }
@@ -22,5 +22,8 @@ namespace MoneyMinder.Model
 
         [Required]
         public double TransactionAmount { get; set; }
+
+        [Required]
+        public string TransactionType { get; set; }
     }
 }
