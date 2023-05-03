@@ -286,7 +286,7 @@ namespace MoneyMinder.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("AccountTransferredTo")
+                    b.Property<int>("AccountTransferredToOrFrom")
                         .HasColumnType("int");
 
                     b.Property<double>("Balance")
@@ -297,6 +297,10 @@ namespace MoneyMinder.Migrations
 
                     b.Property<double>("TransactionAmount")
                         .HasColumnType("float");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AccountNum");
 

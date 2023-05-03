@@ -34,10 +34,12 @@ namespace MoneyMinder
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
+            
 
             //dima's addition
             services.AddScoped<CompaniesScrapper>();
             services.AddScoped<IDataAccessService, DataAccessService>();
+            services.AddHttpContextAccessor();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {

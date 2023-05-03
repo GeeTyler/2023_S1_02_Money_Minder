@@ -2,6 +2,9 @@
 @using Microsoft.EntityFrameworkCore
 @using MoneyMinder.Model
 @using MoneyMinder.Data
+@using Microsoft.AspNetCore.Http
+@using System.IO;
+@inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavManager
 @inject IDataAccessService DataAccessService
 
@@ -16,7 +19,7 @@
 {
         <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.CompanyName))">
             <div>
-                <img class="companyLabel" src="@imageSource" alt="Company Label" />
+            <img class="companyLabel" src="@imageSource(item.CompanyName)" alt="Company Label" /><!--CANT SAVE IMAGE WITH SIGHN /-->
                 <div class="comanyInformation">
                     <h4>@item.CompanyName</h4>
                     <h5 class="darkGray">@item.StockCode</h5>
@@ -30,7 +33,7 @@
 
 @code {
 
-    private string imageSource = "CompanyLabels/image.jpg";
+    //private string imageSource = "CompanyLabels/image.png";
     private string searchBox = "";
     private string searching = "empty";
     private List<string> Companys = new List<string>();
@@ -44,13 +47,26 @@
 
     public void clickedOnCompany(string company)
     {
+        if (company.Contains('/'))
+        {
+            company = company.Replace("/", "zAeBaL");
+        }
         NavManager.NavigateTo("/company/" + company);
     }
     public void search()
     {
         searching = searchBox;
     }
-
+    private string imageSource(string company)
+    {
+        if (company.Contains('/'))
+        {
+            company = company.Replace("/", " ");
+        }
+        string check = "CompanyLabels/" + company+".png";
+        return check;
+        //return "CompanyLabels/image.png";
+    }
 
 
 
