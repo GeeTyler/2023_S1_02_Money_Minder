@@ -64,6 +64,10 @@ namespace MoneyMinder.Pages
             {
                 if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*") || !string.IsNullOrWhiteSpace(temp[i]))
                 {
+                    if (temp[i].Contains('&'))
+                    {
+                        temp[i] = temp[i].Remove(temp[i].IndexOf('&') + 1, 4);
+                    }
                     companys.Add(temp[i].Trim());              
                 }
             }
