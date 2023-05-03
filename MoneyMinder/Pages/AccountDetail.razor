@@ -1,32 +1,60 @@
 ﻿@layout MainLayout
 @page "/bankaccounts/{Text}"
 
+@inject NavigationManager NavManager
+
 <AuthorizeView>
     <Authorized>
         <!-- account information part -->
-        <div class="account_info">
-            <p class="account_num">Account Number: 00-0000-0000000-00</p>
-            <!-- Block further transaction when it is not clicked -->
-            <!-- Transaction blocked when clicked -->
+        <div class="account_info_container">
+            <!-- account number -->
+            <div class="account_number_container">
+                <p class="account_number">Account Number: 00-0000-0000000-00</p>
+                <!-- Block further transaction when it is not clicked -->
+                <!-- Transaction blocked when clicked -->
 
-            <label class="transaction_label" for="">
-                @if (isChecked)
-                {
-                    <p style="color: #D20202;">Transaction blocked</p>
-                }
-                else
-                {
-                    <p style="color: #02D20A;">Block further transaction</p>
-                }
-                <input class="transaction" type="checkbox" name="" id="" @bind="isChecked">
-            </label>
-        </div>
-        <p class="account_holder">Account Holder: Account Holder</p>
-        <div class="account_name">
-            <p>Account Name: Temp Account</p>
-            <!-- if change button is clicked, input and check button should be displayed -->
-            <!-- if check button is clicked, input should disappear and new account name should be displayed -->
-            <button class="account_change_btn">change</button>
+                <label class="transaction_label" for="">
+                    @if (isChecked)
+                    {
+                        <p style="color: #D20202;">Transaction blocked</p>
+                    }
+                    else
+                    {
+                        <p style="color: #02D20A;">Block further transaction</p>
+                    }
+                    <input class="transaction" type="checkbox" name="" id="" @bind="isChecked">
+                </label>
+            </div>
+            <div class="container_with_transfer_btn">
+                <!-- account holder/name -->
+                <div class="account_holder_name_container">
+                    <p class="account_holder">Account Holder: Account Holder</p>
+                    <div class="account_name">
+                        @if (isClicked)
+                        {
+                            <p>Account Name: &nbsp;</p>
+                            <!-- if add btn is clicked, input should be displayed with check button-->
+                            <div class="account_name_change_input_container">
+                                <input type="text" class="account_name_change_input" placeholder="Enter new acc. name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new acc. name'">
+                                <button class="account_name_change_input_check" @onclick="changeClicked">✓</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- account name should be changed after user input the new name and click check button -->
+                            <!-- 'Temp Account' place should be replaced with real functional code -->
+                            <p>Account Name: @AccountName</p>
+                            <!-- if change button is clicked, input and check button should be displayed -->
+                            <!-- if check button is clicked, input should disappear and new account name should be displayed -->
+                            <button class="account_name_change_btn" @onclick="changeClicked">change</button>
+                        }
+                    </div>
+                </div>
+                <!-- transfer btn -->
+                <div class="account_transfer_btn_container">
+                    <button class="account_transfer_btn" @onclick="@(e=>clilckedOnTransfer(AccountName))">Make Transfer</button>
+                </div>
+            </div>
         </div>
         <!-- account selection part -->
         <div class="account_filter_container">
@@ -101,8 +129,22 @@
     public string Text { get; set; }
 
     private bool isChecked = false;
+    private bool isClicked = false;
+    private string AccountName = "Account name";
     private string searchBox = "";
     private string searching = "empty";
+
+
+    public void clilckedOnTransfer(string account)
+    {
+        NavManager.NavigateTo("/transfer/" + account);
+    }
+
+
+    private void changeClicked()
+    {
+        isClicked = !isClicked;
+    }
 
     public void search()
     {
