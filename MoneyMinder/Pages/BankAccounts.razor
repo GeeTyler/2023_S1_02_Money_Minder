@@ -26,9 +26,6 @@
                         </div>
                         <!-- if click view transacton, then it goes to account detail -->
                         <!-- or we can just delete view button and move page directly if user click the frame -->
-                        <div class="bank_account_view_account">
-                            <button class="view_account_btn">View Account</button>
-                        </div>
                     </div>
                 </div>
             }
@@ -53,26 +50,9 @@
 
 @code {
     private string imageSource = "CompanyLabels/image.jpg";
-    /*private string CompanyName = "Company name";*/
     private string AccountName = "Account name";
-    /*private string searchBox = "";*/
-    /*private string searching = "empty";*/
-    /*private List<string> Companys = new List<string>();*/
-
-    /*
-    protected override async Task OnInitializedAsync()
-    {
-        Companys = await Scrapit.DoScrapping();
-    }
-     */
     public void clilckedOnAccount(string account)
     {
-        NavManager.NavigateTo("/bankaccounts/accountdetail/" + account);
+        NavManager.NavigateTo("/bankaccounts/" + account);
     }
-    /*
-    public void search()
-        {
-        searching = searchBox;
-        }
-    */
 }
