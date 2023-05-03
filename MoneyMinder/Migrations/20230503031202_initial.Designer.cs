@@ -10,8 +10,8 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230502054559_Initial")]
-    partial class Initial
+    [Migration("20230503031202_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -288,7 +288,7 @@ namespace MoneyMinder.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("AccountTransferredTo")
+                    b.Property<int>("AccountTransferredToOrFrom")
                         .HasColumnType("int");
 
                     b.Property<double>("Balance")
@@ -299,6 +299,10 @@ namespace MoneyMinder.Migrations
 
                     b.Property<double>("TransactionAmount")
                         .HasColumnType("float");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AccountNum");
 

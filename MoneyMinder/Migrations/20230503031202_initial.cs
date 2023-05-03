@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MoneyMinder.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,10 +95,11 @@ namespace MoneyMinder.Migrations
                 {
                     AccountNum = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountTransferredTo = table.Column<int>(type: "int", nullable: false),
+                    AccountTransferredToOrFrom = table.Column<int>(type: "int", nullable: false),
                     DateandTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Balance = table.Column<double>(type: "float", nullable: false),
-                    TransactionAmount = table.Column<double>(type: "float", nullable: false)
+                    TransactionAmount = table.Column<double>(type: "float", nullable: false),
+                    TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
