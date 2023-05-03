@@ -53,7 +53,7 @@ namespace MoneyMinder.Migrations
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AccountNum = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Balance = table.Column<float>(type: "real", nullable: false)
+                    Balance = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,14 +64,18 @@ namespace MoneyMinder.Migrations
                 name: "MarketPriceData",
                 columns: table => new
                 {
-                    StockCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MarketPrice = table.Column<float>(type: "real", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Volume = table.Column<int>(type: "int", nullable: false)
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Open = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    High = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Low = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Close = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdjClose = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StockCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Volume = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MarketPriceData", x => x.StockCode);
+                    table.PrimaryKey("PK_MarketPriceData", x => x.Date);
                 });
 
             migrationBuilder.CreateTable(

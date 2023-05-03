@@ -27,9 +27,6 @@ namespace MoneyMinder.Data
         {
             List<string> companys = new List<string>();
 
-            //            HtmlDocument htmlDoc = new HtmlDocument();
-
-
             HttpClient hc = new HttpClient();
             HttpResponseMessage result = await hc.GetAsync($"https://www.nzx.com/markets/NZSX");
             Stream stream = await result.Content.ReadAsStreamAsync();

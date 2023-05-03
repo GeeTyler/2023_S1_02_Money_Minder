@@ -34,9 +34,9 @@ namespace MoneyMinder
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
 
-            //dima's addition
             services.AddScoped<CompaniesScrapper>();
             services.AddScoped<IDataAccessService, DataAccessService>();
+            services.AddScoped<StockDataScrapper>();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
