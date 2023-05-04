@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.Data;
 using System.Threading;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Globalization;
 
 namespace MoneyMinder.Data
 {
@@ -51,48 +52,61 @@ namespace MoneyMinder.Data
             var tableRows = doc.DocumentNode.Descendants("table")
                 .FirstOrDefault(node => node.GetAttributeValue("data-test", "") == "historical-prices")
                 ?.Descendants("tr")
-                .Skip(1)
-                .Take(70)
+                .Skip(1).Where(node => !node.InnerHtml.Contains("Dividend"))
                 .ToList();
 
+            bool isEndOfData = false;
+            var culture = CultureInfo.InvariantCulture;
             foreach (var row in tableRows)
             {
                 var rowData = row.Descendants("td").Select(node => node.InnerText.Trim()).ToList();
 
-                DateTime date = Convert.ToDateTime(rowData[0]);
-                // check if an entity with the same StockCode and Date already exists in the context
-                var existingMarketData = _db.MarketPriceData.FirstOrDefault(x => x.Date == date);
-
-
-                if (existingMarketData == null)
+                if (rowData.Take(6).Any(val => val.Contains("*Close price adjusted for splits.") ||
+                val.Contains("**Close price adjusted for splits and dividend and/or capital gain distributions.")))
                 {
-                    var marketData = new MarketPriceData()
-                    {
-                        StockCode = ChosenStock,
-                        Date = date,
-                        Open = rowData[1],          
-                        High = rowData[2],            
-                        Low = rowData[3],
-                        Close = rowData[4],
-                        AdjClose = rowData[5],
-                        Volume = rowData[6]
-                    };
-
-                    _db.MarketPriceData.Add(marketData);
+                    isEndOfData = true;
+                }
+                if (isEndOfData)
+                {
+                    return;
                 }
                 else
                 {
-                    existingMarketData.Open = rowData[1];
-                    existingMarketData.High = rowData[2];
-                    existingMarketData.Low = rowData[3];
-                    existingMarketData.Close = rowData[4];
-                    existingMarketData.AdjClose = rowData[5];
-                    existingMarketData.Volume = rowData[6];
+                    DateTime date = Convert.ToDateTime(rowData[0]);
+                    
+                    var existingMarketData = _db.MarketPriceData.FirstOrDefault(x => x.Date == date);
 
-                    _db.Update(existingMarketData);
+
+                    if (existingMarketData == null)
+                    {
+                        var marketData = new MarketPriceData()
+                        {
+                            StockCode = ChosenStock,
+                            Date = date,
+                            Open = double.Parse(rowData[1], culture),
+                            High = double.Parse(rowData[2], culture),
+                            Low = double.Parse(rowData[3], culture),
+                            Close = double.Parse(rowData[4], culture),
+                            AdjClose = double.Parse(rowData[5], culture),
+                            Volume = rowData[6]
+                        };
+
+                        _db.MarketPriceData.Add(marketData);
+                    }
+                    else
+                    {
+                        existingMarketData.Open = double.Parse(rowData[1], culture);
+                        existingMarketData.High = double.Parse(rowData[2], culture);
+                        existingMarketData.Low = double.Parse(rowData[3], culture);
+                        existingMarketData.Close = double.Parse(rowData[4], culture);
+                        existingMarketData.AdjClose = double.Parse(rowData[5], culture);
+                        existingMarketData.Volume = rowData[6];
+
+                        _db.Update(existingMarketData);
+                    }
+
+                    _db.SaveChanges();
                 }
-
-                _db.SaveChanges();
             }
         }
     }

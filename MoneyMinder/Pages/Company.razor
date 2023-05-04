@@ -1,6 +1,38 @@
 ﻿@layout MainLayout
 @page "/company/{Text}"
+@using Microsoft.EntityFrameworkCore
+@using MoneyMinder.Model
+@using MoneyMinder.Data
+@inject IDataAccessService DataAccessService
+@using Radzen.Blazor
+@using System
+@using System.Globalization
 
+@if (MarketPrices != null && MarketPrices.Any())
+{
+    <div class="container">
+        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3">Custom colors and styling</RadzenText>
+        <div class="row my-5">
+            <div class="col-sm-12">
+                <RadzenChart>
+                    <RadzenAreaSeries Stroke="rgb(236,72,127)" StrokeWidth="2" Fill="rgba(236,72,127,.5)" Data="MarketPrices" CategoryProperty="Date" ValueProperty="Close">
+                        <ChildContent>
+                            <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#fff" Stroke="rgba(236,72,127)" StrokeWidth="2" Size="8" />
+                        </ChildContent>
+                    </RadzenAreaSeries>
+                    <RadzenCategoryAxis>
+                        <RadzenGridLines Visible="true" Stroke="#ccc" LineType="LineType.Dashed" />
+                    </RadzenCategoryAxis>
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true" />
+                    </RadzenValueAxis>
+                    <RadzenChartTooltipOptions Style="border: 1px solid rgb(236,72,127); background: #eee; color: #000;" />
+                    <RadzenLegend Visible="false" />
+                </RadzenChart>
+            </div>
+        </div>
+    </div>
+}
 
 <style>
     table{
@@ -17,7 +49,7 @@
 </style>
 <h3>@Text</h3>
 <div class="priceHistory">
-    <div class="choosenCompanyFrame">
+    <div class="chosenCompanyFrame">
         <h6>CN</h6>
         <p>$1.543</p>
         <p>+0.05%, +0.23%</p>
@@ -26,15 +58,23 @@
     <table style="width:50%">
         <tr>
             <th>Date</th>
-            <th>Changes</th>
-            <th>Current Value</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>AdjClose</th>
+            <th>Volume</th>
         </tr>
-        @for (int i = 0; i < 100; i += 10)
+        @foreach (var item in MarketPriceReverse)
         {
             <tr>
-                <td>@i/@i/@i</td>
-                <td>+@i%/0.@i</td>
-                <td>$@i.@i</td>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.Open</td>
+                <td>@item.High</td>
+                <td>@item.Low</td>
+                <td>@item.Close</td>
+                <td>@item.AdjClose</td>
+                <td>@item.Volume</td>
             </tr>
         }
     </table>
@@ -45,5 +85,18 @@
     [Parameter]
     public string Text{ get; set; }
 
+    public List<MarketPriceData> MarketPrices = new List<MarketPriceData>();
+    public List<MarketPriceData> MarketPriceReverse = new List<MarketPriceData>();
+
+    protected override void OnInitialized()
+    {
+        MarketPriceReverse = DataAccessService.GetMarketPrices();
+        MarketPriceReverse.Reverse();
+        MarketPrices = DataAccessService.GetMarketPrices();
+        StateHasChanged();
+    }
+
+    IEnumerable<ColorScheme> colorSchemes = Enum.GetValues(typeof(ColorScheme)).Cast<ColorScheme>();
+    ColorScheme colorScheme = ColorScheme.Palette;
    
 }

@@ -7,8 +7,10 @@ namespace MoneyMinder.Data
     {
         List<Stock> GetStocks();
 
-        public void SetChosenStock(string Code);
+        List<MarketPriceData> GetMarketPrices();
 
-        public string GetChosenStock();
+        void SetChosenStock(string Code);
+
+        string GetChosenStock();
     }
 }

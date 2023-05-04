@@ -18,6 +18,11 @@ namespace MoneyMinder.Data
             return _db.Stock.ToList();
         }
 
+        public List<MarketPriceData> GetMarketPrices() 
+        {
+            return _db.MarketPriceData.ToList();
+        }
+
         string ChosenStockCode;
 
         public void SetChosenStock(string Code)

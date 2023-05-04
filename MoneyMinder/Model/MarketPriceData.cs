@@ -9,15 +9,15 @@ namespace MoneyMinder.Model
         [Required]
         public DateTime Date { get; set; }
         [Required]
-        public string Open { get; set; }
+        public double Open { get; set; }
         [Required]
-        public string High { get; set; }
+        public double High { get; set; }
         [Required]
-        public string Low { get; set; }
+        public double Low { get; set; }
         [Required]
-        public string Close { get; set; }
+        public double Close { get; set; }
         [Required]
-        public string AdjClose { get; set; }
+        public double AdjClose { get; set; }
         [Required]
         public string StockCode { get; set; }
         [Required]

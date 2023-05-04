@@ -4,10 +4,10 @@ namespace MoneyMinder.Model
 {
     public class BankAccount
     {
-        [Key, EmailAddress]
-        public string Email { get; set; }
-        [Required]
+        [Key, Required]
         public int AccountNum { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
