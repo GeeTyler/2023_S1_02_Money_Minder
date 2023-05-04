@@ -41,7 +41,7 @@ namespace MoneyMinder.Data
 
             string ChosenStock = _accessService.GetChosenStock();
             string fullUrl = "https://nz.finance.yahoo.com/quote/" + ChosenStock + ".NZ" +
-                "/history?period1=946771200&period2=1683072000&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true";
+                "/history?p="+ChosenStock+".NZ";
 
             var hc = new HttpClient();
             var result = await hc.GetStringAsync(fullUrl);
@@ -52,7 +52,7 @@ namespace MoneyMinder.Data
             var tableRows = doc.DocumentNode.Descendants("table")
                 .FirstOrDefault(node => node.GetAttributeValue("data-test", "") == "historical-prices")
                 ?.Descendants("tr")
-                .Skip(1).Where(node => !node.InnerHtml.Contains("Dividend"))
+                .Skip(1).Where(node => !node.InnerHtml.Contains("Dividend") && node.InnerHtml.Count(c => c == '-') <= 1)
                 .ToList();
 
             bool isEndOfData = false;
