@@ -1,4 +1,5 @@
-﻿using MoneyMinder.Model;
+﻿using Microsoft.AspNetCore.Components;
+using MoneyMinder.Model;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace MoneyMinder.Data
     {
         private readonly DatabaseContext _db;
 
+
         public DataAccessService(DatabaseContext db)
         {
             _db = db;
@@ -16,6 +18,11 @@ namespace MoneyMinder.Data
         public List<Stock> GetStocks() 
         {
             return _db.Stock.ToList();
+        }
+
+        public List<Stock> GetFilteredStocks(string SearchText)
+        {
+            return _db.Stock.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower())).ToList();
         }
 
         public List<MarketPriceData> GetMarketPrices() 
