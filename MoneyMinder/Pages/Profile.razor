@@ -1,5 +1,7 @@
 ﻿@layout MainLayout
-@page "/Profile"
+@page "/Home"
+@using MoneyMinder.Data
+@inject CompaniesScrapper Scrapit
 
 <div class="profile_container">
     <div class="profile_info_container">
@@ -150,7 +152,13 @@
     </div>
 </div>
 
-@code {
+@code 
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await Scrapit.DoScrapping();
+    }
+
     private bool isFisrtNameClicked = false;
     private bool isLastNameClicked = false;
     private bool isEmailClicked = false;
