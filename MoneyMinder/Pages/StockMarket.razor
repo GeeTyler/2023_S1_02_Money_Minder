@@ -21,7 +21,6 @@
     {
         <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
             <img src="@imageSource" width="175" height="125" />
-
                 <div class="comanyInformation">
                     <h4>@item.CompanyName</h4>
                     <h5 class="darkGray">@item.StockCode</h5>
@@ -29,7 +28,6 @@
                     <p> Market Price: @item.MarketPrice</p>
                     <p> Market Capitalisation: @item.MarketCap</p>
                 </div>
-           
         </div>
     }
 }
@@ -38,15 +36,13 @@ else
     @foreach (var item in FilteredStocks)
     {
         <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
-            <div>
-                <img class="companyLabel" src="@imageSource" alt="Company Label"/>
-                <div class="comanyInformation">
-                    <h4>@item.CompanyName</h4>
-                    <h5 class="darkGray">@item.StockCode</h5>
-                    <p> </p>
-                    <p> Market Price: @item.MarketPrice</p>
-                    <p> Market Capitalisation: @item.MarketCap</p>
-                </div>
+            <img src="@imageSource" width="175" height="125" />
+            <div class="comanyInformation">
+                <h4>@item.CompanyName</h4>
+                <h5 class="darkGray">@item.StockCode</h5>
+                <p> </p>
+                <p> Market Price: @item.MarketPrice</p>
+                <p> Market Capitalisation: @item.MarketCap</p>
             </div>
         </div>
     }
