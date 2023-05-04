@@ -1,6 +1,157 @@
 ﻿@layout MainLayout
 @page "/Profile"
 
-@code {
+<div class="profile_container">
+    <h1 class="profile_title">My Profile</h1>
 
+    <div class="profile_info_container">
+        <!-- first name -->
+        @if (isFisrtNameClicked)
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">First Name: </p>
+                <div class="change_input_container">
+                    <input type="text" class="change_input" placeholder="Enter new first name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new first name'">
+                    <button class="change_input_check" @onclick="changeFirstNameClicked">✓</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">First Name: </p>
+                <p class="content_spacing">@FirstName</p>
+                <button class="btn_in_profile" @onclick="changeFirstNameClicked">change</button>
+            </div>
+        }
+        <!-- last name -->
+        @if (isLastNameClicked)
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">Last Name: </p>
+                <div class="change_input_container">
+                    <input type="text" class="change_input" placeholder="Enter new last name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new last name'">
+                    <button class="change_input_check" @onclick="changeLastNameClicked">✓</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">Last Name: </p>
+                <p class="content_spacing">@LastName</p>
+                <button class="btn_in_profile" @onclick="changeLastNameClicked">change</button>
+            </div>
+        }
+        <!-- email -->
+        @if (isEmailClicked)
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">Email: </p>
+                <div class="change_input_container">
+                    <input type="text" class="change_input" placeholder="Enter new email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new email'">
+                    <button class="change_input_check" @onclick="changeEmailClicked">✓</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">Email: </p>
+                <p class="content_spacing">@Email</p>
+                <button class="btn_in_profile" @onclick="changeEmailClicked">change</button>
+            </div>
+        }
+        <!-- password -->
+        @if (isPasswordClicked)
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">Password: </p>
+                <div class="change_input_container">
+                    <input type="text" class="change_input" placeholder="Enter new password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new password'">
+                    <button class="change_input_check" @onclick="changePasswordClicked">✓</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="profile_content_container">
+                <p class="heading_spacing">Password:</p>
+                <p class="content_spacing"></p>
+                <button class="btn_in_profile" @onclick="changePasswordClicked">reset</button>
+            </div>
+        }
+
+        <!-- need to get number of account from database -->
+        <!-- used true for temporary -->
+        @if (true)
+        {
+            <div class="register_account_btn_container">
+                <p class="register_btn_spacing">You need to register new bank account!</p>
+                <button class="btn_in_profile">Register</button>
+            </div>
+        }
+        else
+        {
+            <div class="profile_content_container">
+                <div class="heading_spacing">
+                    <p>Bank Accounts:</p>
+                </div>
+                <div class="account_content_container">
+                    <div class="account_number_container">
+                        <p class="content_spacing">00-0000-0000000-00</p>
+                        <button class="btn_in_profile">delete</button>
+                    </div>
+                    <div class="account_number_container">
+                        <p class="content_spacing">00-0000-0000000-01</p>
+                        <button class="btn_in_profile">delete</button>
+                    </div>
+                    <div class="account_number_container">
+                        <p class="content_spacing">00-0000-0000000-02</p>
+                        <button class="btn_in_profile">delete</button>
+                    </div>
+                    <div class="register_account_btn">
+                        <button class="btn_in_profile">Register</button>
+                    </div>
+                </div>
+            </div>
+        }
+        <!-- delete profile button -->
+        <div class="delete_account_container">
+            <p>Delete Account: </p>
+            <button class="delete_account_btn">Delete Account</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isFisrtNameClicked = false;
+    private bool isLastNameClicked = false;
+    private bool isEmailClicked = false;
+    private bool isPasswordClicked = false;
+
+    private string FirstName = "First Name";
+    private string LastName = "Last Name";
+    private string Email = "Email";
+    private string Password = " ";
+
+    private void changeFirstNameClicked()
+    {
+        isFisrtNameClicked = !isFisrtNameClicked;
+    }
+
+    private void changeLastNameClicked()
+    {
+        isLastNameClicked = !isLastNameClicked;
+    }
+
+    private void changeEmailClicked()
+    {
+        isEmailClicked = !isEmailClicked;
+    }
+
+    private void changePasswordClicked()
+    {
+        isPasswordClicked = !isPasswordClicked;
+    }
 }
