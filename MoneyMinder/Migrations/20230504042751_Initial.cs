@@ -50,14 +50,15 @@ namespace MoneyMinder.Migrations
                 name: "BankAccount",
                 columns: table => new
                 {
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AccountNum = table.Column<int>(type: "int", nullable: false),
+                    AccountNum = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Balance = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccount", x => x.Email);
+                    table.PrimaryKey("PK_BankAccount", x => x.AccountNum);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,11 +66,11 @@ namespace MoneyMinder.Migrations
                 columns: table => new
                 {
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Open = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    High = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Low = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Close = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AdjClose = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Open = table.Column<double>(type: "float", nullable: false),
+                    High = table.Column<double>(type: "float", nullable: false),
+                    Low = table.Column<double>(type: "float", nullable: false),
+                    Close = table.Column<double>(type: "float", nullable: false),
+                    AdjClose = table.Column<double>(type: "float", nullable: false),
                     StockCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Volume = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },

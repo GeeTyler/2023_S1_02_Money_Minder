@@ -10,8 +10,13 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
+<<<<<<<< HEAD:MoneyMinder/Migrations/20230504040103_initial.Designer.cs
     [Migration("20230504040103_initial")]
     partial class initial
+========
+    [Migration("20230504042751_Initial")]
+    partial class Initial
+>>>>>>>> Tyler:MoneyMinder/Migrations/20230504042751_Initial.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -219,20 +224,22 @@ namespace MoneyMinder.Migrations
 
             modelBuilder.Entity("MoneyMinder.Model.BankAccount", b =>
                 {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("AccountNum")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<double>("Balance")
                         .HasColumnType("float");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Email");
+                    b.HasKey("AccountNum");
 
                     b.ToTable("BankAccount");
                 });
@@ -242,25 +249,20 @@ namespace MoneyMinder.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("AdjClose")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("AdjClose")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Close")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Close")
+                        .HasColumnType("float");
 
-                    b.Property<string>("High")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("High")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Low")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Low")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Open")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Open")
+                        .HasColumnType("float");
 
                     b.Property<string>("StockCode")
                         .IsRequired()
