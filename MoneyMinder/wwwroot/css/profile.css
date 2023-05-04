@@ -3,12 +3,17 @@
     padding: 0;
 }
 
-.profile_title{
+.profile_container {
+    display: flex;
+    justify-content: center;
+}
+
+.profile_title {
     margin-bottom: 28px;
 }
 
 .profile_info_container {
-    width: 420px;
+    width: 440px;
 }
 
 .profile_content_container {
@@ -55,6 +60,8 @@
 .btn_in_profile {
     margin: 0;
     padding: 4px;
+    width: 80px;
+    height: 40px;
     cursor: pointer;
     border: 1px solid black;
     background-color: transparent;

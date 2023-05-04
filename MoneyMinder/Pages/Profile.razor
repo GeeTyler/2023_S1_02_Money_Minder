@@ -2,9 +2,9 @@
 @page "/Profile"
 
 <div class="profile_container">
-    <h1 class="profile_title">My Profile</h1>
-
     <div class="profile_info_container">
+        <!-- title -->
+        <h1 class="profile_title">My Profile</h1>
         <!-- first name -->
         @if (isFisrtNameClicked)
         {
@@ -184,6 +184,6 @@
 
     private void registerClicked()
     {
-        isRegisterClicked = !isPasswordClicked;
+        isRegisterClicked = !isRegisterClicked;
     }
 }
