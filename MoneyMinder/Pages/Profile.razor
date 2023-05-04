@@ -86,10 +86,23 @@
         <!-- used true for temporary -->
         @if (true)
         {
-            <div class="register_account_btn_container">
-                <p class="register_btn_spacing">You need to register new bank account!</p>
-                <button class="btn_in_profile">Register</button>
-            </div>
+            @if (isRegisterClicked)
+            {
+                <div class="register_account_btn_container">
+                    <p class="register_btn_spacing">You need to register new bank account!</p>
+                    <div class="change_input_container">
+                        <input type="text" class="change_input" placeholder="Enter new account number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new account number'">
+                        <button class="change_input_check" @onclick="registerClicked">✓</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="register_account_btn_container">
+                    <p class="register_btn_spacing">You need to register new bank account!</p>
+                    <button class="btn_in_profile" @onclick="registerClicked">Register</button>
+                </div>
+            }
         }
         else
         {
@@ -110,9 +123,22 @@
                         <p class="content_spacing">00-0000-0000000-02</p>
                         <button class="btn_in_profile">delete</button>
                     </div>
-                    <div class="register_account_btn">
-                        <button class="btn_in_profile">Register</button>
-                    </div>
+                    <!-- get error with if statement error code CS0162, think it is because of using true at the top for temporarily use -->
+                    @if (isRegisterClicked)
+                    {
+                        <div class="account_number_container">
+                            <div class="change_input_container">
+                                <input type="text" class="change_input" placeholder="Enter new account number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new account number'">
+                                <button class="change_input_check" @onclick="registerClicked">✓</button>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="register_account_btn">
+                            <button class="btn_in_profile" @onclick="registerClicked">Register</button>
+                        </div>
+                    }
                 </div>
             </div>
         }
@@ -129,6 +155,7 @@
     private bool isLastNameClicked = false;
     private bool isEmailClicked = false;
     private bool isPasswordClicked = false;
+    private bool isRegisterClicked = false;
 
     private string FirstName = "First Name";
     private string LastName = "Last Name";
@@ -153,5 +180,10 @@
     private void changePasswordClicked()
     {
         isPasswordClicked = !isPasswordClicked;
+    }
+
+    private void registerClicked()
+    {
+        isRegisterClicked = !isPasswordClicked;
     }
 }
