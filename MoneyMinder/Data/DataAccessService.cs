@@ -162,6 +162,10 @@ namespace MoneyMinder.Data
 
         public void AddTransfer(int accountNum, int ToThisAccount, double Amount)
         {
+            if(Amount <= 0)
+            {
+                return;
+            }
             var random = new Random();
             bool TranscationNumberExists = true;
             int RandomTransactionNum = 0;
