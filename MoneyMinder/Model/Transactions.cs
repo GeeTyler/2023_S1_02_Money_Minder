@@ -9,6 +9,9 @@ namespace MoneyMinder.Model
     {
         [Key]
         [Required]
+        public int TrasactionNum { get; set; }
+
+        [Required]
         public int AccountNum { get; set; }
 
         [Required]

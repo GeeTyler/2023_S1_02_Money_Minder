@@ -1,0 +1,22 @@
+﻿@page "/delete"
+@using Microsoft.AspNetCore.Identity
+@attribute [IgnoreAntiforgeryToken]
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@functions {
+    public async Task<IActionResult> OnGet()
+    {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignOutAsync();
+                    return RedirectToPage("~/");
+                }
+            }
+            return Page();
+    }
+}

@@ -1,19 +1,22 @@
 ﻿@layout MainLayout
 @page "/Home"
+@using Microsoft.AspNetCore.Identity;
 @using MoneyMinder.Data
+@using MoneyMinder.Model;
 @inject CompaniesScrapper Scrapit
+@inject IDataAccessService DataAccessService
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
 
 <div class="profile_container">
     <div class="profile_info_container">
-        <!-- title -->
         <h1 class="profile_title">My Profile</h1>
-        <!-- first name -->
-        @if (isFisrtNameClicked)
+        @if (isFirstNameClicked)
         {
             <div class="profile_content_container">
                 <p class="heading_spacing">First Name: </p>
                 <div class="change_input_container">
-                    <input type="text" class="change_input" placeholder="Enter new first name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new first name'">
+                    <input type="text" class="change_input" placeholder="Enter new first name" @bind="Current.FirstName">
                     <button class="change_input_check" @onclick="changeFirstNameClicked">✓</button>
                 </div>
             </div>
@@ -22,17 +25,23 @@
         {
             <div class="profile_content_container">
                 <p class="heading_spacing">First Name: </p>
-                <p class="content_spacing">@FirstName</p>
-                <button class="btn_in_profile" @onclick="changeFirstNameClicked">change</button>
+                @if (Current != null)
+                {
+                    <p class="content_spacing">@Current.FirstName</p>
+                }
+                else
+                {
+                    <p class="content_spacing">Loading...</p>
+                }
+                <button class="btn_in_profile" @onclick="changeFirstNameClicked">Change</button>
             </div>
         }
-        <!-- last name -->
         @if (isLastNameClicked)
         {
             <div class="profile_content_container">
                 <p class="heading_spacing">Last Name: </p>
                 <div class="change_input_container">
-                    <input type="text" class="change_input" placeholder="Enter new last name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new last name'">
+                    <input type="text" class="change_input" placeholder="Enter new last name" @bind="Current.LastName">
                     <button class="change_input_check" @onclick="changeLastNameClicked">✓</button>
                 </div>
             </div>
@@ -41,157 +50,185 @@
         {
             <div class="profile_content_container">
                 <p class="heading_spacing">Last Name: </p>
-                <p class="content_spacing">@LastName</p>
-                <button class="btn_in_profile" @onclick="changeLastNameClicked">change</button>
-            </div>
-        }
-        <!-- email -->
-        @if (isEmailClicked)
-        {
-            <div class="profile_content_container">
-                <p class="heading_spacing">Email: </p>
-                <div class="change_input_container">
-                    <input type="text" class="change_input" placeholder="Enter new email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new email'">
-                    <button class="change_input_check" @onclick="changeEmailClicked">✓</button>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="profile_content_container">
-                <p class="heading_spacing">Email: </p>
-                <p class="content_spacing">@Email</p>
-                <button class="btn_in_profile" @onclick="changeEmailClicked">change</button>
-            </div>
-        }
-        <!-- password -->
-        @if (isPasswordClicked)
-        {
-            <div class="profile_content_container">
-                <p class="heading_spacing">Password: </p>
-                <div class="change_input_container">
-                    <input type="text" class="change_input" placeholder="Enter new password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new password'">
-                    <button class="change_input_check" @onclick="changePasswordClicked">✓</button>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="profile_content_container">
-                <p class="heading_spacing">Password:</p>
-                <p class="content_spacing"></p>
-                <button class="btn_in_profile" @onclick="changePasswordClicked">reset</button>
+                @if (Current != null)
+                {
+                    <p class="content_spacing">@Current.LastName</p>
+                }
+                else
+                {
+                    <p class="content_spacing">Loading...</p>
+                }
+                <button class="btn_in_profile" @onclick="changeLastNameClicked">Change</button>
             </div>
         }
 
-        <!-- need to get number of account from database -->
-        <!-- used true for temporary -->
-        @if (true)
-        {
-            @if (isRegisterClicked)
+        <div class="profile_content_container">
+            <p class="heading_spacing">Email: </p>
+            @if (Current != null)
             {
-                <div class="register_account_btn_container">
-                    <p class="register_btn_spacing">You need to register new bank account!</p>
-                    <div class="change_input_container">
-                        <input type="text" class="change_input" placeholder="Enter new account number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new account number'">
-                        <button class="change_input_check" @onclick="registerClicked">✓</button>
-                    </div>
-                </div>
+                <p class="content_spacing">@Current.Email</p>
             }
             else
             {
-                <div class="register_account_btn_container">
-                    <p class="register_btn_spacing">You need to register new bank account!</p>
-                    <button class="btn_in_profile" @onclick="registerClicked">Register</button>
-                </div>
+                <p class="content_spacing">Loading...</p>
             }
-        }
-        else
+        </div>
+
+        <br />
+        <h2 class="profile_title">Bank Accounts</h2>
+        @if (!viewBankAccounts)
         {
-            <div class="profile_content_container">
-                <div class="heading_spacing">
-                    <p>Bank Accounts:</p>
-                </div>
-                <div class="account_content_container">
-                    <div class="account_number_container">
-                        <p class="content_spacing">00-0000-0000000-00</p>
-                        <button class="btn_in_profile">delete</button>
-                    </div>
-                    <div class="account_number_container">
-                        <p class="content_spacing">00-0000-0000000-01</p>
-                        <button class="btn_in_profile">delete</button>
-                    </div>
-                    <div class="account_number_container">
-                        <p class="content_spacing">00-0000-0000000-02</p>
-                        <button class="btn_in_profile">delete</button>
-                    </div>
-                    <!-- get error with if statement error code CS0162, think it is because of using true at the top for temporarily use -->
-                    @if (isRegisterClicked)
-                    {
-                        <div class="account_number_container">
-                            <div class="change_input_container">
-                                <input type="text" class="change_input" placeholder="Enter new account number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new account number'">
-                                <button class="change_input_check" @onclick="registerClicked">✓</button>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="register_account_btn">
-                            <button class="btn_in_profile" @onclick="registerClicked">Register</button>
-                        </div>
-                    }
-                </div>
+            <div class="register_account_btn_container">
+                <p class="register_btn_spacing"></p>
+                <button class="btn_in_profile" @onclick="viewAccountsClicked">View Bank Accounts</button>
             </div>
         }
-        <!-- delete profile button -->
-        <div class="delete_account_container">
-            <p>Delete Account: </p>
-            <button class="delete_account_btn">Delete Account</button>
-        </div>
+
+        @if(viewBankAccounts)
+        {
+            if (MyBankAccounts == null || MyBankAccounts.Count == 0)
+            {
+                if (isRegisterClicked)
+                {
+                    <div class="register_account_btn_container">
+                        <p class="register_btn_spacing">Please input your account details</p>
+                        <div class="change_input_container">
+                            <input type="text" class="change_input" placeholder="Enter Account Name">
+                            <input type="text" class="change_input" placeholder="Enter Account Number">
+                            <button class="change_input_check" @onclick="registerClicked">✓</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="register_account_btn_container">
+                        <p class="register_btn_spacing">You need to register a bank account!</p>
+                        <button class="btn_in_profile" @onclick="registerClicked">Register</button>
+                    </div>
+                }
+            }
+            if (MyBankAccounts.Count > 0)
+            {
+                <div class="profile_content_container">
+                    <div class="account_content_container">
+                        <div class="account_number_container">
+                            <p class="content_spacing">00-0000-0000000-00</p>
+                            <button class="btn_in_profile">Delete</button>
+                        </div>
+                        <div class="account_number_container">
+                            <p class="content_spacing">00-0000-0000000-01</p>
+                            <button class="btn_in_profile">Delete</button>
+                        </div>
+                        <div class="account_number_container">
+                            <p class="content_spacing">00-0000-0000000-02</p>
+                            <button class="btn_in_profile">Delete</button>
+                           </div>
+                           
+                        @if (isRegisterClicked)
+                        {
+                             <div class="account_number_container">
+                                  <div class="change_input_container">
+                                    <input type="text" class="change_input" placeholder="Enter new account number">
+                                    <button class="change_input_check" @onclick="registerClicked">✓</button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="register_account_btn">
+                                <button class="btn_in_profile" @onclick="registerClicked">Register</button>
+                            </div>
+                        }
+                        </div>
+                    </div>
+                }
+            }
+        @if (!isDeleteAccountClicked)
+        {
+            <div class="delete_account_container">
+                <button class="delete_account_btn">Delete Profile</button>
+            </div>
+        }
     </div>
 </div>
 
 @code 
 {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private User Current;
+    private List<BankAccount> MyBankAccounts;
+
+    async Task<string> getUsersEmail()
+    {
+        var user = (await authenticationStateTask).User;
+        return user.Identity.Name;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await Scrapit.DoScrapping();
+        Current = DataAccessService.GetUser(await getUsersEmail());
+        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
+        StateHasChanged();
     }
 
-    private bool isFisrtNameClicked = false;
+    private bool isFirstNameClicked = false;
     private bool isLastNameClicked = false;
-    private bool isEmailClicked = false;
-    private bool isPasswordClicked = false;
     private bool isRegisterClicked = false;
-
-    private string FirstName = "First Name";
-    private string LastName = "Last Name";
-    private string Email = "Email";
-    private string Password = " ";
+    private bool isDeleteAccountClicked = false;
+    private bool viewBankAccounts = false;
 
     private void changeFirstNameClicked()
     {
-        isFisrtNameClicked = !isFisrtNameClicked;
+        if (isFirstNameClicked == true)
+        {
+            DataAccessService.ChangeFirstName(Current.FirstName, Current.Email);
+            isFirstNameClicked = false;
+            StateHasChanged();
+        }
+        else
+        {
+            isFirstNameClicked = true;
+        }
     }
 
     private void changeLastNameClicked()
     {
-        isLastNameClicked = !isLastNameClicked;
+        if (isLastNameClicked == true)
+        {
+            DataAccessService.ChangeFirstName(Current.LastName, Current.Email);
+            isLastNameClicked = false;
+            StateHasChanged();
+        }
+        else
+        {
+            isLastNameClicked = true;
+        }
     }
 
-    private void changeEmailClicked()
+    private void viewAccountsClicked()
     {
-        isEmailClicked = !isEmailClicked;
-    }
-
-    private void changePasswordClicked()
-    {
-        isPasswordClicked = !isPasswordClicked;
+        viewBankAccounts = !viewBankAccounts;
     }
 
     private void registerClicked()
     {
         isRegisterClicked = !isRegisterClicked;
+    }
+
+    public string ConvertAccountNumToString(int AccountNum)
+    {
+        return string.Format("{0:####-####-###}", AccountNum);
+    }
+
+    private void deleteAccountClicked()
+    {
+
+    }
+
+    private void dontDeleteClicked()
+    {
+        
     }
 }

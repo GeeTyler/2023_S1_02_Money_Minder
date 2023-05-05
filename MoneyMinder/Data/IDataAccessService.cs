@@ -11,9 +11,19 @@ namespace MoneyMinder.Data
 
         List<MarketPriceData> GetMarketPrices();
 
+        List<Transactions> GetTransactions();
+
+        User GetUser(string UserEmail);
+
+        List<BankAccount> GetBankAccounts(string UserEmail);
+
         void SetChosenStock(string Code);
 
         string GetChosenStock();
+
+        void ChangeLastName(string Input, string UserEmail);
+
+        void ChangeFirstName(string Input, string UserEmail);
 
     }
 }
