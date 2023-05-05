@@ -7,46 +7,55 @@
 @inject IDataAccessService DataAccessService
 @inject StockDataScrapper Scrapit
 
-<div class="text-center bg-blue-100">
-    <input class="border-4 w-1/3 rounded m-6 p-6 h-8
-               border-blue-300" @bind-value="SearchText"
-           @oninput="OnInput" placeholder="Search" />
-</div>
 
-<br />
+<AuthorizeView>
+    <Authorized>
+        <div class="text-center bg-blue-100">
+            <input class="border-4 w-1/3 rounded m-6 p-6 h-8
+                       border-blue-300" @bind-value="SearchText"
+                   @oninput="OnInput" placeholder="Search" />
+        </div>
 
-@if (FilteredStocks == null)
-{
-    @foreach (var item in Stocks)
-    {
-        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
-            <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
-                <div class="comanyInformation">
-                    <h4>@item.CompanyName</h4>
-                    <h5 class="darkGray">@item.StockCode</h5>
-                    <p> </p>
-                    <p> Market Price: @item.MarketPrice</p>
-                    <p> Market Capitalisation: @item.MarketCap</p>
+        <br />
+
+        @if (FilteredStocks == null)
+        {
+            @foreach (var item in Stocks)
+            {
+                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                        <div class="comanyInformation">
+                            <h4>@item.CompanyName</h4>
+                            <h5 class="darkGray">@item.StockCode</h5>
+                            <p> </p>
+                            <p> Market Price: @item.MarketPrice</p>
+                            <p> Market Capitalisation: @item.MarketCap</p>
+                        </div>
                 </div>
-        </div>
-    }
-}
-else
-{
-    @foreach (var item in FilteredStocks)
-    {
-        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
-            <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
-            <div class="comanyInformation">
-                <h4>@item.CompanyName</h4>
-                <h5 class="darkGray">@item.StockCode</h5>
-                <p> </p>
-                <p> Market Price: @item.MarketPrice</p>
-                <p> Market Capitalisation: @item.MarketCap</p>
-            </div>
-        </div>
-    }
-}
+            }
+        }
+        else
+        {
+            @foreach (var item in FilteredStocks)
+            {
+                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                    <div class="comanyInformation">
+                        <h4>@item.CompanyName</h4>
+                        <h5 class="darkGray">@item.StockCode</h5>
+                        <p> </p>
+                        <p> Market Price: @item.MarketPrice</p>
+                        <p> Market Capitalisation: @item.MarketCap</p>
+                    </div>
+                </div>
+            }
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        <p role="status">You are not authorised to see this component</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 

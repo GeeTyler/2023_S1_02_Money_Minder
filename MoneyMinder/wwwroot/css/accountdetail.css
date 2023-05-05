@@ -67,8 +67,8 @@
 .account_transfer_btn {
     margin: 0;
     padding: 0;
-    width: 160px;
-    height: 40px;
+    width: 200px;
+    height: 60px;
     border-radius: 0;
     text-align: center;
     border: 1px solid black;
@@ -152,6 +152,7 @@
 .account_current_bal {
     margin-left: auto;
     margin-top: 14px;
+    font:x-large;
 }
 
 .account_content {

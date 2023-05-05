@@ -11,7 +11,7 @@ namespace MoneyMinder.Data
 
         List<MarketPriceData> GetMarketPrices();
 
-        List<Transactions> GetTransactions();
+        List<Transactions> GetTransactions(int AccountNum);
 
         User GetUser(string UserEmail);
 
@@ -32,5 +32,13 @@ namespace MoneyMinder.Data
         void DeleteUsersInfo(string Email);
 
         void DeleteBankAccount(int AccountNum);
+
+        BankAccount GetBankAccount(int Account);
+
+        void BlockBankAccount(int AccountNum, bool isBlocked);
+
+        void AddTransfer(int accountNum, int ToThisAccount, double Amount);
+
+        void GenerateRandomTransactions(int AccountNum);
     }
 }

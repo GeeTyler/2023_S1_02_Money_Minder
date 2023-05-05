@@ -14,6 +14,6 @@ namespace MoneyMinder.Model
         [Required]
         public double Balance { get; set; }
         [Required]
-        public bool blocked { get; set; }
+        public bool Blocked { get; set; }
     }
 }

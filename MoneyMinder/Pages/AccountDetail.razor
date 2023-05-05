@@ -1,19 +1,23 @@
 ﻿@layout MainLayout
 @page "/bankaccounts/{Text}"
+@using MoneyMinder.Model
+@using MoneyMinder.Data
+@using MoneyMinder.Pages
+@using Microsoft.AspNetCore.Identity;
+@inject IDataAccessService DataAccessService
 @inject NavigationManager NavManager
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
+
 
 <AuthorizeView>
     <Authorized>
-        <!-- account information part -->
         <div class="account_info_container">
-            <!-- account number -->
             <div class="account_number_container">
-                <p class="account_number">Account Number: 00-0000-0000000-00</p>
-                <!-- Block further transaction when it is not clicked -->
-                <!-- Transaction blocked when clicked -->
+                <p class="account_number">Account Number: @ConvertAccountNumToString(CurrentBankAccount.AccountNum)</p>
 
                 <label class="transaction_label" for="">
-                    @if (isChecked)
+                    @if (CurrentBankAccount.Blocked == true)
                     {
                         <p style="color: #D20202;">Transaction blocked</p>
                     }
@@ -21,101 +25,93 @@
                     {
                         <p style="color: #02D20A;">Block further transaction</p>
                     }
-                    <input class="transaction" type="checkbox" name="" id="" @bind="isChecked">
+                    <input class="transaction" type="checkbox" @onclick="(e=>changedChecked())">
                 </label>
             </div>
             <div class="container_with_transfer_btn">
-                <!-- account holder/name -->
                 <div class="account_holder_name_container">
-                    <p class="account_holder">Account Holder: Account Holder</p>
+                    <p class="account_holder">Account Holder: @Current.FirstName @Current.LastName</p>
                     <div class="account_name">
-                        @if (isClicked)
-                        {
-                            <p>Account Name: &nbsp;</p>
-                            <!-- if add btn is clicked, input should be displayed with check button-->
-                            <div class="account_name_change_input_container">
-                                <input type="text" class="account_name_change_input" placeholder="Enter new acc. name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter new acc. name'">
-                                <button class="account_name_change_input_check" @onclick="changeClicked">✓</button>
-                            </div>
-                        }
-                        else
-                        {
-                            <!-- account name should be changed after user input the new name and click check button -->
-                            <!-- 'Temp Account' place should be replaced with real functional code -->
-                            <p>Account Name: @AccountName</p>
-                            <!-- if change button is clicked, input and check button should be displayed -->
-                            <!-- if check button is clicked, input should disappear and new account name should be displayed -->
-                            <button class="account_name_change_btn" @onclick="changeClicked">change</button>
-                        }
+                            <p>Account Name: @CurrentBankAccount.Name</p>
                     </div>
                 </div>
-                <!-- transfer btn -->
                 <div class="account_transfer_btn_container">
-                    <button class="account_transfer_btn" @onclick="@(e=>clilckedOnTransfer(AccountName))">Make Transfer</button>
+                    <button class="account_transfer_btn" @onclick="@(e=>clickedOnTransfer(CurrentBankAccount.Name))">Make Transfer</button>
+                </div>
+                <br />
+                <div class="account_transfer_btn_container">
+                    <button class="account_transfer_btn" @onclick="@GenerateTransaction">Random Transactions</button>
                 </div>
             </div>
         </div>
-        <!-- account selection part -->
-        <div class="account_filter_container">
-            <!-- search -->
-            <div class="transaction_search">
-                <img class="search_icon" src="~/interface_Images/Search.png" type="button" @onclick="search" />
-                <input @bind-value="searchBox" class="search_input" placeholder="Search by title" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search by title'" />
-            </div>
-            <!-- filter by time period -->
-            <div class="time_period_filter">
-                <p>Time Period: &nbsp;</p>
-                <!-- day -->
-                <select class="select account_period_year" name="" id="">
-                    <option value="">Year</option>
-                </select>
-                <!-- month -->
-                <select class="select account_period_month" name="" id="">
-                    <option value="">Month</option>
-                </select>
-                <!-- year -->
-                <select class="select account_period_week" name="" id="">
-                    <option value="">Week</option>
-                </select>
-            </div>
-        </div>
-        <!-- All, Necessary, Discretionary tab + current balance -->
+
         <div class="list_tab_container">
             <div class="list_tab">
-                <!-- All -->
-                <div class="tab_btn tab_all">All</div>
-                <!-- Necessary -->
-                <div class="tab_btn tab_necessary">Necessary</div>
-                <!-- Discretionary -->
-                <div class="tab_btn tab_discretionary">Discretionary</div>
+                <div class="tab_btn tab_all" @onclick="AllClicked">All</div>
+                <div class="tab_btn tab_necessary" @onclick="NecessaryClicked">Necessary</div>
+                <div class="tab_btn tab_discretionary" @onclick="DiscretionaryClicked">Discretionary</div>
             </div>
-            <!-- current balance -->
-            <p class="account_current_bal">Current Balance: $680.00</p>
+            <p class="account_current_bal">$@String.Format("{0:N2}",CurrentBankAccount.Balance)</p>
         </div>
-        <!-- div that shows the content of each tabs -->
+
         <div class="account_content">
             <table class="account_content_table">
-                <!-- heads of each column -->
-                <th class="table_date">Date</th>
-                <th class="table_description">Description</th>
-                <th class="table_transaction">Transactions</th>
-                <!-- if category can be changed in table, we do that, but if we cannot do that, we try in modal page -->
-                <th class="table_balance">Balance</th>
-                <th class="table_percentage">%</th>
-                <!-- contents of each column -->
+                <thead>
+                    <tr>
+                        <th class="table_date">Date</th>
+                        <th class="table_balance">Transaction Number</th>
+                        <th class="table_description">Transaction Type</th>
+                        <th class="table_transaction">Amount</th>
+                        <th class="table_percentage">Percentage</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <!-- if click one of the transaction, it should show the detail of transaction, by modal page -->
-                    <div class="transaction_container">
-                        <tr>
-                            <td>18/04/2023</td>
-                            <td>Restaurant</td>
-                            <td>-$100.00</td>
-                            <td>$680.00</td>
-                            <td>5%</td>
-                        </tr>
-                    </div>
+                    @if (!isDiscretionary && !isNecessary)
+                    {
+                        if (AccountsTransactions.Count > 0)
+                        {
+                            foreach (var item in AccountsTransactions)
+                            {
+                                <tr>
+                                    <td>@item.DateandTime.ToShortDateString()</td>
+                                    <td>@item.TrasactionNum</td>
+                                    <td>@item.TransactionType</td>
+                                    <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
+                                    <td>@String.Format("{0:N2}", PercentageOfTransactions("all",item.TransactionAmount))%</td>
+                                </tr>
+                            }
+                        }
+                    }
+                    @if (isDiscretionary && !isNecessary)
+                    {
+                        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
+                        || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
+                        {
+                            <tr>
+                                <td>@item.DateandTime.ToShortDateString()</td>
+                                <td>@item.TrasactionNum</td>
+                                <td>@item.TransactionType</td>
+                                <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTransactions("discretionary",item.TransactionAmount))%</td>
+                            </tr>
+                        }
+                    }
+                    @if (!isDiscretionary && isNecessary)
+                    {
+                        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills")
+                        || e.TransactionType.Equals("Supermarket")))
+                        {
+                            <tr>
+                                <td>@item.DateandTime.ToShortDateString()</td>
+                                <td>@item.TrasactionNum</td>
+                                <td>@item.TransactionType</td>
+                                <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTransactions("necessary",item.TransactionAmount))%</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
-            </table>
+        </table>
         </div>
     </Authorized>
     <NotAuthorized>
@@ -127,25 +123,107 @@
     [Parameter]
     public string Text { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private User Current;
+    private BankAccount CurrentBankAccount;
+    private List<Transactions> AccountsTransactions;
+
+    async Task<string> getUsersEmail()
+    {
+        var user = (await authenticationStateTask).User;
+        return user.Identity.Name;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Current = DataAccessService.GetUser(await getUsersEmail());
+        CurrentBankAccount = DataAccessService.GetBankAccount(Convert.ToInt32(Text));
+        AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum)
+        .OrderByDescending(t => t.DateandTime).ToList();
+        StateHasChanged();
+    }
+
     private bool isChecked = false;
     private bool isClicked = false;
-    private string AccountName = "Account name";
-    private string searchBox = "";
-    private string searching = "empty";
+    private bool isNecessary = false;
+    private bool isDiscretionary = false;
 
-    public void clilckedOnTransfer(string account)
+    public void clickedOnTransfer(string account)
     {
         NavManager.NavigateTo("/transfer/" + account);
     }
 
+    private void changedChecked()
+    {
+        isChecked = !isChecked;
+        DataAccessService.BlockBankAccount(CurrentBankAccount.AccountNum, isChecked);
+        CurrentBankAccount = DataAccessService.GetBankAccount(Convert.ToInt32(Text));
+        StateHasChanged();
+    }
+
+    public void GenerateTransaction()
+    {
+        DataAccessService.GenerateRandomTransactions(CurrentBankAccount.AccountNum);
+        AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum)
+        .OrderByDescending(t => t.DateandTime).ToList();
+        StateHasChanged();
+    }
 
     private void changeClicked()
     {
         isClicked = !isClicked;
     }
 
-    public void search()
+    private void NecessaryClicked()
     {
-        searching = searchBox;
+        isDiscretionary = false;
+        isNecessary = !isNecessary;
+    }
+
+    private void DiscretionaryClicked()
+    {
+        isDiscretionary = !isDiscretionary;
+        isNecessary = false;
+    }
+
+    private void AllClicked()
+    {
+        isDiscretionary = false;
+        isNecessary = false;
+    }
+
+    public string ConvertAccountNumToString(int AccountNum)
+    {
+        return string.Format("{0:###-###-###}", AccountNum);
+    }
+
+    public double PercentageOfTransactions(string type, double TransAmount)
+    {
+        double sum = 0;
+        if (type == "all")
+        {
+            foreach (var item in AccountsTransactions)
+            {
+                sum += item.TransactionAmount;
+            }
+        }
+        if (type == "necessary")
+        {
+            foreach (var item in AccountsTransactions.Where(e => !e.TransactionType.Equals("Shopping") 
+            && !e.TransactionType.Equals("Eating Out") && !e.TransactionType.Equals("Entertainment")))
+            {
+                sum += item.TransactionAmount;
+            }
+        }
+        if(type == "discretionary")
+        {
+            foreach (var item in AccountsTransactions.Where(e => !e.TransactionType.Equals("Bills") 
+            && !e.TransactionType.Equals("Supermarket")))
+            {
+                sum += item.TransactionAmount;
+            }
+        }
+        return (TransAmount / sum) * 100;
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace MoneyMinder.Data
@@ -43,6 +44,11 @@ namespace MoneyMinder.Data
             }
         }
 
+        public BankAccount GetBankAccount(int Account) 
+        {
+            return _db.BankAccount.FirstOrDefault(selected => selected.AccountNum == Account);
+        }
+
         public void AddBankAccount(string UserEmail, string AccountName)
         {
             var random = new Random();
@@ -74,7 +80,7 @@ namespace MoneyMinder.Data
                         Email = UserEmail,
                         Name = AccountName,
                         Balance = balance,
-                        blocked = false,
+                        Blocked = false,
                     };
 
                     _db.BankAccount.Add(account);
@@ -89,6 +95,12 @@ namespace MoneyMinder.Data
         public void ChangeBankAccountName(int AccountNum, string AccountName) 
         {
             _db.BankAccount.FirstOrDefault(account => account.AccountNum.Equals(AccountNum)).Name = AccountName;
+            _db.SaveChanges();
+        }
+
+        public void BlockBankAccount(int AccountNum, bool isBlocked) 
+        {
+            _db.BankAccount.FirstOrDefault(account => account.AccountNum.Equals(AccountNum)).Blocked = isBlocked;
             _db.SaveChanges();
         }
 
@@ -109,16 +121,9 @@ namespace MoneyMinder.Data
             _db.SaveChanges();
         }
 
-        public List<Transactions> GetTransactions() 
+        public List<Transactions> GetTransactions(int AccountNum) 
         {
-            if (_db.BankAccount == null)
-            {
-                return new List<Transactions>();
-            }
-            else
-            {
-                return _db.Transactions.ToList();
-            }
+            return _db.Transactions.Where(a => a.AccountNum == AccountNum).ToList();
         }
 
         string ChosenStockCode;
@@ -153,6 +158,110 @@ namespace MoneyMinder.Data
             _db.BankAccount.RemoveRange(accounts);
 
             _db.SaveChanges();
+        }
+
+        public void AddTransfer(int accountNum, int ToThisAccount, double Amount)
+        {
+            var random = new Random();
+            bool TranscationNumberExists = true;
+            int RandomTransactionNum = 0;
+            int RandomTransactionNumTwo = 0;
+
+            while (TranscationNumberExists)
+            {
+                RandomTransactionNum = new Random().Next(1, 9999999);
+                RandomTransactionNumTwo = new Random().Next(1, 9999999);
+
+                var existingAccount = _db.Transactions.FirstOrDefault(a => a.TrasactionNum == RandomTransactionNum 
+                || a.TrasactionNum == RandomTransactionNumTwo);
+
+                if (existingAccount == null)
+                {
+                    TranscationNumberExists = false;
+                }
+            }
+
+            var fromAccount = _db.BankAccount.FirstOrDefault(a => a.AccountNum == accountNum);
+
+            var toAccount = _db.BankAccount.FirstOrDefault(a => a.AccountNum == ToThisAccount);
+
+            fromAccount.Balance -= Amount;
+
+            toAccount.Balance += Amount;
+
+            var fromTransaction = new Transactions()
+            {
+                TrasactionNum = RandomTransactionNum,
+                TransactionType = "Transfer",
+                AccountNum = accountNum,
+                TransactionAmount = -Amount,
+                DateandTime = DateTime.Now,
+            };
+            _db.Transactions.Add(fromTransaction);
+
+            var toTransaction = new Transactions()
+            {
+                TrasactionNum = RandomTransactionNumTwo,
+                TransactionType = "Receive Transfer",
+                AccountNum = ToThisAccount,
+                TransactionAmount = Amount,
+                DateandTime = DateTime.Now,
+            };
+            _db.Transactions.Add(toTransaction);
+
+            _db.SaveChanges();
+
+        }
+
+        public void GenerateRandomTransactions(int AccountNum)
+        {
+            var random = new Random();
+            bool TranscationNumberExists = true;
+            int RandomTransactionNum = 0;
+
+            while (TranscationNumberExists)
+            {
+                RandomTransactionNum = new Random().Next(1, 9999999);
+
+                var existingAccount = _db.Transactions.FirstOrDefault(a => a.TrasactionNum == RandomTransactionNum);
+
+                if (existingAccount == null)
+                {
+                    TranscationNumberExists = false;
+                }
+            }
+
+            string[] types = { "Bills", "Eating Out", "Entertainment","Shopping", "Supermarket" };
+
+            int RandomType = random.Next(0, 5);
+            
+            DateTime RandomDay()
+            {
+                DateTime start = new DateTime(2023, 1, 1);
+                int range = (DateTime.Today - start).Days;
+                return start.AddDays(random.Next(range));
+            }
+
+            double randomTransactionAmount = random.NextDouble() * (1000 - 1) + 1;
+
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+
+                var transactionMade = new Transactions()
+                {
+                    TrasactionNum = RandomTransactionNum,
+                    AccountNum = AccountNum,
+                    DateandTime = RandomDay(),
+                    TransactionAmount = randomTransactionAmount * -1,
+                    TransactionType = types[RandomType],
+                };
+
+                _db.Transactions.Add(transactionMade);
+                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions ON;");
+                _db.SaveChanges();
+                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions OFF;");
+                transaction.Commit();
+            }
         }
     }
 }

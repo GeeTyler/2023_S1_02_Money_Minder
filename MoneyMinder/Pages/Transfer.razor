@@ -1,94 +1,132 @@
 ﻿@layout MainLayout
 @page "/transfer/{text}"
+@using MoneyMinder.Model
+@using MoneyMinder.Data
+@using MoneyMinder.Pages
+@using Microsoft.AspNetCore.Identity;
+@inject IDataAccessService DataAccessService
+@inject NavigationManager NavManager
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
 
-<div class="transfer_container">
-    <!-- transfer account box -->
-    <div class="transfer_account_container">
-        <!-- both of the selects display account that are availbale to transfer -->
-        <!-- it should block transfer to the blocked account -->
-        <!-- if an account has been selected 'from' from selection, then that account should not be turn up at 'to' selection -->
-        <div class="transfer_account_from">
-            <p>From: &nbsp;</p>
-            <select name="" id="" class="select account_selection" @bind-value="@from" @bind-value:event="onchange">
-                <option value=""></option>
-                <option value="">00-0000-0000000-00</option>
-                <option value="">00-0000-0000000-01</option>
-                <option value="">00-0000-0000000-02</option>
-            </select>
+<AuthorizeView>
+    <Authorized>
+        <div class="transfer_container">
+            <!-- transfer account box -->
+            <div class="transfer_account_container">
+                <!-- both of the selects display account that are availbale to transfer -->
+                <!-- it should block transfer to the blocked account -->
+                <!-- if an account has been selected 'from' from selection, then that account should not be turn up at 'to' selection -->
+                <div class="transfer_account_from">
+                    <p>From: &nbsp;</p>
+                    <select name="" id="" class="select account_selection" @bind-value="@from" @bind-value:event="onchange">
+                        @foreach (var item in MyBankAccounts)
+                        {
+                            <option value="@Convert.ToString(item.AccountNum)">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="transfer_account_to">
+                    <p>To: &nbsp;</p>
+                    <select name="" id="" class="select account_selection" @bind-value="@to" @bind-value:event="onchange">
+                        @foreach (var item in MyBankAccounts)
+                        {
+                            <option value="@Convert.ToString(item.AccountNum)">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- transfer amount input box -->
+            <div class="transfer_amount_container">
+                <p class="amount_reference_spacing">Amount: &nbsp;&nbsp;&nbsp;</p>
+                <input type="number" class="transfer_amount_input" placeholder="Enter the amount" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter the amount'" @bind-value="@amount" @bind-value:event="oninput">
+            </div>
+
+            <!-- transfer button -->
+            <button class="transfer_button" @onclick="MakeTransfer">Transfer</button>
         </div>
-        <div class="transfer_account_to">
-            <p>To: &nbsp;</p>
-            <select name="" id="" class="select account_selection" @bind-value="@to" @bind-value:event="onchange">
-                <option value=""></option>
-                <option value="">00-0000-0000000-00</option>
-                <option value="">00-0000-0000000-01</option>
-                <option value="">00-0000-0000000-02</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- transfer amount input box -->
-    <div class="transfer_amount_container">
-        <p class="amount_reference_spacing">Amount: &nbsp;&nbsp;&nbsp;</p>
-        <input type="text" class="transfer_amount_input" placeholder="Enter the amount" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter the amount'" @bind-value="@amount" @bind-value:event="oninput">
-    </div>
-
-    <!-- transfer reference input box -->
-    <div class="transfer_reference_container">
-        <p class="amount_reference_spacing">Reference: &nbsp;</p>
-        <input type="text" class="transfer_reference_input" placeholder="Enter the reference" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter the reference'" @bind-value="@reference" @bind-value:event="oninput">
-    </div>
-
-    <!-- transfer button -->
-    <button class="transfer_button" @disabled="disabled">Transfer</button>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p role="status">You are not authorised to see this component</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
+    [Parameter]
+    public string Text { get; set; }
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private User Current;
+    private List<BankAccount> MyBankAccounts;
+
+    async Task<string> getUsersEmail()
+    {
+        var user = (await authenticationStateTask).User;
+        return user.Identity.Name;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Current = DataAccessService.GetUser(await getUsersEmail());
+        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
+        StateHasChanged();
+    }
+
+    private BankAccount fromAccount = new BankAccount();
+    private BankAccount toAccount = new BankAccount();
+
+    private double amount = 0;
     private string from;
     private string to;
-    private string amount;
-    private string reference;
     private bool disabled = true;
 
     private void CheckInputs()
     {
-        @if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.IsNullOrEmpty(amount) || string.IsNullOrEmpty(reference))
+        @if (from != null  && to != null || amount <= 0)
         {
             disabled = !disabled;
         }
-        /*disabled = string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.IsNullOrEmpty(amount) || string.IsNullOrEmpty(reference);*/
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        from = "";
-        to = "";
-        amount = "";
-        reference = "";
     }
 
     private void OnFromChanged(string value)
     {
         from = value;
+        fromAccount = DataAccessService.GetBankAccount(Convert.ToInt32(from));
+        StateHasChanged();
         CheckInputs();
     }
 
     private void OnToChanged(string value)
     {
         to = value;
+        toAccount = DataAccessService.GetBankAccount(Convert.ToInt32(to));
+        StateHasChanged();
         CheckInputs();
     }
 
-    private void OnAmountChanged(string value)
+    private void OnAmountChanged(double value)
     {
         amount = value;
         CheckInputs();
     }
 
-    private void OnReferenceChanged(string value)
+    public void MakeTransfer()
     {
-        reference = value;
-        CheckInputs();
+        if(fromAccount.Balance - amount < 0 || fromAccount.Blocked == true)
+        {
+            return;
+        }
+        else
+        {
+            DataAccessService.AddTransfer(fromAccount.AccountNum, toAccount.AccountNum, amount);
+            StateHasChanged();
+        }
     }
+
+
+
 }
