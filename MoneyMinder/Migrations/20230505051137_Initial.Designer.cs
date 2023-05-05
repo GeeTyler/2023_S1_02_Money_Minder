@@ -10,8 +10,8 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230504090737_initial")]
-    partial class initial
+    [Migration("20230505051137_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -234,6 +234,9 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("blocked")
+                        .HasColumnType("bit");
+
                     b.HasKey("AccountNum");
 
                     b.ToTable("BankAccount");
@@ -299,10 +302,13 @@ namespace MoneyMinder.Migrations
 
             modelBuilder.Entity("MoneyMinder.Model.Transactions", b =>
                 {
-                    b.Property<int>("AccountNum")
+                    b.Property<int>("TrasactionNum")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("AccountNum")
+                        .HasColumnType("int");
 
                     b.Property<int>("AccountTransferredToOrFrom")
                         .HasColumnType("int");
@@ -320,7 +326,7 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AccountNum");
+                    b.HasKey("TrasactionNum");
 
                     b.ToTable("Transactions");
                 });

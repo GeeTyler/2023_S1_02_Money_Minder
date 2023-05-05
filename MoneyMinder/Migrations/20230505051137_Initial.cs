@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MoneyMinder.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,8 @@ namespace MoneyMinder.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Balance = table.Column<double>(type: "float", nullable: false)
+                    Balance = table.Column<double>(type: "float", nullable: false),
+                    blocked = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,8 +99,9 @@ namespace MoneyMinder.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    AccountNum = table.Column<int>(type: "int", nullable: false)
+                    TrasactionNum = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountNum = table.Column<int>(type: "int", nullable: false),
                     AccountTransferredToOrFrom = table.Column<int>(type: "int", nullable: false),
                     DateandTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Balance = table.Column<double>(type: "float", nullable: false),
@@ -108,7 +110,7 @@ namespace MoneyMinder.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.AccountNum);
+                    table.PrimaryKey("PK_Transactions", x => x.TrasactionNum);
                 });
 
             migrationBuilder.CreateTable(

@@ -17,6 +17,10 @@ namespace MoneyMinder.Data
 
         List<BankAccount> GetBankAccounts(string UserEmail);
 
+        void AddBankAccount(string UserEmail, string AccountName);
+
+        void ChangeBankAccountName(int AccountNum, string AccountName);
+
         void SetChosenStock(string Code);
 
         string GetChosenStock();
@@ -25,5 +29,8 @@ namespace MoneyMinder.Data
 
         void ChangeFirstName(string Input, string UserEmail);
 
+        void DeleteUsersInfo(string Email);
+
+        void DeleteBankAccount(int AccountNum);
     }
 }

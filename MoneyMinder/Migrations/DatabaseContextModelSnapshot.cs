@@ -232,6 +232,9 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("blocked")
+                        .HasColumnType("bit");
+
                     b.HasKey("AccountNum");
 
                     b.ToTable("BankAccount");
@@ -297,10 +300,13 @@ namespace MoneyMinder.Migrations
 
             modelBuilder.Entity("MoneyMinder.Model.Transactions", b =>
                 {
-                    b.Property<int>("AccountNum")
+                    b.Property<int>("TrasactionNum")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("AccountNum")
+                        .HasColumnType("int");
 
                     b.Property<int>("AccountTransferredToOrFrom")
                         .HasColumnType("int");
@@ -318,7 +324,7 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AccountNum");
+                    b.HasKey("TrasactionNum");
 
                     b.ToTable("Transactions");
                 });
