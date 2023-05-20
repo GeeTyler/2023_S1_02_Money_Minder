@@ -111,48 +111,72 @@
                     }
                     if (MyBankAccounts.Count > 0)
                     {
-                        foreach (var item in MyBankAccounts)
-                        {
-                            <div class="profile_content_container">
-                                <div class="account_content_container">
-                                    <div class="account_number_container">
-                                        <p class="content_spacing">@item.Name</p>
-                                        <p class="content_spacing">@ConvertAccountNumToString(item.AccountNum)</p>
-                                        <br/>
-                                        <p class="content_spacing">$@String.Format("{0:N2}",item.Balance)</p>
-                                        <p class="content_spacing">Blocked status: @item.Blocked</p>
-                                        <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(item.AccountNum)">Delete Account</button>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        @if (isDeleteAccountClicked)
-                        {
-                            <h5>Are you sure you want to delete this account?</h5>
-                            <div class="delete_account_container">
-                                <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
-                            </div>
-                            <div class="delete_account_container">
-                                <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
-                            </div>
-                        }
-                        @if (isRegisterClicked)
+                        if (isChangeAccountNameClicked)
                         {
                             <div class="register_account_btn_container">
-                                <p class="register_btn_spacing">Please input new account name.</p>
+                                <p class="register_btn_spacing">Change Account Name:</p>
                                 <div class="change_input_container">
                                     <input type="text" class="change_input" placeholder="Account Name" @bind="NewBankAccountName">
-                                    <button class="change_input_check" @onclick="registerClicked">✓</button>
+                                    <button class="change_input_check" @onclick="(args) => editAccountNameClicked(editAccountNum)">✓</button>
                                 </div>
                             </div>
                         }
                         else
                         {
-                            <br />
-                            <div class="register_account_btn">
-                                <p class="register_btn_spacing"></p>
-                                <button class="btn_in_profile" @onclick="registerClicked">Add New Account</button>
-                            </div>
+                            foreach (var item in MyBankAccounts)
+                            {
+                                <div class="profile_content_container">
+                                    <div class="account_content_container">
+                                        <div class="account_number_container">
+                                            <p class="content_spacing">@item.Name</p>
+                                            <p class="content_spacing">@ConvertAccountNumToString(item.AccountNum)</p>
+                                            <br/>
+                                            <p class="content_spacing">$@String.Format("{0:N2}",item.Balance)</p>
+                                            <p class="content_spacing">Blocked status: @item.Blocked</p>
+                                            <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(item.AccountNum)">Delete Account</button>
+                                            <button class="btn_in_profile" @onclick="(args) => editAccountNameClicked(item.AccountNum)">Change Name</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                if (isDeleteAccountClicked)
+                                {
+                                    <h5>Are you sure you want to delete this account?</h5>
+                                    <div class="delete_account_container">
+                                        <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
+                                    </div>
+                                    <div class="delete_account_container">
+                                        <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
+                                    </div>
+                                }
+                            }
+                            @if (isDeleteAccountClicked)
+                            {
+                                <h5>Are you sure you want to delete this account?</h5>
+                                <div class="delete_account_container">
+                                    <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
+                                </div>
+                                <div class="delete_account_container">
+                                    <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
+                                </div>
+                            }
+                            @if (isRegisterClicked)
+                            {
+                                <div class="register_account_btn_container">
+                                    <p class="register_btn_spacing">Please input new account name.</p>
+                                    <div class="change_input_container">
+                                        <input type="text" class="change_input" placeholder="Account Name" @bind="NewBankAccountName">
+                                        <button class="change_input_check" @onclick="registerClicked">✓</button>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <br />
+                                <div class="register_account_btn">
+                                    <p class="register_btn_spacing"></p>
+                                    <button class="btn_in_profile" @onclick="registerClicked">Add New Account</button>
+                                </div>
+                            }
                         }
                     }
                 }
@@ -191,6 +215,17 @@
     private User Current;
     public List<BankAccount> MyBankAccounts;
 
+    private string NewBankAccountName = "";
+    private int editAccountNum;
+    private int deleteAccountNum;
+    private bool isFirstNameClicked = false;
+    private bool isLastNameClicked = false;
+    private bool isRegisterClicked = false;
+    private bool isDeleteProfileClicked = false;
+    private bool viewBankAccounts = false;
+    private bool isDeleteAccountClicked = false;
+    private bool isChangeAccountNameClicked = false;
+
     async Task<string> getUsersEmail()
     {
         var user = (await authenticationStateTask).User;
@@ -204,13 +239,6 @@
         MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
         StateHasChanged();
     }
-
-    private bool isFirstNameClicked = false;
-    private bool isLastNameClicked = false;
-    private bool isRegisterClicked = false;
-    private bool isDeleteProfileClicked = false;
-    private bool viewBankAccounts = false;
-    private bool isDeleteAccountClicked = false;
 
     private void changeFirstNameClicked()
     {
@@ -245,8 +273,6 @@
         viewBankAccounts = !viewBankAccounts;
     }
 
-    private string NewBankAccountName = "";
-
     private void registerClicked()
     {
         if (isRegisterClicked == true)
@@ -272,7 +298,21 @@
         isDeleteProfileClicked = !isDeleteProfileClicked;
     }
 
-    private int deleteAccountNum;
+    public void editAccountNameClicked(int accountNum)
+    {
+        editAccountNum = accountNum;
+        if (isChangeAccountNameClicked == true)
+        {
+            DataAccessService.ChangeBankAccountName(accountNum, NewBankAccountName);
+            isChangeAccountNameClicked = false;
+            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
+            StateHasChanged();
+        }
+        else
+        {
+            isChangeAccountNameClicked = true;
+        }
+    }
 
     private void deleteAccountClicked(int accountNum)
     {
