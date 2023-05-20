@@ -193,28 +193,34 @@ namespace MoneyMinder.Data
 
             toAccount.Balance += Amount;
 
-            var fromTransaction = new Transactions()
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                TrasactionNum = RandomTransactionNum,
-                TransactionType = "Transfer",
-                AccountNum = accountNum,
-                TransactionAmount = -Amount,
-                DateandTime = DateTime.Now,
-            };
-            _db.Transactions.Add(fromTransaction);
+                var fromTransaction = new Transactions()
+                {
+                    TrasactionNum = RandomTransactionNum,
+                    TransactionType = "Transfer",
+                    AccountNum = accountNum,
+                    TransactionAmount = -Amount,
+                    DateandTime = DateTime.Now,
+                };
 
-            var toTransaction = new Transactions()
-            {
-                TrasactionNum = RandomTransactionNumTwo,
-                TransactionType = "Receive Transfer",
-                AccountNum = ToThisAccount,
-                TransactionAmount = Amount,
-                DateandTime = DateTime.Now,
-            };
-            _db.Transactions.Add(toTransaction);
+                var toTransaction = new Transactions()
+                {
+                    TrasactionNum = RandomTransactionNumTwo,
+                    TransactionType = "Receive Transfer",
+                    AccountNum = ToThisAccount,
+                    TransactionAmount = Amount,
+                    DateandTime = DateTime.Now,
+                };
 
-            _db.SaveChanges();
+                _db.Transactions.Add(fromTransaction);
+                _db.Transactions.Add(toTransaction);
 
+                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions ON;");
+                _db.SaveChanges();
+                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions OFF;");
+                transaction.Commit();
+            }
         }
 
         public void GenerateRandomTransactions(int AccountNum)
