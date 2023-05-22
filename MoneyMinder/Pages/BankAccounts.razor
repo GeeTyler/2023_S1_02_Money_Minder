@@ -1,50 +1,45 @@
 ﻿@layout MainLayout
 @page "/bankaccounts"
-
+@using MoneyMinder.Model
+@using MoneyMinder.Data
+@using MoneyMinder.Pages
+@using Microsoft.AspNetCore.Identity;
+@inject IDataAccessService DataAccessService
 @inject NavigationManager NavManager
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
 
 <AuthorizeView>
     <Authorized>
-        @if (true)
+        @if (MyBankAccounts != null)
         {
-            <h1 class="bankaccounts_title">My accounts</h1>
-            //foreach (var comp in Companys)
-            for (int i = 0; i < 3; i++)
+            <h1 class="text-center">My Accounts</h1>
+            foreach (var item in MyBankAccounts)
             {
-                //int temp = i;
-                /*<div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(temp))">*/
-                /*<div class="companyFrame" type="button" @onclick="@(e=>clilckedOnCompany(CompanyName))">*/
-                <div class="bank_account_frame" type="button" @onclick="@(e=>clilckedOnAccount(AccountName))">
-                    <form></form>
+                <div class="bank_account_frame" type="button" @onclick="@(e=>clickedOnAccount(item.AccountNum))">
                     <div class="bank_account_label">
-                        <img class="bank_account_label_img" src="@imageSource" alt="Bank Account Label" />
                         <div class="bank_account_content">
-                            <h4>@AccountName </h4>
-                            <p class="darkGray">CN</p>
-                            <p> </p>
-                            <p>$54.21 NZD</p>
-                        </div>
-                        <!-- if click view transacton, then it goes to account detail -->
-                        <!-- or we can just delete view button and move page directly if user click the frame -->
-                        <div class="bank_account_view_account">
-                            <button class="view_account_btn">View Account</button>
+                            <h2>@item.Name </h2>
+                            <h3>@ConvertAccountNumToString(item.AccountNum)</h3>
+                            <h4>$@String.Format("{0:N2}",item.Balance)</h4>
                         </div>
                     </div>
                 </div>
             }
         }
-        <!-- if there is no bank account registered, it should move user to register bank account page -->
-        <!--
-        else
+        @if (MyBankAccounts == null || MyBankAccounts.Count == 0)
         {
-            <p>No Bank Account.</p>
-            <p> </p>
-            <p>Please register one</p>
-            
-            <button class="register_bank_account">Register</button>
+            <br /><br /><br /><br />
+            <h2 class="text-center">You have no Bank Accounts registered.</h2>
+            <br />
+            <div class="text-center">
+                <p class="text-center">Click here to go register an account</p>
+                <br/>
+                <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
+                    <button class="btn_in_profile">Register</button>
+                </NavLink>
+            </div>
         }
-        register button should be implemented
-        -->
     </Authorized>
     <NotAuthorized>
         <p role="status">You are not authorised to see this component</p>
@@ -52,27 +47,34 @@
 </AuthorizeView>
 
 @code {
-    private string imageSource = "CompanyLabels/image.jpg";
-    /*private string CompanyName = "Company name";*/
-    private string AccountName = "Account name";
-    /*private string searchBox = "";*/
-    /*private string searching = "empty";*/
-    /*private List<string> Companys = new List<string>();*/
+    private int AccountNum;
 
-    /*
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private User Current;
+    private List<BankAccount> MyBankAccounts;
+
+    async Task<string> getUsersEmail()
+    {
+        var user = (await authenticationStateTask).User;
+        return user.Identity.Name;
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        Companys = await Scrapit.DoScrapping();
+        Current = DataAccessService.GetUser(await getUsersEmail());
+        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
+        StateHasChanged();
     }
-     */
-    public void clilckedOnAccount(string account)
+
+    public void clickedOnAccount(int account)
     {
-        NavManager.NavigateTo("/bankaccounts/accountdetail/" + account);
+        NavManager.NavigateTo("/bankaccounts/" + account);
     }
-    /*
-    public void search()
-        {
-        searching = searchBox;
-        }
-    */
+
+    public string ConvertAccountNumToString(int AccountNum)
+    {
+        return string.Format("{0:###-###-###}", AccountNum);
+    }
+
 }

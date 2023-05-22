@@ -1,0 +1,25 @@
+﻿@page "/Delete"
+@using Microsoft.AspNetCore.Identity
+@using MoneyMinder.Data
+@attribute [IgnoreAntiforgeryToken]
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
+@inject IDataAccessService DataAccessService
+
+@functions {
+    public async Task<IActionResult> OnGet()
+    {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    DataAccessService.DeleteUsersInfo(user.Email);
+                    await SignInManager.SignOutAsync();
+                    return LocalRedirect("/");
+                }
+            }
+            return Page();
+    }
+}

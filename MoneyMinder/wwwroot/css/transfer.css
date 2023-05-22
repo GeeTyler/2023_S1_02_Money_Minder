@@ -1,0 +1,60 @@
+﻿p {
+    margin: 0;
+}
+
+.transfer_account_container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid black;
+    padding: 10px;
+    margin-top: 1.5rem;
+}
+
+.transfer_account_from {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.transfer_account_to {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 2rem;
+}
+
+.transfer_amount_container {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.transfer_amount_input:focus {
+    outline: none;
+}
+
+.transfer_reference_container {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.transfer_reference_input:focus {
+    outline: none;
+}
+
+.amount_reference_spacing {
+    width: 88px;
+}
+
+.transfer_button {
+    margin-top: 40px;
+    width: 80px;
+    height: 40px;
+    border-radius: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+    .transfer_button:disabled {
+        cursor: not-allowed;
+    }

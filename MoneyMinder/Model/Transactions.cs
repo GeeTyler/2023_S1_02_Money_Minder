@@ -9,16 +9,14 @@ namespace MoneyMinder.Model
     {
         [Key]
         [Required]
-        public int AccountNum { get; set; }
+        public int TrasactionNum { get; set; }
 
         [Required]
-        public int AccountTransferredToOrFrom { get; set; }
+        public int AccountNum { get; set; }
+
 
         [Required]
         public DateTime DateandTime { get; set; }
-
-        [Required]
-        public double Balance { get; set; }
 
         [Required]
         public double TransactionAmount { get; set; }

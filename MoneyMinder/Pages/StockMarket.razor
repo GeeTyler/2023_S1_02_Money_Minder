@@ -1,72 +1,127 @@
-﻿@page "/stockmarket"
+﻿@layout MainLayout
+@page "/stockmarket"
 @using MoneyMinder.Model
 @using MoneyMinder.Data
-@using Microsoft.AspNetCore.Http
-@using System.IO;
-@inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavManager
 @inject IDataAccessService DataAccessService
+@inject StockDataScrapper Scrapit
 
-<div class="searchBar">
-    <img class="border" src="interface_Images/Search.png" height="35" type="button" @onclick="search" />
-    <input @bind-value="searchBox" class="enterSearch" placeholder="Search for company" />
-</div>
 
-<br />
-
-@foreach (var item in Stocks)
-{
-        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.CompanyName))">
-            <div>
-            <img class="companyLabel" src="@imageSource(item.CompanyName)" alt="Company Label" /><!--CANT SAVE IMAGE WITH SIGHN /-->
-                <div class="comanyInformation">
-                    <h4>@item.CompanyName</h4>
-                    <h5 class="darkGray">@item.StockCode</h5>
-                    <p> </p>
-                    <p> Market Price: @item.MarketPrice</p>
-                    <p> Market Capitalisation: @item.MarketCap</p>
-                </div>
-            </div>
+<AuthorizeView>
+    <Authorized>
+        <div class="text-center bg-blue-100">
+            <input class="border-4 w-1/3 rounded m-6 p-6 h-8
+                       border-blue-300" @bind-value="SearchText"
+                   @oninput="OnInput" placeholder="Search" />
         </div>
-}
+
+        <br />
+        <!---->
+        <table style="width:100%">
+            <tr>
+                <th type="button" @onclick="@(e=>sortedBy("Code"))">Code</th>
+                <th type="button" @onclick="@(e=>sortedBy("CompanyName"))">Company Name</th>
+                <th type="button" @onclick="@(e=>sortedBy("Market Price"))">Market Price</th>
+                <th type="button" @onclick="@(e=>sortedBy("Market Capitalisation"))">Market Capitalisation</th>
+                <!--<th>Favored</th>-->
+            </tr>
+        </table>
+        <p>Sorted by: @sorting</p>
+        @if (FilteredStocks == null && sorting.Equals("Code"))
+        {
+            @foreach (var item in Stocks)
+            {
+                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                    <div class="comanyInformation">
+                        <h4>@item.CompanyName</h4>
+                        <h5 class="darkGray">@item.StockCode</h5>
+                        <p> </p>
+                        <p> Market Price: @item.MarketPrice</p>
+                        <p> Market Capitalisation: @item.MarketCap</p>
+                    </div>
+                </div>
+            }
+
+        }
+        else if (!SearchText.Equals(""))
+        {
+            @foreach (var item in FilteredStocks)
+            {
+                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                    <div class="comanyInformation">
+                        <h4>@item.CompanyName</h4>
+                        <h5 class="darkGray">@item.StockCode</h5>
+                        <p> </p>
+                        <p> Market Price: @item.MarketPrice</p>
+                        <p> Market Capitalisation: @item.MarketCap</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            foreach (var item in sortedStocks)
+            {
+                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                    <div class="comanyInformation">
+                        <h4>@item.CompanyName</h4>
+                        <h5 class="darkGray">@item.StockCode</h5>
+                        <p> </p>
+                        <p> Market Price: @item.MarketPrice</p>
+                        <p> Market Capitalisation: @item.MarketCap</p>
+                    </div>
+                </div>
+            }
+        }
+        
+
+    </Authorized>
+    <NotAuthorized>
+        <p role="status">You are not authorised to see this component</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-
-    //private string imageSource = "CompanyLabels/image.png";
-    private string searchBox = "";
-    private string searching = "empty";
-    private List<string> Companys = new List<string>();
-
+    private String sorting { get; set; } = "Code";
     public List<Stock> Stocks;
+    public List<Stock> FilteredStocks;
+    public List<Stock> sortedStocks;
 
     protected override void OnInitialized()
     {
-        Stocks =  DataAccessService.GetStocks();
+        Stocks = DataAccessService.GetStocks();
     }
 
-    public void clickedOnCompany(string company)
+    private void sortedBy(String sort)
     {
-        if (company.Contains('/'))
+        this.sorting = sort;
+        if (sorting.Contains("CompanyName") || sorting.Contains("Market Price") || sorting.Contains("Market Capitalisation"))
         {
-            company = company.Replace("/", "zAeBaL");
+            sortedStocks = DataAccessService.getSortedStock(sorting);
         }
+        
+    }
+
+    public async Task clickedOnCompany(string company)
+    {
+        DataAccessService.SetChosenStock(company);
+        await Scrapit.DoScrapping();
         NavManager.NavigateTo("/company/" + company);
     }
-    public void search()
+
+    public string SearchText { get; set; } = "";
+
+    public void OnInput(ChangeEventArgs e)
     {
-        searching = searchBox;
-    }
-    private string imageSource(string company)
-    {
-        if (company.Contains('/'))
-        {
-            company = company.Replace("/", " ");
-        }
-        string check = "CompanyLabels/" + company+".png";
-        return check;
-        //return "CompanyLabels/image.png";
+        SearchText = e.Value.ToString();
+        FilteredStocks = DataAccessService.GetFilteredStocks(SearchText);
     }
 
-
-
+    public string GetImageSource(string StockCode)
+    {
+        return "CompanyLabels/"+StockCode+".png";
+    }
 }

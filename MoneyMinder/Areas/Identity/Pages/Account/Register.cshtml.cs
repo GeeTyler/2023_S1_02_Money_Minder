@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MoneyMinder.Model;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -8,13 +9,15 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        private readonly DatabaseContext _db;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public RegisterModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public RegisterModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, DatabaseContext db)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _db = db;
         }
 
         [BindProperty]
@@ -37,6 +40,14 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    var registered = new User
+                    {
+                        Email = Input.Email,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName
+                    };
+                    _db.User.Add(registered);
+                    _db.SaveChanges();
                     await _signInManager.SignInAsync(identity, isPersistent: false);
                     return LocalRedirect(ReturnUrl);
                 }

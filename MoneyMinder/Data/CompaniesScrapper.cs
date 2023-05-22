@@ -12,12 +12,18 @@ using MoneyMinder.Model;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MoneyMinder.Pages
+namespace MoneyMinder.Data
 {
+    /// <summary>
+    /// That class is to get information from https://www.nzx.com/markets/NZSX table and save it in the database
+    /// for further usage in StockMarket.razor page.
+    /// </summary>
     public class CompaniesScrapper
     {
+        //Declare database access.
         private readonly DatabaseContext _db;
 
+        //Constructor with initialize database access.
         public CompaniesScrapper(DatabaseContext db)
         {
             _db = db;
@@ -25,24 +31,29 @@ namespace MoneyMinder.Pages
 
         public async Task DoScrapping()
         {
-            List <string> companys = new List<string>();
+            //List of strings that will contain information to push it in the database Stock table.
+            List<string> companys = new List<string>();
 
-            //            HtmlDocument htmlDoc = new HtmlDocument();
-
-
+            //Access https://www.nzx.com/markets/NZSX for getting information from the website.
+            //Required: HtmlAgilityPack.NetCore
             HttpClient hc = new HttpClient();
             HttpResponseMessage result = await hc.GetAsync($"https://www.nzx.com/markets/NZSX");
             Stream stream = await result.Content.ReadAsStreamAsync();
             HtmlDocument doc = new HtmlDocument();
             doc.Load(stream);
 
+
+            //Checking if the database Stock table contains any information.
+            //If the database contains any information it will be deleted to upload new information from the website.
             if (_db.Stock.Count() != 0)
             {
                 _db.Stock.RemoveRange(_db.Stock);
                 _db.SaveChanges();
             }
 
-            var table = doc.DocumentNode.Descendants("td").Where(node=>!node.GetAttributeValue("role","").Contains("row")).
+            //Scraping required information from https://www.nzx.com/markets/NZSX website.
+            //The code extends with requirements of what exactly should be scraped from the website.
+            var table = doc.DocumentNode.Descendants("td").Where(node => !node.GetAttributeValue("role", "").Contains("row")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Change")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Volume")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("Value")).
@@ -52,26 +63,31 @@ namespace MoneyMinder.Pages
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("CurrencyCode")).
                 Where(node => !node.GetAttributeValue("data-title", "").Contains("IndexedCapitalisation")).ToList();
 
+
+            //Storing all scraped information into a temporary string for easier manipulation.
             string tempStorage = "";
-
-            foreach(var item in table)
+            foreach (var item in table)
             {
-                tempStorage += (item.InnerText);
+                tempStorage += item.InnerText;
             }
-            string[] temp = tempStorage.Split("\n");
 
+            //Splitting information by new lines and storing it into a new temporary array string.
+            string[] temp = tempStorage.Split("\n");
+            //Removing all empty elements from the temporary array string and saving information into companys List.
             for (int i = 0; i < temp.Length; i++)
             {
                 if (Regex.IsMatch(temp[i], ".*[a-zA-Z0-9].*") || !string.IsNullOrWhiteSpace(temp[i]))
                 {
+                    //Removing unwanted characters after '&' sign. For some reason, the scraper gets extra characters after the '&' sign.
                     if (temp[i].Contains('&'))
                     {
                         temp[i] = temp[i].Remove(temp[i].IndexOf('&') + 1, 4);
                     }
-                    companys.Add(temp[i].Trim());              
+                    companys.Add(temp[i].Trim());
                 }
             }
 
+            //Storing all iformation from companys List into the database Stock table.
             for (int n = 0; n < companys.Count; n++)
             {
                 var stck = new Stock()
@@ -85,7 +101,7 @@ namespace MoneyMinder.Pages
                 _db.Stock.Add(stck);
                 _db.SaveChanges();
 
-                if (n + 3 >= (companys.Count) - 3)
+                if (n + 3 >= companys.Count - 3)
                 {
                     return;
                 }

@@ -9,9 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyMinder.Data;
 using MoneyMinder.Model;
-using MoneyMinder.Pages;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,12 +34,10 @@ namespace MoneyMinder
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
-            
 
-            //dima's addition
             services.AddScoped<CompaniesScrapper>();
             services.AddScoped<IDataAccessService, DataAccessService>();
-            services.AddHttpContextAccessor();
+            services.AddScoped<StockDataScrapper>();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {

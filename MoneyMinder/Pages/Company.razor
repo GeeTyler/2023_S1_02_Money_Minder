@@ -1,54 +1,120 @@
-﻿@page "/company/{Text}"
+﻿@layout MainLayout
+@page "/company/{Text}"
+@using Microsoft.EntityFrameworkCore
+@using MoneyMinder.Model
+@using MoneyMinder.Data
+@inject IDataAccessService DataAccessService
+@using Radzen.Blazor
+@using System
+@using System.Globalization
 
+<AuthorizeView>
+    <Authorized>
+        <style>
+            .chart-container {
+                height: 500px;
+                width: 1200px;
+                margin-left: -50px;
+            }
 
-<style>
-    table{
-        position: absolute;
-        border:solid;
-        background-color: #E9E9E9;
-        top: 0%;
-        left: 25%;
-        
-    }
-    tr{
-        border: solid;
-    }
-</style>
-<h3>@Text</h3>
-<div class="priceHistory">
-    <div class="choosenCompanyFrame">
-        <h6>CN</h6>
-        <p>$1.543</p>
-        <p>+0.05%, +0.23%</p>
-    </div>
+            table {
+                position: absolute;
+                border: solid;
+                background-color: #E9E9E9;
+                top: 0%;
+                left: 25%;
+            }
 
-    <table style="width:50%">
-        <tr>
-            <th>Date</th>
-            <th>Changes</th>
-            <th>Current Value</th>
-        </tr>
-        @for (int i = 0; i < 100; i += 10)
+            tr {
+                border: solid;
+            }
+        </style>
+
+        <div class="chosenCompanyFrame">
+            <h1>@Text</h1>
+            <h2>Current Market Price: $@String.Format("{0:N4}",CurrentPrice)</h2>
+        </div>
+        <br />
+
+        @if (MarketPrices != null && MarketPrices.Any())
         {
-            <tr>
-                <td>@i/@i/@i</td>
-                <td>+@i%/0.@i</td>
-                <td>$@i.@i</td>
-            </tr>
+            <div class="container">
+                <div class="row">
+                    <div class="col-10">
+                        <RadzenChart class="chart-container">
+                            <RadzenAreaSeries Stroke="rgb(100,255,55)" StrokeWidth="2" Fill="rgba(100,255,55, .5)" Data="MarketPrices" CategoryProperty="Date" ValueProperty="Close">
+                                <ChildContent>
+                                    <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#fff" Stroke="rgba(100,255,55)" StrokeWidth="2" Size="2" />
+                                </ChildContent>
+                            </RadzenAreaSeries>
+                            <RadzenCategoryAxis>
+                                <RadzenAxisTitle Text="Date"/>
+                                <RadzenGridLines Visible="true" Stroke="#ccc" LineType="LineType.Dashed" />
+                            </RadzenCategoryAxis>
+                            <RadzenValueAxis FormatString="{0:C3}">
+                                <RadzenAxisTitle Text="Price" />
+                                <RadzenGridLines Visible="true" />
+                            </RadzenValueAxis>
+                            <RadzenChartTooltipOptions Style="border: 1px solid rgb(100,255,55); background: #eee; color: #000;" />
+                            <RadzenLegend Visible="false" />
+                        </RadzenChart>
+                    </div>
+                </div>
+            </div>
         }
-    </table>
-</div>
+
+        <br />
+
+        <div class="priceHistory">
+            <table style="width:50%">
+                <tr>
+                    <th>Date</th>
+                    <th>Open</th>
+                    <th>High</th>
+                    <th>Low</th>
+                    <th>Close</th>
+                    <th>AdjClose</th>
+                    <th>Volume</th>
+                </tr>
+                @foreach (var item in MarketPriceReverse)
+                {
+                    <tr>
+                        <td>@item.Date.ToShortDateString()</td>
+                        <td>@String.Format("{0:N4}",item.Open)</td>
+                        <td>@String.Format("{0:N4}",item.High)</td>
+                        <td>@String.Format("{0:N4}",item.Low)</td>
+                        <td>@String.Format("{0:N4}",item.Close)</td>
+                        <td>@String.Format("{0:N4}",item.AdjClose)</td>
+                        <td>@item.Volume</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p role="status">You are not authorised to see this component</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 
 @code {
     [Parameter]
     public string Text{ get; set; }
 
+    public double CurrentPrice;
+
+    public List<MarketPriceData> MarketPrices = new List<MarketPriceData>();
+    public List<MarketPriceData> MarketPriceReverse = new List<MarketPriceData>();
+
     protected override void OnInitialized()
     {
-        if (Text.Contains("zAeBaL"))
-        {
-            Text = Text.Replace("zAeBaL", "/");
-        }
+        MarketPriceReverse = DataAccessService.GetMarketPrices();
+        MarketPriceReverse.Reverse();
+        MarketPrices = DataAccessService.GetMarketPrices();
+        CurrentPrice = MarketPriceReverse[0].Close;
     }
+
+    IEnumerable<ColorScheme> colorSchemes = Enum.GetValues(typeof(ColorScheme)).Cast<ColorScheme>();
+    ColorScheme colorScheme = ColorScheme.Palette;
+   
 }
