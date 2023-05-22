@@ -17,24 +17,35 @@
         </div>
 
         <br />
-
-        @if (FilteredStocks == null)
+        <!---->
+        <table style="width:100%">
+            <tr>
+                <th type="button" @onclick="@(e=>sortedBy("Code"))">Code</th>
+                <th type="button" @onclick="@(e=>sortedBy("CompanyName"))">Company Name</th>
+                <th type="button" @onclick="@(e=>sortedBy("Market Price"))">Market Price</th>
+                <th type="button" @onclick="@(e=>sortedBy("Market Capitalisation"))">Market Capitalisation</th>
+                <!--<th>Favored</th>-->
+            </tr>
+        </table>
+        <p>Sorted by: @sorting</p>
+        @if (FilteredStocks == null && sorting.Equals("Code"))
         {
             @foreach (var item in Stocks)
             {
                 <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
                     <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
-                        <div class="comanyInformation">
-                            <h4>@item.CompanyName</h4>
-                            <h5 class="darkGray">@item.StockCode</h5>
-                            <p> </p>
-                            <p> Market Price: @item.MarketPrice</p>
-                            <p> Market Capitalisation: @item.MarketCap</p>
-                        </div>
+                    <div class="comanyInformation">
+                        <h4>@item.CompanyName</h4>
+                        <h5 class="darkGray">@item.StockCode</h5>
+                        <p> </p>
+                        <p> Market Price: @item.MarketPrice</p>
+                        <p> Market Capitalisation: @item.MarketCap</p>
+                    </div>
                 </div>
             }
+
         }
-        else
+        else if (!SearchText.Equals(""))
         {
             @foreach (var item in FilteredStocks)
             {
@@ -50,6 +61,23 @@
                 </div>
             }
         }
+        else
+        {
+            foreach (var item in sortedStocks)
+            {
+                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                    <div class="comanyInformation">
+                        <h4>@item.CompanyName</h4>
+                        <h5 class="darkGray">@item.StockCode</h5>
+                        <p> </p>
+                        <p> Market Price: @item.MarketPrice</p>
+                        <p> Market Capitalisation: @item.MarketCap</p>
+                    </div>
+                </div>
+            }
+        }
+        
 
     </Authorized>
     <NotAuthorized>
@@ -58,13 +86,24 @@
 </AuthorizeView>
 
 @code {
-
+    private String sorting { get; set; } = "Code";
     public List<Stock> Stocks;
     public List<Stock> FilteredStocks;
+    public List<Stock> sortedStocks;
 
     protected override void OnInitialized()
     {
         Stocks = DataAccessService.GetStocks();
+    }
+
+    private void sortedBy(String sort)
+    {
+        this.sorting = sort;
+        if (sorting.Contains("CompanyName") || sorting.Contains("Market Price") || sorting.Contains("Market Capitalisation"))
+        {
+            sortedStocks = DataAccessService.getSortedStock(sorting);
+        }
+        
     }
 
     public async Task clickedOnCompany(string company)
@@ -74,7 +113,7 @@
         NavManager.NavigateTo("/company/" + company);
     }
 
-    public string SearchText { get; set; }
+    public string SearchText { get; set; } = "";
 
     public void OnInput(ChangeEventArgs e)
     {

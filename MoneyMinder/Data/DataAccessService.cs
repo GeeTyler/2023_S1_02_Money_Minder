@@ -27,6 +27,83 @@ namespace MoneyMinder.Data
             return _db.Stock.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower())).ToList();
         }
 
+        public List<Stock> getSortedStock(string filter)
+        {
+            List<Stock> toSort = GetStocks();
+            List<Stock> filtered = new List<Stock>();
+            
+            if (filter.Contains("CompanyName"))
+            {
+                filtered.Add(toSort[0]);
+                for (int i = 1; i < toSort.Count(); i++)
+                {
+                    
+                    for(int b = 0; b < filtered.Count(); b++)
+                    {
+                        int compare = toSort[i].CompanyName.ToLower().CompareTo(filtered[b].CompanyName.ToLower());
+                        if (b == filtered.Count() - 1)
+                        {
+                            filtered.Add(toSort[i]);
+                            break;
+                        }
+                        else if (compare < 0)
+                        {
+                            filtered.Insert(b, toSort[i]);
+                            break;
+                        }
+                    }
+
+                    
+                }
+                
+            }else if (filter.Contains("Market Price"))
+            {
+                filtered.Add(toSort[0]);
+                for (int i = 1; i < toSort.Count(); i++)
+                {
+
+                    for (int b = 0; b < filtered.Count(); b++)
+                    {
+                        int compare = toSort[i].MarketPrice.CompareTo(filtered[b].MarketPrice);
+                        if (b == filtered.Count() - 1)
+                        {
+                            filtered.Add(toSort[i]);
+                            break;
+                        }
+                        else if (compare < 0)
+                        {
+                            filtered.Insert(b, toSort[i]);
+                            break;
+                        }
+                    }
+                }
+                
+            }else if(filter.Contains("Market Capitalisation"))
+            {
+                filtered.Add(toSort[0]);
+                for (int i = 1; i < toSort.Count(); i++)
+                {
+
+                    for (int b = 0; b < filtered.Count(); b++)
+                    {
+                        long compare = Int64.Parse(toSort[i].MarketCap.Replace("$", "").Replace(",",""))- Int64.Parse(filtered[b].MarketCap.Replace("$", "").Replace(",", ""));
+                        if (b == filtered.Count() - 1)
+                        {
+                            filtered.Add(toSort[i]);
+                            break;
+                        }
+                        else if (compare < 0)
+                        {
+                            filtered.Insert(b, toSort[i]);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return filtered;
+        }
+
         public List<MarketPriceData> GetMarketPrices() 
         {
             return _db.MarketPriceData.ToList();
