@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static MoneyMinder.Areas.Identity.Pages.Account.RegisterModel;
 
 namespace MoneyMinder.Areas.Identity.Pages.Account
@@ -11,10 +13,12 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -30,26 +34,45 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync()
         {
             ReturnUrl = Url.Content("/Home");
-            
+
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password,
-                    isPersistent: false, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user == null)
                 {
-                    return LocalRedirect(ReturnUrl);
+                    ModelState.AddModelError("Input.Email", "Email doesn't exist.");
+                }
+                else
+                {
+                    var passwordValid = await _userManager.CheckPasswordAsync(user, Input.Password);
+                    if (passwordValid)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password,
+                            isPersistent: false, lockoutOnFailure: false);
+
+                        if (result.Succeeded)
+                        {
+                            return LocalRedirect(ReturnUrl);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Input.Password", "Incorrect Password.");
+                    }
                 }
             }
-
             return Page();
         }
 
+
+        public class InputModel
+    {
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-
         [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+        }
     }
 }
