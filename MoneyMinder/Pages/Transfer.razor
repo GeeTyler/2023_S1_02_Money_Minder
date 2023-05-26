@@ -168,5 +168,6 @@
     {
             DataAccessService.AddTransfer(fromAccount.AccountNum, toAccount.AccountNum, amount);
             StateHasChanged();
+            NavManager.NavigateTo("/bankaccounts/"+fromAccount.AccountNum);
     }
 }
