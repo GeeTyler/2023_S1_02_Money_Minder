@@ -43,14 +43,37 @@
             <div class="transfer_amount_container">
                 <p class="amount_reference_spacing">Amount: &nbsp;&nbsp;&nbsp;</p>
                 <input type="number" class="transfer_amount_input" placeholder="Enter the amount" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter the amount'" @bind-value="@amount" @oninput="OnAmountChanged">
+                @if (amount < 0)
+                {
+                    <p class="text-danger">  Amount must be a positive value.</p>
+                }
+                @if (fromAccount.Balance - amount < 0)
+                {
+                    <p class="text-danger">  Insufficient balance in @fromAccount.Name</p>
+                }
             </div>
 
             <!-- transfer button -->
-            <button class="transfer_button" @onclick="MakeTransfer">Transfer</button>
+            <button class="transfer_button" @onclick="MakeTransfer" disabled="@disabled">Transfer</button>
+            @if (cantTransferTo)
+            {
+                <br />
+                <p class="text-danger">Please select 'From' and 'To' accounts.</p>
+            }
+            @if (from == to)
+            {
+                <br />
+                <p class="text-danger">'From' and 'To' accounts cannot be the same.</p>
+            }
+            @if (fromAccount.Blocked == true)
+            {
+                <br />
+                <p class="text-danger">@fromAccount.Name is blocked!</p>
+            }
         </div>
     </Authorized>
     <NotAuthorized>
-        <p role="status">You are not authorised to see this component</p>
+        <p role="status">You are not authorized to see this component.</p>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -84,14 +107,19 @@
     private string from;
     private string to;
     private bool disabled = true;
+    private bool cantTransferTo = true;
 
     public double amount { get; set; }
 
-    private void CheckInputs()
+    private void CheckAccounts()
     {
         if (from != null && to != null)
         {
-            disabled = !disabled;
+            cantTransferTo = false;
+        }
+        else
+        {
+            cantTransferTo = true;
         }
     }
 
@@ -99,6 +127,7 @@
     {
         from = e.Value.ToString();
         fromAccount = DataAccessService.GetBankAccount(Convert.ToInt32(from));
+        CheckAccounts();
         StateHasChanged();
     }
 
@@ -106,6 +135,7 @@
     {
         to = e.Value.ToString();
         toAccount = DataAccessService.GetBankAccount(Convert.ToInt32(to));
+        CheckAccounts();
         StateHasChanged();
     }
 
@@ -114,27 +144,29 @@
         if (double.TryParse(e.Value.ToString(), out double parsedAmount))
         {
             amount = parsedAmount;
+            CheckTransfer();
         }
         else
         {
-            
+
+        }
+    }
+
+    private void CheckTransfer()
+    {
+        if (fromAccount.Balance - amount < 0 || fromAccount.Blocked == true || amount < 0)
+        {
+            disabled = true;
+        }
+        else
+        {
+            disabled = false;
         }
     }
 
     public void MakeTransfer()
     {
-        CheckInputs();
-        if(fromAccount.Balance - amount < 0 || fromAccount.Blocked == true || disabled == true)
-        {
-            return;
-        }
-        else
-        {
             DataAccessService.AddTransfer(fromAccount.AccountNum, toAccount.AccountNum, amount);
             StateHasChanged();
-        }
     }
-
-
-
 }
