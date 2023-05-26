@@ -208,18 +208,20 @@
                 sum += item.TransactionAmount;
             }
         }
-        if (type == "necessary")
+
+        else if (type == "discretionary")
         {
-            foreach (var item in AccountsTransactions.Where(e => !e.TransactionType.Equals("Shopping") 
-            && !e.TransactionType.Equals("Eating Out") && !e.TransactionType.Equals("Entertainment")))
+            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping") 
+            || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
             {
                 sum += item.TransactionAmount;
             }
         }
-        if(type == "discretionary")
+
+        else if(type == "necessary")
         {
-            foreach (var item in AccountsTransactions.Where(e => !e.TransactionType.Equals("Bills") 
-            && !e.TransactionType.Equals("Supermarket")))
+            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills") 
+            || e.TransactionType.Equals("Supermarket")))
             {
                 sum += item.TransactionAmount;
             }
