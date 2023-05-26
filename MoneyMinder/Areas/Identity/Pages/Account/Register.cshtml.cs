@@ -33,7 +33,6 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync()
         {
             ReturnUrl = Url.Content("/Home");
-
             if (ModelState.IsValid)
             {
                 try
@@ -53,6 +52,14 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    var registered = new User
+                    {
+                        Email = Input.Email,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName
+                    };
+                    _db.User.Add(registered);
+                    _db.SaveChanges();
                     await _signInManager.SignInAsync(identity, isPersistent: false);
                     return LocalRedirect(ReturnUrl);
                 }
