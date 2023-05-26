@@ -236,6 +236,7 @@
     {
         await Scrapit.DoScrapping();
         Current = DataAccessService.GetUser(await getUsersEmail());
+        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
         StateHasChanged();
     }
 
@@ -269,8 +270,6 @@
 
     private void viewAccountsClicked()
     {
-        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
-        StateHasChanged();
         viewBankAccounts = !viewBankAccounts;
     }
 
