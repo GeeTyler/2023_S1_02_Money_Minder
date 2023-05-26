@@ -11,9 +11,10 @@
 
 <AuthorizeView>
     <Authorized>
-            <div class="profile_container">
+        <h1 class="profile_title">My Profile</h1>
+        <div class="profile_container">
             <div class="profile_info_container">
-                <h1 class="profile_title">My Profile</h1>
+                <h3 class="profile_title">My Info</h3>
                 @if (isFirstNameClicked)
                 {
                     <div class="profile_content_container">
@@ -78,7 +79,27 @@
                 </div>
 
                 <br />
-                <h2 class="profile_title">Bank Accounts</h2>
+                @if (!isDeleteProfileClicked)
+                {
+                    <div class="delete_account_container">
+                        <button class="delete_account_btn" @onclick="deleteProfileClicked">Delete Profile</button>
+                    </div>
+                }
+                else
+                {
+                    <h5>Are you sure you want to delete your profile?</h5>
+                    <div class="delete_account_container">
+                        <NavLink class="nav-link" href="Delete" Match="NavLinkMatch.All">
+                                <button class="delete_account_btn">Yes Delete</button>
+                        </NavLink>
+                    </div>
+                    <div class="delete_account_container">
+                        <button class="delete_account_btn" @onclick="deleteProfileClicked">No</button>
+                    </div>
+                }
+            </div>
+            <div class="profile_bank_account_container">
+                <h3 class="profile_title">Bank Accounts</h3>
                 @if (!viewBankAccounts)
                 {
                     <div class="register_account_btn_container">
@@ -87,7 +108,7 @@
                     </div>
                 }
 
-                @if(viewBankAccounts)
+                @if (viewBankAccounts)
                 {
                     if (MyBankAccounts == null || MyBankAccounts.Count == 0)
                     {
@@ -130,7 +151,7 @@
                                         <div class="account_number_container">
                                             <p class="content_spacing">@item.Name</p>
                                             <p class="content_spacing">@ConvertAccountNumToString(item.AccountNum)</p>
-                                            <br/>
+                                            <br />
                                             <p class="content_spacing">$@String.Format("{0:N2}",item.Balance)</p>
                                             <p class="content_spacing">Blocked status: @item.Blocked</p>
                                             <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(item.AccountNum)">Delete Account</button>
@@ -181,27 +202,8 @@
                     }
                 }
 
-                <br />
-                @if (!isDeleteProfileClicked)
-                {
-                    <div class="delete_account_container">
-                        <button class="delete_account_btn" @onclick="deleteProfileClicked">Delete Profile</button>
-                    </div>
-                }
-                else
-                {
-                    <h5>Are you sure you want to delete your profile?</h5>
-                    <div class="delete_account_container">
-                        <NavLink class="nav-link" href="Delete" Match="NavLinkMatch.All">
-                                <button class="delete_account_btn">Yes Delete</button>
-                        </NavLink>
-                    </div>
-                    <div class="delete_account_container">
-                        <button class="delete_account_btn" @onclick="deleteProfileClicked">No</button>
-                    </div>
-                }
             </div>
-            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <p role="status">You are not authorised to see this component</p>

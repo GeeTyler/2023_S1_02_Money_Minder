@@ -10,8 +10,8 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230508040621_Initial")]
-    partial class Initial
+    [Migration("20230526115759_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

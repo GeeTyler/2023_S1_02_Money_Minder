@@ -13,7 +13,11 @@
 }
 
 .profile_info_container {
-    width: 480px;
+    width: 50%;
+}
+
+.profile_bank_account_container{
+    width: 50%;
 }
 
 .profile_content_container {
@@ -79,8 +83,10 @@
 }
 
 .register_account_btn_container {
+/*
     display: flex;
     flex-wrap: wrap;
+*/
     margin-bottom: 16px;
 }
 
