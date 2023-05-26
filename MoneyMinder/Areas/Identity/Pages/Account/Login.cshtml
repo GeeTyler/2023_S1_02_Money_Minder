@@ -14,7 +14,21 @@
                 <div class="form-floating col-8 row" style="margin:50px">
                     <label asp-for="Input.Password" class="form-label">Password:</label>
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    @if (!ModelState.IsValid)
+                    {
+                        <span asp-validation-for="Input.Password" class="text-danger">
+                            @foreach (var modelState in ViewData.ModelState.Values)
+                            {
+                                foreach (var error in modelState.Errors)
+                                {
+                                    if (error.ErrorMessage == "Incorrect Password.")
+                                    {
+                                        @error.ErrorMessage
+                                    }
+                                }
+                            }
+                        </span>
+                    }
                 </div>
                 <div style="margin:10px">
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary"> Log In</button>
