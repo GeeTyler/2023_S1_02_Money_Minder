@@ -154,7 +154,7 @@
 
     private void CheckTransfer()
     {
-        if (fromAccount.Balance - amount < 0 || fromAccount.Blocked == true || amount < 0)
+        if (fromAccount.Balance - amount < 0 || fromAccount.Blocked == true || amount < 0 || fromAccount == toAccount)
         {
             disabled = true;
         }

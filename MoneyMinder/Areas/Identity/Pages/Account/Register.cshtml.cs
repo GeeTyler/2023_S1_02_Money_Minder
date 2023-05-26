@@ -38,9 +38,9 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                if (user == null)
+                if (user != null)
                 {
-                    ModelState.AddModelError("Input.Email", "Email doesn't exist.");
+                    ModelState.AddModelError("Input.Email", "Email already exists.");
                     return Page();
                 }
 
