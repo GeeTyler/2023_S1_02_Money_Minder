@@ -121,6 +121,16 @@
                                 </div>
                             </div>
                         }
+                        else if (isDeleteAccountClicked)
+                        {
+                            <h5>Are you sure you want to delete this account?</h5>
+                            <div class="delete_account_container">
+                                <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
+                            </div>
+                            <div class="delete_account_container">
+                                <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
+                            </div>
+                        }
                         else
                         {
                             foreach (var item in MyBankAccounts)
@@ -148,16 +158,6 @@
                                         <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
                                     </div>
                                 }
-                            }
-                            @if (isDeleteAccountClicked)
-                            {
-                                <h5>Are you sure you want to delete this account?</h5>
-                                <div class="delete_account_container">
-                                    <button class="btn_in_profile" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
-                                </div>
-                                <div class="delete_account_container">
-                                    <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
-                                </div>
                             }
                             @if (isRegisterClicked)
                             {
