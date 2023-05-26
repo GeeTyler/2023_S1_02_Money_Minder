@@ -36,26 +36,27 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
-
-                if (user != null)
+                try
                 {
-                    ModelState.AddModelError("Input.Email", "Email already exists.");
-                    return Page();
-                }
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, isPersistent: false, lockoutOnFailure: false);
+                    if (user != null)
+                    {
+                        ModelState.AddModelError("Input.Email", "Email already exists.");
+                        return Page();
+                    }
+                }
+                catch { }
+
+                var identity = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var result = await _userManager.CreateAsync(identity, Input.Password);
 
                 if (result.Succeeded)
                 {
+                    await _signInManager.SignInAsync(identity, isPersistent: false);
                     return LocalRedirect(ReturnUrl);
                 }
-                else 
-                {
-                    ModelState.AddModelError("Input.Password", "Incorrect Password. Try Again");
-                }
             }
-
             return Page();
         }
 
