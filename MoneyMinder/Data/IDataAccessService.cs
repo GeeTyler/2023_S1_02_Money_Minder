@@ -9,7 +9,11 @@ namespace MoneyMinder.Data
 
         List<Stock> GetFilteredStocks(string SearchText, string SortBy, string Order);
 
-        void FavouriteStock(string Code);
+        void FavouriteStock(string Code, string Email);
+
+        List<string> GetFavoriteStockCodesForUser(string userEmail);
+
+        bool IsFavorite(string stockCode, string Email);
 
         List<MarketPriceData> GetMarketPrices();
 

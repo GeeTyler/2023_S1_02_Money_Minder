@@ -89,10 +89,44 @@ namespace MoneyMinder.Data
             return stocks;
         }
 
-        public void FavouriteStock(string Code)
+        public List<string> GetFavoriteStockCodesForUser(string userEmail)
         {
-            _db.Stock.FirstOrDefault(stock => stock.StockCode.Equals(Code)).Favourited = !_db.Stock.FirstOrDefault(stock => stock.StockCode.Equals(Code)).Favourited;
-            _db.SaveChanges();
+            return _db.Favourite
+                .Where(f => f.Email == userEmail)
+                .Select(f => f.StockCode)
+                .ToList();
+        }
+
+        public void FavouriteStock(string Code, string Email)
+        {
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+                var fav = new Favourite()
+                {
+                    // Remove the 'Id' property from the initialization
+                    StockCode = Code,
+                    Email = Email
+                };
+
+                // Exclude the 'Id' property from being inserted by EF
+                _db.Entry(fav).Property(x => x.Id).IsModified = false;
+
+                _db.Favourite.Add(fav);
+                _db.SaveChanges();
+                transaction.Commit();
+            }
+        }
+
+        public bool IsFavorite(string stockCode, string Email)
+        {
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseSqlServer("Server=.;Database=MoneyMinder;Trusted_Connection=True;MultipleActiveResultSets=True")
+                .Options;
+
+            using (var dbContext2 = new DatabaseContext(options))
+            {
+                return dbContext2.Favourite.Any(f => f.Email == Email && f.StockCode == stockCode);
+            }
         }
 
         public List<MarketPriceData> GetMarketPrices()

@@ -10,8 +10,13 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
+<<<<<<<< HEAD:MoneyMinder/Migrations/20230529074818_initial.Designer.cs
     [Migration("20230529074818_initial")]
     partial class initial
+========
+    [Migration("20230529082205_Initial")]
+    partial class Initial
+>>>>>>>> master:MoneyMinder/Migrations/20230529082205_Initial.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,6 +247,26 @@ namespace MoneyMinder.Migrations
                     b.ToTable("BankAccount");
                 });
 
+            modelBuilder.Entity("MoneyMinder.Model.Favourite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StockCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Favourite");
+                });
+
             modelBuilder.Entity("MoneyMinder.Model.MarketPriceData", b =>
                 {
                     b.Property<DateTime>("Date")
@@ -283,9 +308,6 @@ namespace MoneyMinder.Migrations
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Favourited")
-                        .HasColumnType("bit");
 
                     b.Property<double>("MarketCap")
                         .HasColumnType("float");
