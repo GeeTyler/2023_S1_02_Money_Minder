@@ -10,7 +10,7 @@ using MoneyMinder.Model;
 namespace MoneyMinder.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230529043056_Initial")]
+    [Migration("20230529050508_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -283,6 +283,9 @@ namespace MoneyMinder.Migrations
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Favourited")
+                        .HasColumnType("bit");
 
                     b.Property<double>("MarketCap")
                         .HasColumnType("float");

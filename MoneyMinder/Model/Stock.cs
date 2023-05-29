@@ -16,5 +16,7 @@ namespace MoneyMinder.Model
 
         [Required]
         public double MarketCap { get; set; }
+
+        public bool Favourited { get; set; }
     }
 }

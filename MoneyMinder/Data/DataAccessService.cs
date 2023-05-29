@@ -53,10 +53,48 @@ namespace MoneyMinder.Data
             return stocks;
         }
 
-        public List<Stock> GetFilteredStocks(string SearchText)
+        public List<Stock> GetFilteredStocks(string SearchText, string SortBy, string Order)
         {
-            return _db.Stock.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower())).ToList();
+            IQueryable<Stock> query = _db.Stock;
+
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                query = query.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower()));
+            }
+
+            switch (SortBy)
+            {
+                case "CompanyName":
+                    query = query.OrderBy(s => s.CompanyName);
+                    break;
+                case "StockCode":
+                    query = query.OrderBy(s => s.StockCode);
+                    break;
+                case "MarketPrice":
+                    query = query.OrderBy(s => s.MarketPrice);
+                    break;
+                case "MarketCap":
+                    query = query.OrderBy(s => s.MarketCap);
+                    break;
+                default:
+                    break;
+            }
+
+            if (Order == "Descending")
+            {
+                query = query.Reverse();
+            }
+
+            List<Stock> stocks = query.ToList();
+            return stocks;
         }
+
+        public void FavouriteStock(string Code)
+        {
+            _db.Stock.FirstOrDefault(stock => stock.StockCode.Equals(Code)).Favourited = !_db.Stock.FirstOrDefault(stock => stock.StockCode.Equals(Code)).Favourited;
+            _db.SaveChanges();
+        }
+
         public List<MarketPriceData> GetMarketPrices()
         {
             return _db.MarketPriceData.ToList();

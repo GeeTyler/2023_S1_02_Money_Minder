@@ -282,6 +282,9 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Favourited")
+                        .HasColumnType("bit");
+
                     b.Property<double>("MarketCap")
                         .HasColumnType("float");
 

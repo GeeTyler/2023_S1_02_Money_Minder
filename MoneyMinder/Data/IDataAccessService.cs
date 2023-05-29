@@ -7,7 +7,9 @@ namespace MoneyMinder.Data
     {
         List<Stock> GetStocks(string sortBy, string sortDirection);
 
-        List<Stock> GetFilteredStocks(string SearchText);
+        List<Stock> GetFilteredStocks(string SearchText, string SortBy, string Order);
+
+        void FavouriteStock(string Code);
 
         List<MarketPriceData> GetMarketPrices();
 

@@ -35,33 +35,121 @@ a, .btn-link {
     /*border: solid;*/
 }
 
-.companyFrame {
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    background-color: #fae5e5;
+    font-family: futura-pt, sans-serif;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 130px;
+    height: 100vh;
+    padding: 30px 15px;
+}
+
+.companyWrapper {
+    display: flex;
+    align-items: center; /* Vertically centers the content */
+    margin-bottom: 10px; /* Add margin-bottom to create space between each company frame */
+}
+
+.companyFrame {
+    width: 93%;
+    display: flex;
     border: solid;
+    align-items: center;
+    left: 0%;
+}
+
+.fav-toggle {
     position: relative;
+    width: 60px; /* Adjust the width to make it smaller */
+    height: 48px; /* Adjust the height to maintain the aspect ratio */
+    border: none;
+    right: -10px;
+}
+
+    .fav-toggle:before {
+        position: absolute;
+        top: 0;
+        left: 30px; /* Adjust the left position to maintain the alignment */
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+        width: 30px; /* Adjust the width to maintain the aspect ratio */
+        height: 47px; /* Adjust the height to maintain the aspect ratio */
+        border: none;
+        border-radius: 15px 15px 0 0;
+        background-color: #574136;
+        content: "";
+        cursor: pointer;
+        transition: background .4s;
+    }
+
+    .fav-toggle:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+        width: 30px; /* Adjust the width to maintain the aspect ratio */
+        height: 47px; /* Adjust the height to maintain the aspect ratio */
+        border: none;
+        border-radius: 15px 15px 0 0;
+        background-color: #574136;
+        content: "";
+        cursor: pointer;
+        transition: background .4s;
+    }
+
+    .fav-toggle.favorited::before,
+    .fav-toggle.favorited::after {
+        background-color: #d65076;
+    }
+
+    .fav-toggle.favorited {
+        animation: liked .4s ease;
+    }
+
+@keyframes liked {
+    0% {
+        transform: scale(.8);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #container {
+        height: auto;
+    }
 }
 
 .comanyInformation {
     position: absolute;
     width: 84.6%;
-    top: 0%;
-    left: 15.5%;
-    /*border: solid; /*to check the frame not going ouside of .companyFrame(the method above that method)*/
-}
-
-.companyLabel {
-    height: auto;
-    width: 15%;
-    position: relative;
-    overflow-x: hidden;
-    border: solid;
-}
-
-.choosenCompanyFrame {
-    height: auto;
-    width: 20%;
-    border: solid;
+    top: 0%; /* Adjust the top value to vertically center the element */
+    left: 50%; /* Adjust the left value to horizontally center the element */
+    transform: translate(-50%, -50%); /* Apply translation to center the element */
 }
 
 .btn-primary {
@@ -81,57 +169,7 @@ app {
     color: #817D7D;
 }
 
-.searchBar {
-    width: 100%;
-    height: 40px;
-    border: solid;
-    position: relative;
-}
-
-.enterSearch {
-    height: 35px;
-    width: 96%;
-    position: absolute;
-    border: 0;
-}
-
 .border {
-    border: solid;
-}
-
-.priceHistory {
-    position: relative;
-    /*border: solid;*/
-}
-
-.companyFrame {
-    width: 100%;
-    height: 130px;
-    border: solid;
-    position: relative;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-.comanyInformation {
-    position: absolute;
-    width: 84.6%;
-    top: 0%;
-    left: 15.5%;
-    /*border: solid; /*to check the frame not going ouside of .companyFrame(the method above that method)*/
-}
-
-.companyLabel {
-    height: auto;
-    width: 15%;
-    position: relative;
-    overflow-x: hidden;
-    border: solid;
-}
-
-.choosenCompanyFrame {
-    height: auto;
-    width: 20%;
     border: solid;
 }
 

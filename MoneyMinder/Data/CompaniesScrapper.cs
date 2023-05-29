@@ -76,7 +76,8 @@ namespace MoneyMinder.Data
                     StockCode = companys[n],
                     CompanyName = companys[n + 1],
                     MarketPrice = double.Parse(Regex.Replace(companys[n + 2], "[^0-9.]", "")),
-                    MarketCap = double.Parse(Regex.Replace(companys[n + 3], "[^0-9.]", ""))
+                    MarketCap = double.Parse(Regex.Replace(companys[n + 3], "[^0-9.]", "")),
+                    Favourited = false
                 };
 
                 _db.Stock.Add(stck);
