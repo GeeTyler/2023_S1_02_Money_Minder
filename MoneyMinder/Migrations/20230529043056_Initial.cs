@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MoneyMinder.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -86,9 +86,8 @@ namespace MoneyMinder.Migrations
                 {
                     StockCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MarketPrice = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MarketCap = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MarketPrice = table.Column<double>(type: "float", nullable: false),
+                    MarketCap = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

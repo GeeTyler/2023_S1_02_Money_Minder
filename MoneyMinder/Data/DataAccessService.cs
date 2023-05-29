@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Model;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection;
 
 namespace MoneyMinder.Data
 {
@@ -17,22 +22,46 @@ namespace MoneyMinder.Data
             _db = db;
         }
 
-        public List<Stock> GetStocks() 
+        public List<Stock> GetStocks(string sortBy, string sortDirection)
         {
-            return _db.Stock.ToList();
+            IQueryable<Stock> query = _db.Stock;
+
+            switch (sortBy)
+            {
+                case "CompanyName":
+                    query = query.OrderBy(s => s.CompanyName);
+                    break;
+                case "StockCode":
+                    query = query.OrderBy(s => s.StockCode);
+                    break;
+                case "MarketPrice":
+                    query = query.OrderBy(s => s.MarketPrice);
+                    break;
+                case "MarketCap":
+                    query = query.OrderBy(s => s.MarketCap);
+                    break;
+                default:
+                    break;
+            }
+
+            if (sortDirection == "Descending")
+            {
+                query = query.Reverse();
+            }
+
+            List<Stock> stocks = query.ToList();
+            return stocks;
         }
 
         public List<Stock> GetFilteredStocks(string SearchText)
         {
             return _db.Stock.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower())).ToList();
         }
-
-        public List<MarketPriceData> GetMarketPrices() 
+        public List<MarketPriceData> GetMarketPrices()
         {
             return _db.MarketPriceData.ToList();
         }
-
-        public List<BankAccount> GetBankAccounts(string UserEmail) 
+        public List<BankAccount> GetBankAccounts(string UserEmail)
         {
             if (_db.BankAccount == null) 
             {

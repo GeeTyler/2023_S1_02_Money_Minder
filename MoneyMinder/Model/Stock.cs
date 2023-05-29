@@ -11,12 +11,10 @@ namespace MoneyMinder.Model
         [Required]
         public string CompanyName { get; set; }
 
-        public string CompanyDescription { get; set; }
+        [Required]
+        public double MarketPrice { get; set; }
 
         [Required]
-        public string MarketPrice { get; set; }
-
-        [Required]
-        public string MarketCap { get; set; }
+        public double MarketCap { get; set; }
     }
 }

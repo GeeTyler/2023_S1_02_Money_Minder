@@ -10,6 +10,22 @@
 
 <AuthorizeView>
     <Authorized>
+        <div class="text-right">
+            <p>Sort By: &nbsp;</p>
+            <select name="" id="" value="@SortBy" @onchange="SortList">
+                <option value="CompanyName">Company Name</option>
+                <option value="StockCode">Stock Code</option>
+                <option value="MarketPrice">Market Price</option>
+                <option value="MarketCap">Market Capitalisation</option>
+            </select>
+        </div>
+        <div class="text-right">
+            <p>Order: &nbsp;</p>
+            <select name="" id="" value="@Order" @onchange="OrderList">
+                <option value="Ascending">Ascending</option>
+                <option value="Descending">Descending</option>
+            </select>
+        </div>
         <div class="text-center bg-blue-100">
             <input class="border-4 w-1/3 rounded m-6 p-6 h-8
                        border-blue-300" @bind-value="SearchText"
@@ -28,8 +44,8 @@
                             <h4>@item.CompanyName</h4>
                             <h5 class="darkGray">@item.StockCode</h5>
                             <p> </p>
-                            <p> Market Price: @item.MarketPrice</p>
-                            <p> Market Capitalisation: @item.MarketCap</p>
+                            <p>Market Price: $@item.MarketPrice.ToString("0.000")</p>
+                            <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
                         </div>
                 </div>
             }
@@ -44,8 +60,8 @@
                         <h4>@item.CompanyName</h4>
                         <h5 class="darkGray">@item.StockCode</h5>
                         <p> </p>
-                        <p> Market Price: @item.MarketPrice</p>
-                        <p> Market Capitalisation: @item.MarketCap</p>
+                        <p>Market Price: $@item.MarketPrice.ToString("0.000")</p>
+                        <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
                     </div>
                 </div>
             }
@@ -62,9 +78,12 @@
     public List<Stock> Stocks;
     public List<Stock> FilteredStocks;
 
+    private string SortBy = "CompanyName";
+    private string Order = "Ascending";
+
     protected override void OnInitialized()
     {
-        Stocks = DataAccessService.GetStocks();
+        Stocks = DataAccessService.GetStocks(SortBy, Order);
     }
 
     public async Task clickedOnCompany(string company)
@@ -86,4 +105,20 @@
     {
         return "CompanyLabels/"+StockCode+".png";
     }
+
+    public void SortList(ChangeEventArgs e)
+    {
+        SortBy = e.Value.ToString();
+        Stocks = DataAccessService.GetStocks(SortBy, Order);
+        StateHasChanged();
+    }
+
+    public void OrderList(ChangeEventArgs e)
+    {
+        Order = e.Value.ToString();
+        Stocks = DataAccessService.GetStocks(SortBy, Order);
+        StateHasChanged();
+    }
+
+
 }

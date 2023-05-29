@@ -278,20 +278,15 @@ namespace MoneyMinder.Migrations
                     b.Property<string>("StockCode")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CompanyDescription")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MarketCap")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("MarketCap")
+                        .HasColumnType("float");
 
-                    b.Property<string>("MarketPrice")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("MarketPrice")
+                        .HasColumnType("float");
 
                     b.HasKey("StockCode");
 

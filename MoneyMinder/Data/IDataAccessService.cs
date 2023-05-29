@@ -5,7 +5,7 @@ namespace MoneyMinder.Data
 {
     public interface IDataAccessService
     {
-        List<Stock> GetStocks();
+        List<Stock> GetStocks(string sortBy, string sortDirection);
 
         List<Stock> GetFilteredStocks(string SearchText);
 
