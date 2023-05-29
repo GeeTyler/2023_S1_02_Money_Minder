@@ -129,6 +129,8 @@
     private BankAccount CurrentBankAccount;
     private List<Transactions> AccountsTransactions;
 
+    private double TotalAmount;
+
     async Task<string> getUsersEmail()
     {
         var user = (await authenticationStateTask).User;
@@ -207,6 +209,7 @@
             {
                 sum += item.TransactionAmount;
             }
+            TotalAmount = sum;
         }
 
         else if (type == "discretionary")

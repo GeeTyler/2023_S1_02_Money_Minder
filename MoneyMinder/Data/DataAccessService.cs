@@ -103,12 +103,10 @@ namespace MoneyMinder.Data
             {
                 var fav = new Favourite()
                 {
-                    // Remove the 'Id' property from the initialization
                     StockCode = Code,
                     Email = Email
                 };
 
-                // Exclude the 'Id' property from being inserted by EF
                 _db.Entry(fav).Property(x => x.Id).IsModified = false;
 
                 _db.Favourite.Add(fav);
