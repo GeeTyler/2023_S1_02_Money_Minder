@@ -21,5 +21,7 @@ namespace MoneyMinder.Model
 
         public DbSet<MarketPriceData> MarketPriceData { get; set; }
 
+        public DbSet<Favourite> Favourite { get; set; }
+
     }
 }

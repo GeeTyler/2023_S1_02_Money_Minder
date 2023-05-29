@@ -3,9 +3,12 @@
 @using Microsoft.EntityFrameworkCore
 @using MoneyMinder.Model
 @using MoneyMinder.Data
+@using Microsoft.AspNetCore.Identity
 @inject NavigationManager NavManager
 @inject IDataAccessService DataAccessService
 @inject StockDataScrapper Scrapit
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
 
 
 <AuthorizeView>
@@ -60,7 +63,7 @@
         {
             @if (ViewFavourites)
             {
-                @foreach (var item in Stocks.Where(s => s.Favourited))
+                @foreach (var item in Stocks.Where(s => DataAccessService.GetFavoriteStockCodesForUser(Current.Email).Contains(s.StockCode)))
                 {
                     <div class="companyWrapper">
                         <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
@@ -73,7 +76,7 @@
                                 <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
                             </div>
                         </div>
-                        <button class="fav-toggle @(item.Favourited ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
                     </div>
                 }
             }
@@ -92,7 +95,7 @@
                                 <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
                             </div>
                         </div>
-                        <button class="fav-toggle @(item.Favourited ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
                     </div>
                 }
             }
@@ -101,7 +104,7 @@
         {
             if (ViewFavourites)
             {
-                @foreach (var item in FilteredStocks.Where(s => s.Favourited))
+                @foreach (var item in FilteredStocks.Where(s => DataAccessService.GetFavoriteStockCodesForUser(Current.Email).Contains(s.StockCode)))
                 {
                     <div class="companyWrapper">
                         <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
@@ -114,7 +117,7 @@
                                 <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
                             </div>
                         </div>
-                        <button class="fav-toggle @(item.Favourited ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
                     </div>
                 }
             }
@@ -133,7 +136,7 @@
                                 <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
                             </div>
                         </div>
-                        <button class="fav-toggle @(item.Favourited ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
                     </div>
                 }
             }
@@ -146,6 +149,9 @@
 </AuthorizeView>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private User Current;
 
     public List<Stock> Stocks;
     public List<Stock> FilteredStocks;
@@ -155,9 +161,16 @@
     private bool ViewFavourites = false;
     private bool NotSearched = true;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        Current = DataAccessService.GetUser(await getUsersEmail());
         Stocks = DataAccessService.GetStocks(SortBy, Order);
+    }
+
+    async Task<string> getUsersEmail()
+    {
+        var user = (await authenticationStateTask).User;
+        return user.Identity.Name;
     }
 
     public async Task clickedOnCompany(string company)
@@ -216,7 +229,7 @@
 
     public void ToggleFavourite(string code)
     {
-        DataAccessService.FavouriteStock(code);
+        DataAccessService.FavouriteStock(code, Current.Email);
         StateHasChanged();
     }
 

@@ -63,6 +63,20 @@ namespace MoneyMinder.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favourite",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StockCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favourite", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MarketPriceData",
                 columns: table => new
                 {
@@ -87,8 +101,7 @@ namespace MoneyMinder.Migrations
                     StockCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MarketPrice = table.Column<double>(type: "float", nullable: false),
-                    MarketCap = table.Column<double>(type: "float", nullable: false),
-                    Favourited = table.Column<bool>(type: "bit", nullable: false)
+                    MarketCap = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -289,6 +302,9 @@ namespace MoneyMinder.Migrations
 
             migrationBuilder.DropTable(
                 name: "BankAccount");
+
+            migrationBuilder.DropTable(
+                name: "Favourite");
 
             migrationBuilder.DropTable(
                 name: "MarketPriceData");
