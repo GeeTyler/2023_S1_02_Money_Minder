@@ -119,7 +119,14 @@ namespace MoneyMinder.Data
 
         public bool IsFavorite(string stockCode, string Email)
         {
-            return _db.Favourite.Any(f => f.Email == Email && f.StockCode == stockCode);
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseSqlServer("Server=.;Database=MoneyMinder;Trusted_Connection=True;MultipleActiveResultSets=True")
+                .Options;
+
+            using (var dbContext2 = new DatabaseContext(options))
+            {
+                return dbContext2.Favourite.Any(f => f.Email == Email && f.StockCode == stockCode);
+            }
         }
 
         public List<MarketPriceData> GetMarketPrices()

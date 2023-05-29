@@ -23,5 +23,13 @@ namespace MoneyMinder.Model
 
         public DbSet<Favourite> Favourite { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=.;Database=MoneyMinder;Trusted_Connection=True;MultipleActiveResultSets=True");
+            }
+        }
+
     }
 }
