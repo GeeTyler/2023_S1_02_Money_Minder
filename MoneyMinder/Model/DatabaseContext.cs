@@ -27,7 +27,7 @@ namespace MoneyMinder.Model
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.;Database=MoneyMinder;Trusted_Connection=True;MultipleActiveResultSets=True");
+                optionsBuilder.UseSqlite("Data Source=MoneyMinder.db");
             }
         }
 

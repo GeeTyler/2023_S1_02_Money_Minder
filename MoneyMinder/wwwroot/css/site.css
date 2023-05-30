@@ -41,16 +41,6 @@ a, .btn-link {
     padding: 0;
 }
 
-html {
-    font-size: 16px;
-}
-
-body {
-    background-color: #fae5e5;
-    font-family: futura-pt, sans-serif;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-}
-
 #container {
     display: flex;
     flex-direction: column;

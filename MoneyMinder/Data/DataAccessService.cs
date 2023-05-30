@@ -99,26 +99,39 @@ namespace MoneyMinder.Data
 
         public void FavouriteStock(string Code, string Email)
         {
-            using (var transaction = _db.Database.BeginTransaction())
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseSqlite("Data Source=MoneyMinder.db")
+                .Options;
+
+            using (var dbContext2 = new DatabaseContext(options))
             {
-                var fav = new Favourite()
+                var existingFavourite = _db.Favourite.FirstOrDefault(f => f.StockCode == Code && f.Email == Email);
+
+                if (existingFavourite != null)
                 {
-                    StockCode = Code,
-                    Email = Email
-                };
+                    // User already favorited the company, so delete it
+                    _db.Favourite.Remove(existingFavourite);
+                }
+                else
+                {
+                    // User hasn't favorited the company yet, so add it
+                    var fav = new Favourite()
+                    {
+                        StockCode = Code,
+                        Email = Email
+                    };
 
-                _db.Entry(fav).Property(x => x.Id).IsModified = false;
+                    _db.Favourite.Add(fav);
+                }
 
-                _db.Favourite.Add(fav);
                 _db.SaveChanges();
-                transaction.Commit();
             }
         }
 
         public bool IsFavorite(string stockCode, string Email)
         {
             var options = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseSqlServer("Server=.;Database=MoneyMinder;Trusted_Connection=True;MultipleActiveResultSets=True")
+                .UseSqlite("Data Source=MoneyMinder.db")
                 .Options;
 
             using (var dbContext2 = new DatabaseContext(options))
@@ -172,7 +185,6 @@ namespace MoneyMinder.Data
             {
                 using (var transaction = _db.Database.BeginTransaction())
                 {
-
                     var account = new BankAccount()
                     {
                         AccountNum = randomAccountNum,
@@ -183,9 +195,7 @@ namespace MoneyMinder.Data
                     };
 
                     _db.BankAccount.Add(account);
-                    _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.BankAccount ON;");
                     _db.SaveChanges();
-                    _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.BankAccount OFF;");
                     transaction.Commit();
                 }
             }
@@ -314,10 +324,7 @@ namespace MoneyMinder.Data
 
                 _db.Transactions.Add(fromTransaction);
                 _db.Transactions.Add(toTransaction);
-
-                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions ON;");
                 _db.SaveChanges();
-                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions OFF;");
                 transaction.Commit();
             }
         }
@@ -366,9 +373,7 @@ namespace MoneyMinder.Data
                 };
 
                 _db.Transactions.Add(transactionMade);
-                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions ON;");
                 _db.SaveChanges();
-                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions OFF;");
                 transaction.Commit();
             }
         }
