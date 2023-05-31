@@ -2,8 +2,7 @@
 
 Be sure to open this program in Visual Studio.
 
-When using  this application. Before running sure to open Nuget package manager console in Visual Studio. 
-Then type in the console ->    add-migration Initial
-followed by -> update-database
+When using this application. Before running make sure to open the Nuget package manager console in Visual Studio. 
+Then type in the console -> add-migration Initial -> update-database
 
-Then you can use the program.
+Then you can start using the program.

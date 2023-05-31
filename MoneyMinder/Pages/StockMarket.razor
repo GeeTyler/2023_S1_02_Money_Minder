@@ -3,81 +3,144 @@
 @using Microsoft.EntityFrameworkCore
 @using MoneyMinder.Model
 @using MoneyMinder.Data
+@using Microsoft.AspNetCore.Identity
 @inject NavigationManager NavManager
 @inject IDataAccessService DataAccessService
 @inject StockDataScrapper Scrapit
+@inject UserManager<IdentityUser> _userManager
+@inject SignInManager<IdentityUser> SignInManager
 
 
 <AuthorizeView>
     <Authorized>
+        <div class="row">
+            <div class="col text-left">
+                <!-- Move the "View Favourites" column to the left -->
+                <label for="">
+                    @if (ViewFavourites == true)
+                    {
+                        <h2 style="color: deeppink;">View Favourites</h2>
+                    }
+                    else
+                    {
+                        <h2 style="color: #02D20A;">View Favourites</h2>
+                    }
+                    <button class="fav-toggle @(ViewFavourites ? "favorited" : "")" @onclick="ViewFavouritesClicked"></button>
+                </label>
+            </div>
+            <div class="col text-right">
+                <!-- Move the "Sort By" and "Order" columns to the right -->
+                <div class="text-right">
+                    <p>Sort By: &nbsp;</p>
+                    <select name="" id="" value="@SortBy" @onchange="SortList">
+                        <option value="CompanyName">Company Name</option>
+                        <option value="StockCode">Stock Code</option>
+                        <option value="MarketPrice">Market Price</option>
+                        <option value="MarketCap">Market Capitalisation</option>
+                    </select>
+                </div>
+                <div class="text-right">
+                    <p>Order: &nbsp;</p>
+                    <select name="" id="" value="@Order" @onchange="OrderList">
+                        <option value="Ascending">Ascending</option>
+                        <option value="Descending">Descending</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="text-center bg-blue-100">
-            <input class="border-4 w-1/3 rounded m-6 p-6 h-8
-                       border-blue-300" @bind-value="SearchText"
-                   @oninput="OnInput" placeholder="Search" />
+            <input class="border-4 w-1/3 rounded m-6 p-6 h-8 border-blue-300"
+                   @bind-value="SearchText"
+                   @oninput="OnInput"
+                   @onblur="RefreshPage"
+                   placeholder="Search" />
         </div>
 
         <br />
-        <!---->
-        <table style="width:100%">
-            <tr>
-                <th type="button" @onclick="@(e=>sortedBy("Code"))">Code</th>
-                <th type="button" @onclick="@(e=>sortedBy("CompanyName"))">Company Name</th>
-                <th type="button" @onclick="@(e=>sortedBy("Market Price"))">Market Price</th>
-                <th type="button" @onclick="@(e=>sortedBy("Market Capitalisation"))">Market Capitalisation</th>
-                <!--<th>Favored</th>-->
-            </tr>
-        </table>
-        <p>Sorted by: @sorting</p>
-        @if (FilteredStocks == null && sorting.Equals("Code"))
-        {
-            @foreach (var item in Stocks)
-            {
-                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
-                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
-                    <div class="comanyInformation">
-                        <h4>@item.CompanyName</h4>
-                        <h5 class="darkGray">@item.StockCode</h5>
-                        <p> </p>
-                        <p> Market Price: @item.MarketPrice</p>
-                        <p> Market Capitalisation: @item.MarketCap</p>
-                    </div>
-                </div>
-            }
 
-        }
-        else if (!SearchText.Equals(""))
+        @if (NotSearched)
         {
-            @foreach (var item in FilteredStocks)
+            @if (ViewFavourites)
             {
-                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
-                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
-                    <div class="comanyInformation">
-                        <h4>@item.CompanyName</h4>
-                        <h5 class="darkGray">@item.StockCode</h5>
-                        <p> </p>
-                        <p> Market Price: @item.MarketPrice</p>
-                        <p> Market Capitalisation: @item.MarketCap</p>
+                @foreach (var item in Stocks.Where(s => DataAccessService.GetFavoriteStockCodesForUser(Current.Email).Contains(s.StockCode)))
+                {
+                    <div class="companyWrapper">
+                        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                            <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                            <div class="companyInformation">
+                                <h4>@item.CompanyName</h4>
+                                <h5 class="darkGray">@item.StockCode</h5>
+                                <p> </p>
+                                <p>Market Price: $@item.MarketPrice.ToString("0.000")</p>
+                                <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
+                            </div>
+                        </div>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
                     </div>
-                </div>
+                }
+            }
+            else if (!ViewFavourites)
+            {
+                @foreach (var item in Stocks)
+                {
+                    <div class="companyWrapper">
+                        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                            <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                            <div class="companyInformation">
+                                <h4>@item.CompanyName</h4>
+                                <h5 class="darkGray">@item.StockCode</h5>
+                                <p> </p>
+                                <p>Market Price: $@item.MarketPrice.ToString("0.000")</p>
+                                <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
+                            </div>
+                        </div>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
+                    </div>
+                }
             }
         }
         else
         {
-            foreach (var item in sortedStocks)
+            if (ViewFavourites)
             {
-                <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
-                    <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
-                    <div class="comanyInformation">
-                        <h4>@item.CompanyName</h4>
-                        <h5 class="darkGray">@item.StockCode</h5>
-                        <p> </p>
-                        <p> Market Price: @item.MarketPrice</p>
-                        <p> Market Capitalisation: @item.MarketCap</p>
+                @foreach (var item in FilteredStocks.Where(s => DataAccessService.GetFavoriteStockCodesForUser(Current.Email).Contains(s.StockCode)))
+                {
+                    <div class="companyWrapper">
+                        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                            <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                            <div class="companyInformation">
+                                <h4>@item.CompanyName</h4>
+                                <h5 class="darkGray">@item.StockCode</h5>
+                                <p> </p>
+                                <p>Market Price: $@item.MarketPrice.ToString("0.000")</p>
+                                <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
+                            </div>
+                        </div>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
                     </div>
-                </div>
+                }
+            }
+            else
+            {
+                @foreach (var item in FilteredStocks)
+                {
+                    <div class="companyWrapper">
+                        <div class="companyFrame" type="button" @onclick="@(e=>clickedOnCompany(item.StockCode))">
+                            <img src="@GetImageSource(item.StockCode)" width="175" height="125" />
+                            <div class="companyInformation">
+                                <h4>@item.CompanyName</h4>
+                                <h5 class="darkGray">@item.StockCode</h5>
+                                <p> </p>
+                                <p>Market Price: $@item.MarketPrice.ToString("0.000")</p>
+                                <p>Market Capitalisation: $@item.MarketCap.ToString("#,##0")</p>
+                            </div>
+                        </div>
+                        <button class="fav-toggle @(DataAccessService.IsFavorite(item.StockCode,Current.Email) ? "favorited" : "")" @onclick="@(e => ToggleFavourite(item.StockCode))"></button>
+                    </div>
+                }
             }
         }
-        
 
     </Authorized>
     <NotAuthorized>
@@ -86,24 +149,28 @@
 </AuthorizeView>
 
 @code {
-    private String sorting { get; set; } = "Code";
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private User Current;
+
     public List<Stock> Stocks;
     public List<Stock> FilteredStocks;
-    public List<Stock> sortedStocks;
 
-    protected override void OnInitialized()
+    private string SortBy = "CompanyName";
+    private string Order = "Ascending";
+    private bool ViewFavourites = false;
+    private bool NotSearched = true;
+
+    protected override async Task OnInitializedAsync()
     {
-        Stocks = DataAccessService.GetStocks();
+        Current = DataAccessService.GetUser(await getUsersEmail());
+        Stocks = DataAccessService.GetStocks(SortBy, Order);
     }
 
-    private void sortedBy(String sort)
+    async Task<string> getUsersEmail()
     {
-        this.sorting = sort;
-        if (sorting.Contains("CompanyName") || sorting.Contains("Market Price") || sorting.Contains("Market Capitalisation"))
-        {
-            sortedStocks = DataAccessService.getSortedStock(sorting);
-        }
-        
+        var user = (await authenticationStateTask).User;
+        return user.Identity.Name;
     }
 
     public async Task clickedOnCompany(string company)
@@ -113,16 +180,66 @@
         NavManager.NavigateTo("/company/" + company);
     }
 
-    public string SearchText { get; set; } = "";
+    public string SearchText { get; set; }
 
     public void OnInput(ChangeEventArgs e)
     {
         SearchText = e.Value.ToString();
-        FilteredStocks = DataAccessService.GetFilteredStocks(SearchText);
+        FilteredStocks = DataAccessService.GetFilteredStocks(SearchText, SortBy, Order);
+        NotSearched = false;
     }
 
     public string GetImageSource(string StockCode)
     {
         return "CompanyLabels/"+StockCode+".png";
     }
+
+    public void SortList(ChangeEventArgs e)
+    {
+        SortBy = e.Value.ToString();
+        if (NotSearched)
+        {
+            Stocks = DataAccessService.GetStocks(SortBy, Order);
+        }
+        else if (!NotSearched)
+        {
+            FilteredStocks = DataAccessService.GetFilteredStocks(SearchText, SortBy, Order);
+        }
+        StateHasChanged();
+    }
+
+    public void OrderList(ChangeEventArgs e)
+    {
+        Order = e.Value.ToString();
+        if (NotSearched)
+        {
+            Stocks = DataAccessService.GetStocks(SortBy, Order);
+        }
+        else if (!NotSearched)
+        {
+            FilteredStocks = DataAccessService.GetFilteredStocks(SearchText, SortBy, Order);
+        }
+        StateHasChanged();
+    }
+
+    public void ViewFavouritesClicked()
+    {
+        ViewFavourites = !ViewFavourites;
+    }
+
+    public void ToggleFavourite(string code)
+    {
+        DataAccessService.FavouriteStock(code, Current.Email);
+        StateHasChanged();
+    }
+
+    private void RefreshPage()
+    {
+        if (string.IsNullOrEmpty(SearchText))
+        {
+            NotSearched = true;
+            StateHasChanged();
+        }
+    }
+
 }

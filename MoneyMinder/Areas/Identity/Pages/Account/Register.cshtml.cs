@@ -35,6 +35,18 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
             ReturnUrl = Url.Content("/Home");
             if (ModelState.IsValid)
             {
+                try
+                {
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    if (user != null)
+                    {
+                        ModelState.AddModelError("Input.Email", "Email already exists.");
+                        return Page();
+                    }
+                }
+                catch { }
+
                 var identity = new IdentityUser { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(identity, Input.Password);
 
@@ -57,15 +69,17 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [Required(ErrorMessage = "First name is required.")]
             public string FirstName { get; set; }
 
+            [Required(ErrorMessage = "Last name is required.")]
             public string LastName { get; set; }
 
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Email is required.")]
+            [EmailAddress(ErrorMessage = "Invalid email format.")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Password is required.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 

@@ -21,5 +21,15 @@ namespace MoneyMinder.Model
 
         public DbSet<MarketPriceData> MarketPriceData { get; set; }
 
+        public DbSet<Favourite> Favourite { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite("Data Source=MoneyMinder.db");
+            }
+        }
+
     }
 }

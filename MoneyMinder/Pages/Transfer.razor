@@ -19,7 +19,8 @@
                 <!-- if an account has been selected 'from' from selection, then that account should not be turn up at 'to' selection -->
                 <div class="transfer_account_from">
                     <p>From: &nbsp;</p>
-                    <select name="" id="" class="select account_selection" @bind-value="@from" @bind-value:event="onchange">
+                    <select name="" id="" class="select account_selection" value="@from" @onchange="OnFromChanged">
+                        <option value="" disabled selected hidden>-- Select an account --</option>
                         @foreach (var item in MyBankAccounts)
                         {
                             <option value="@Convert.ToString(item.AccountNum)">@item.Name</option>
@@ -28,7 +29,8 @@
                 </div>
                 <div class="transfer_account_to">
                     <p>To: &nbsp;</p>
-                    <select name="" id="" class="select account_selection" @bind-value="@to" @bind-value:event="onchange">
+                    <select name="" id="" class="select account_selection" value="@to" @onchange="OnToChanged">
+                        <option value="" disabled selected hidden>-- Select an account --</option>
                         @foreach (var item in MyBankAccounts)
                         {
                             <option value="@Convert.ToString(item.AccountNum)">@item.Name</option>
@@ -40,15 +42,38 @@
             <!-- transfer amount input box -->
             <div class="transfer_amount_container">
                 <p class="amount_reference_spacing">Amount: &nbsp;&nbsp;&nbsp;</p>
-                <input type="number" class="transfer_amount_input" placeholder="Enter the amount" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter the amount'" @bind-value="@amount" @bind-value:event="oninput">
+                <input type="number" class="transfer_amount_input" placeholder="Enter the amount" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter the amount'" @bind-value="@amount" @oninput="OnAmountChanged">
+                @if (amount < 0)
+                {
+                    <p class="text-danger">  Amount must be a positive value.</p>
+                }
+                @if (fromAccount.Balance - amount < 0)
+                {
+                    <p class="text-danger">  Insufficient balance in @fromAccount.Name</p>
+                }
             </div>
 
             <!-- transfer button -->
-            <button class="transfer_button" @onclick="MakeTransfer">Transfer</button>
+            <button class="transfer_button" @onclick="MakeTransfer" disabled="@disabled">Transfer</button>
+            @if (cantTransferTo)
+            {
+                <br />
+                <p class="text-danger">Please select 'From' and 'To' accounts.</p>
+            }
+            @if (from == to)
+            {
+                <br />
+                <p class="text-danger">'From' and 'To' accounts cannot be the same.</p>
+            }
+            @if (fromAccount.Blocked == true)
+            {
+                <br />
+                <p class="text-danger">@fromAccount.Name is blocked!</p>
+            }
         </div>
     </Authorized>
     <NotAuthorized>
-        <p role="status">You are not authorised to see this component</p>
+        <p role="status">You are not authorized to see this component.</p>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -79,54 +104,70 @@
     private BankAccount fromAccount = new BankAccount();
     private BankAccount toAccount = new BankAccount();
 
-    private double amount = 0;
     private string from;
     private string to;
     private bool disabled = true;
+    private bool cantTransferTo = true;
 
-    private void CheckInputs()
+    public double amount { get; set; }
+
+    private void CheckAccounts()
     {
-        @if (from != null  && to != null || amount <= 0)
+        if (from != null && to != null)
         {
-            disabled = !disabled;
+            cantTransferTo = false;
+        }
+        else
+        {
+            cantTransferTo = true;
         }
     }
 
-    private void OnFromChanged(string value)
+    private void OnFromChanged(ChangeEventArgs e)
     {
-        from = value;
+        from = e.Value.ToString();
         fromAccount = DataAccessService.GetBankAccount(Convert.ToInt32(from));
+        CheckAccounts();
         StateHasChanged();
-        CheckInputs();
     }
 
-    private void OnToChanged(string value)
+    private void OnToChanged(ChangeEventArgs e)
     {
-        to = value;
+        to = e.Value.ToString();
         toAccount = DataAccessService.GetBankAccount(Convert.ToInt32(to));
+        CheckAccounts();
         StateHasChanged();
-        CheckInputs();
     }
 
-    private void OnAmountChanged(double value)
+    private void OnAmountChanged(ChangeEventArgs e)
     {
-        amount = value;
-        CheckInputs();
+        if (double.TryParse(e.Value.ToString(), out double parsedAmount))
+        {
+            amount = parsedAmount;
+            CheckTransfer();
+        }
+        else
+        {
+
+        }
+    }
+
+    private void CheckTransfer()
+    {
+        if (fromAccount.Balance - amount < 0 || fromAccount.Blocked == true || amount < 0 || fromAccount == toAccount)
+        {
+            disabled = true;
+        }
+        else
+        {
+            disabled = false;
+        }
     }
 
     public void MakeTransfer()
     {
-        if(fromAccount.Balance - amount < 0 || fromAccount.Blocked == true)
-        {
-            return;
-        }
-        else
-        {
             DataAccessService.AddTransfer(fromAccount.AccountNum, toAccount.AccountNum, amount);
             StateHasChanged();
-        }
+            NavManager.NavigateTo("/bankaccounts/"+fromAccount.AccountNum);
     }
-
-
-
 }

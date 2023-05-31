@@ -12,42 +12,76 @@
 
 <AuthorizeView>
     <Authorized>
-        <div class="account_info_container">
-            <div class="account_number_container">
-                <p class="account_number">Account Number: @ConvertAccountNumToString(CurrentBankAccount.AccountNum)</p>
+        <div class="account_detail_container">
+            <div class="account_info_container">
+                <div class="account_number_container">
+                    <p class="account_number">Account Number: @ConvertAccountNumToString(CurrentBankAccount.AccountNum)</p>
 
-                <label class="transaction_label" for="">
-                    @if (CurrentBankAccount.Blocked == true)
-                    {
-                        <p style="color: #D20202;">Transaction blocked</p>
-                    }
-                    else
-                    {
-                        <p style="color: #02D20A;">Block further transaction</p>
-                    }
-                    <input class="transaction" type="checkbox" @onclick="(e=>changedChecked())">
-                </label>
-            </div>
-            <div class="container_with_transfer_btn">
-                <div class="account_holder_name_container">
-                    <p class="account_holder">Account Holder: @Current.FirstName @Current.LastName</p>
-                    <div class="account_name">
+                    <label class="transaction_label" for="">
+                        @if (CurrentBankAccount.Blocked == true)
+                        {
+                            <p style="color: #D20202;">Transaction blocked</p>
+                        }
+                        else
+                        {
+                            <p style="color: #02D20A;">Block further transaction</p>
+                        }
+                        <input class="transaction" type="checkbox" @onclick="(e=>changedChecked())">
+                    </label>
+                </div>
+                <div class="container_with_transfer_btn">
+                    <div class="account_holder_name_container">
+                        <p class="account_holder">Account Holder: @Current.FirstName @Current.LastName</p>
+                        <div class="account_name">
                             <p>Account Name: @CurrentBankAccount.Name</p>
+                        </div>
+                    </div>
+                    <div class="account_transfer_btn_container">
+                        <button class="account_transfer_btn" @onclick="@(e=>clickedOnTransfer(CurrentBankAccount.Name))">Make Transfer</button>
+                    </div>
+                    <br />
+                    <div class="account_transfer_btn_container">
+                        <button class="account_transfer_btn" @onclick="@GenerateTransaction">Random Transactions</button>
                     </div>
                 </div>
-                <div class="account_transfer_btn_container">
-                    <button class="account_transfer_btn" @onclick="@(e=>clickedOnTransfer(CurrentBankAccount.Name))">Make Transfer</button>
-                </div>
-                <br />
-                <div class="account_transfer_btn_container">
-                    <button class="account_transfer_btn" @onclick="@GenerateTransaction">Random Transactions</button>
-                </div>
+            </div>
+
+            <div class="percentage_of_spending_container">
+                <table class="percentage_of_spending_table">
+                    <thead>
+                        <tr>
+                            <th>Necessary</th>
+                            <th>Discretionary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @if (necessaryAmount != 0 && totalAmount != 0)
+                            {
+                                <td>@String.Format("{0:N2}", PercentageOfTotal("necessary"))%</td>
+                            }
+                            else
+                            {
+                                <td class="content_spacing">Loading...</td>
+                            }
+                            @if (discretionaryAmount != 0 && totalAmount != 0)
+                            {
+                                <td>@String.Format("{0:N2}", PercentageOfTotal("discretionary"))%</td>
+                            }
+                            else
+                            {
+                                <td class="content_spacing">Loading...</td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
         <div class="list_tab_container">
             <div class="list_tab">
                 <div class="tab_btn tab_all" @onclick="AllClicked">All</div>
+                <div class="tab_btn tab_transfer" @onclick="TransferClicked">Transfer</div>
                 <div class="tab_btn tab_necessary" @onclick="NecessaryClicked">Necessary</div>
                 <div class="tab_btn tab_discretionary" @onclick="DiscretionaryClicked">Discretionary</div>
             </div>
@@ -66,7 +100,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!isDiscretionary && !isNecessary)
+                    @if (!isDiscretionary && !isNecessary && !isTransfer)
                     {
                         if (AccountsTransactions.Count > 0)
                         {
@@ -82,7 +116,7 @@
                             }
                         }
                     }
-                    @if (isDiscretionary && !isNecessary)
+                    @if (isDiscretionary && !isNecessary && !isTransfer)
                     {
                         foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
                         || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
@@ -110,8 +144,22 @@
                             </tr>
                         }
                     }
+                    @if (isTransfer && !isDiscretionary && !isNecessary)
+                    {
+                        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Transfer")
+                        || e.TransactionType.Equals("Receive Transfer")))
+                        {
+                            <tr>
+                                <td>@item.DateandTime.ToShortDateString()</td>
+                                <td>@item.TrasactionNum</td>
+                                <td>@item.TransactionType</td>
+                                <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTransactions("transfer",item.TransactionAmount))%</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
-        </table>
+            </table>
         </div>
     </Authorized>
     <NotAuthorized>
@@ -128,6 +176,8 @@
     private User Current;
     private BankAccount CurrentBankAccount;
     private List<Transactions> AccountsTransactions;
+
+    private double TotalAmount;
 
     async Task<string> getUsersEmail()
     {
@@ -146,8 +196,12 @@
 
     private bool isChecked = false;
     private bool isClicked = false;
+    private bool isTransfer = false;
     private bool isNecessary = false;
     private bool isDiscretionary = false;
+    private double totalAmount = 0.0;
+    private double necessaryAmount = 0.0;
+    private double discretionaryAmount = 0.0;
 
     public void clickedOnTransfer(string account)
     {
@@ -170,27 +224,32 @@
         StateHasChanged();
     }
 
-    private void changeClicked()
+    private void TransferClicked()
     {
-        isClicked = !isClicked;
+        isNecessary = false;
+        isDiscretionary = false;
+        isTransfer = !isTransfer;
     }
 
     private void NecessaryClicked()
     {
+        isTransfer = false;
         isDiscretionary = false;
         isNecessary = !isNecessary;
     }
 
     private void DiscretionaryClicked()
     {
-        isDiscretionary = !isDiscretionary;
+        isTransfer = false;
         isNecessary = false;
+        isDiscretionary = !isDiscretionary;
     }
 
     private void AllClicked()
     {
-        isDiscretionary = false;
+        isTransfer = false;
         isNecessary = false;
+        isDiscretionary = false;
     }
 
     public string ConvertAccountNumToString(int AccountNum)
@@ -207,23 +266,65 @@
             {
                 sum += item.TransactionAmount;
             }
+            totalAmount = sum;
+
         }
-        if (type == "necessary")
+
+        else if (type == "transfer")
         {
-            foreach (var item in AccountsTransactions.Where(e => !e.TransactionType.Equals("Shopping") 
-            && !e.TransactionType.Equals("Eating Out") && !e.TransactionType.Equals("Entertainment")))
+            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Transfer") || e.TransactionType.Equals("Receive Transfer")))
             {
                 sum += item.TransactionAmount;
             }
         }
-        if(type == "discretionary")
+
+        else if (type == "discretionary")
         {
-            foreach (var item in AccountsTransactions.Where(e => !e.TransactionType.Equals("Bills") 
-            && !e.TransactionType.Equals("Supermarket")))
+            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
+            || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
+            {
+                sum += item.TransactionAmount;
+            }
+        }
+
+        else if (type == "necessary")
+        {
+            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills")
+            || e.TransactionType.Equals("Supermarket")))
             {
                 sum += item.TransactionAmount;
             }
         }
         return (TransAmount / sum) * 100;
+    }
+
+
+    public double PercentageOfTotal(string type)
+    {
+        double sum = 0;
+        double sum2 = 0;
+        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping") 
+        || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
+        {
+            sum += item.TransactionAmount;
+        }
+        discretionaryAmount = sum;
+
+        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills")
+        || e.TransactionType.Equals("Supermarket")))
+        {
+            sum2 += item.TransactionAmount;
+        }
+        necessaryAmount = sum2;
+
+        if (type == "necessary")
+        {
+            return (necessaryAmount / totalAmount) * 100;
+        }
+
+        else
+        {
+            return (discretionaryAmount / totalAmount) * 100;
+        }
     }
 }

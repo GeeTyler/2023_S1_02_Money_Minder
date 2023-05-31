@@ -2,9 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Model;
 using System;
+using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection;
 
 namespace MoneyMinder.Data
 {
@@ -17,99 +21,129 @@ namespace MoneyMinder.Data
             _db = db;
         }
 
-        public List<Stock> GetStocks() 
+        public List<Stock> GetStocks(string sortBy, string sortDirection)
         {
-            return _db.Stock.ToList();
-        }
+            IQueryable<Stock> query = _db.Stock;
 
-        public List<Stock> GetFilteredStocks(string SearchText)
-        {
-            return _db.Stock.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower())).ToList();
-        }
-
-        public List<Stock> getSortedStock(string filter)
-        {
-            List<Stock> toSort = GetStocks();
-            List<Stock> filtered = new List<Stock>();
-            
-            if (filter.Contains("CompanyName"))
+            switch (sortBy)
             {
-                filtered.Add(toSort[0]);
-                for (int i = 1; i < toSort.Count(); i++)
-                {
-                    
-                    for(int b = 0; b < filtered.Count(); b++)
-                    {
-                        int compare = toSort[i].CompanyName.ToLower().CompareTo(filtered[b].CompanyName.ToLower());
-                        if (b == filtered.Count() - 1)
-                        {
-                            filtered.Add(toSort[i]);
-                            break;
-                        }
-                        else if (compare < 0)
-                        {
-                            filtered.Insert(b, toSort[i]);
-                            break;
-                        }
-                    }
-
-                    
-                }
-                
-            }else if (filter.Contains("Market Price"))
-            {
-                filtered.Add(toSort[0]);
-                for (int i = 1; i < toSort.Count(); i++)
-                {
-
-                    for (int b = 0; b < filtered.Count(); b++)
-                    {
-                        int compare = toSort[i].MarketPrice.CompareTo(filtered[b].MarketPrice);
-                        if (b == filtered.Count() - 1)
-                        {
-                            filtered.Add(toSort[i]);
-                            break;
-                        }
-                        else if (compare < 0)
-                        {
-                            filtered.Insert(b, toSort[i]);
-                            break;
-                        }
-                    }
-                }
-                
-            }else if(filter.Contains("Market Capitalisation"))
-            {
-                filtered.Add(toSort[0]);
-                for (int i = 1; i < toSort.Count(); i++)
-                {
-
-                    for (int b = 0; b < filtered.Count(); b++)
-                    {
-                        long compare = Int64.Parse(toSort[i].MarketCap.Replace("$", "").Replace(",",""))- Int64.Parse(filtered[b].MarketCap.Replace("$", "").Replace(",", ""));
-                        if (b == filtered.Count() - 1)
-                        {
-                            filtered.Add(toSort[i]);
-                            break;
-                        }
-                        else if (compare < 0)
-                        {
-                            filtered.Insert(b, toSort[i]);
-                            break;
-                        }
-                    }
-                }
+                case "CompanyName":
+                    query = query.OrderBy(s => s.CompanyName);
+                    break;
+                case "StockCode":
+                    query = query.OrderBy(s => s.StockCode);
+                    break;
+                case "MarketPrice":
+                    query = query.OrderBy(s => s.MarketPrice);
+                    break;
+                case "MarketCap":
+                    query = query.OrderBy(s => s.MarketCap);
+                    break;
+                default:
+                    break;
             }
 
-            return filtered;
+            if (sortDirection == "Descending")
+            {
+                query = query.Reverse();
+            }
+
+            List<Stock> stocks = query.ToList();
+            return stocks;
         }
 
-        public List<MarketPriceData> GetMarketPrices() 
+        public List<Stock> GetFilteredStocks(string SearchText, string SortBy, string Order)
+        {
+            IQueryable<Stock> query = _db.Stock;
+
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                query = query.Where(stock => stock.CompanyName.ToLower().StartsWith(SearchText.ToLower()));
+            }
+
+            switch (SortBy)
+            {
+                case "CompanyName":
+                    query = query.OrderBy(s => s.CompanyName);
+                    break;
+                case "StockCode":
+                    query = query.OrderBy(s => s.StockCode);
+                    break;
+                case "MarketPrice":
+                    query = query.OrderBy(s => s.MarketPrice);
+                    break;
+                case "MarketCap":
+                    query = query.OrderBy(s => s.MarketCap);
+                    break;
+                default:
+                    break;
+            }
+
+            if (Order == "Descending")
+            {
+                query = query.Reverse();
+            }
+
+            List<Stock> stocks = query.ToList();
+            return stocks;
+        }
+
+        public List<string> GetFavoriteStockCodesForUser(string userEmail)
+        {
+            return _db.Favourite
+                .Where(f => f.Email == userEmail)
+                .Select(f => f.StockCode)
+                .ToList();
+        }
+
+        public void FavouriteStock(string Code, string Email)
+        {
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseSqlite("Data Source=MoneyMinder.db")
+                .Options;
+
+            using (var dbContext2 = new DatabaseContext(options))
+            {
+                var existingFavourite = _db.Favourite.FirstOrDefault(f => f.StockCode == Code && f.Email == Email);
+
+                if (existingFavourite != null)
+                {
+                    // User already favorited the company, so delete it
+                    _db.Favourite.Remove(existingFavourite);
+                }
+                else
+                {
+                    // User hasn't favorited the company yet, so add it
+                    var fav = new Favourite()
+                    {
+                        StockCode = Code,
+                        Email = Email
+                    };
+
+                    _db.Favourite.Add(fav);
+                }
+
+                _db.SaveChanges();
+            }
+        }
+
+        public bool IsFavorite(string stockCode, string Email)
+        {
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseSqlite("Data Source=MoneyMinder.db")
+                .Options;
+
+            using (var dbContext2 = new DatabaseContext(options))
+            {
+                return dbContext2.Favourite.Any(f => f.Email == Email && f.StockCode == stockCode);
+            }
+        }
+
+        public List<MarketPriceData> GetMarketPrices()
         {
             return _db.MarketPriceData.ToList();
         }
-
-        public List<BankAccount> GetBankAccounts(string UserEmail) 
+        public List<BankAccount> GetBankAccounts(string UserEmail)
         {
             if (_db.BankAccount == null) 
             {
@@ -150,7 +184,6 @@ namespace MoneyMinder.Data
             {
                 using (var transaction = _db.Database.BeginTransaction())
                 {
-
                     var account = new BankAccount()
                     {
                         AccountNum = randomAccountNum,
@@ -161,9 +194,7 @@ namespace MoneyMinder.Data
                     };
 
                     _db.BankAccount.Add(account);
-                    _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.BankAccount ON;");
                     _db.SaveChanges();
-                    _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.BankAccount OFF;");
                     transaction.Commit();
                 }
             }
@@ -270,28 +301,31 @@ namespace MoneyMinder.Data
 
             toAccount.Balance += Amount;
 
-            var fromTransaction = new Transactions()
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                TrasactionNum = RandomTransactionNum,
-                TransactionType = "Transfer",
-                AccountNum = accountNum,
-                TransactionAmount = -Amount,
-                DateandTime = DateTime.Now,
-            };
-            _db.Transactions.Add(fromTransaction);
+                var fromTransaction = new Transactions()
+                {
+                    TrasactionNum = RandomTransactionNum,
+                    TransactionType = "Transfer",
+                    AccountNum = accountNum,
+                    TransactionAmount = -Amount,
+                    DateandTime = DateTime.Now,
+                };
 
-            var toTransaction = new Transactions()
-            {
-                TrasactionNum = RandomTransactionNumTwo,
-                TransactionType = "Receive Transfer",
-                AccountNum = ToThisAccount,
-                TransactionAmount = Amount,
-                DateandTime = DateTime.Now,
-            };
-            _db.Transactions.Add(toTransaction);
+                var toTransaction = new Transactions()
+                {
+                    TrasactionNum = RandomTransactionNumTwo,
+                    TransactionType = "Receive Transfer",
+                    AccountNum = ToThisAccount,
+                    TransactionAmount = Amount,
+                    DateandTime = DateTime.Now,
+                };
 
-            _db.SaveChanges();
-
+                _db.Transactions.Add(fromTransaction);
+                _db.Transactions.Add(toTransaction);
+                _db.SaveChanges();
+                transaction.Commit();
+            }
         }
 
         public void GenerateRandomTransactions(int AccountNum)
@@ -338,9 +372,7 @@ namespace MoneyMinder.Data
                 };
 
                 _db.Transactions.Add(transactionMade);
-                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions ON;");
                 _db.SaveChanges();
-                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Transactions OFF;");
                 transaction.Commit();
             }
         }

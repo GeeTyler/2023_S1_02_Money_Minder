@@ -5,10 +5,15 @@ namespace MoneyMinder.Data
 {
     public interface IDataAccessService
     {
-        List<Stock> GetStocks();
+        List<Stock> GetStocks(string sortBy, string sortDirection);
 
-        List<Stock> GetFilteredStocks(string SearchText);
-        List<Stock> getSortedStock(string filter);
+        List<Stock> GetFilteredStocks(string SearchText, string SortBy, string Order);
+
+        void FavouriteStock(string Code, string Email);
+
+        List<string> GetFavoriteStockCodesForUser(string userEmail);
+
+        bool IsFavorite(string stockCode, string Email);
 
         List<MarketPriceData> GetMarketPrices();
 
