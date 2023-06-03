@@ -8,6 +8,10 @@ a, .btn-link {
     color: #0366d6;
 }
 
+body{
+    background-color: #F0F0F0;
+}
+
 .darkGray {
     color: #817D7D;
 }
@@ -73,8 +77,9 @@ a, .btn-link {
     right: -10px;
 }
 
-.fav-toggle:focus{
-    border: none;
+.fav-toggle:active, .fav-toggle:focus{
+    border: none !important;
+    outline: none;
 }
 
     .fav-toggle:before {
@@ -86,11 +91,12 @@ a, .btn-link {
         width: 30px; /* Adjust the width to maintain the aspect ratio */
         height: 47px; /* Adjust the height to maintain the aspect ratio */
         border: none;
+        outline: none;
         border-radius: 15px 15px 0 0;
         background-color: #574136;
         content: "";
         cursor: pointer;
-        transition: background .4s;
+        transition: background .1s;
     }
 
     .fav-toggle:after {
@@ -102,11 +108,12 @@ a, .btn-link {
         width: 30px; /* Adjust the width to maintain the aspect ratio */
         height: 47px; /* Adjust the height to maintain the aspect ratio */
         border: none;
+        outline: none;
         border-radius: 15px 15px 0 0;
         background-color: #574136;
         content: "";
         cursor: pointer;
-        transition: background .4s;
+        transition: background .1s;
     }
 
     .fav-toggle.favorited::before,
@@ -115,7 +122,7 @@ a, .btn-link {
     }
 
     .fav-toggle.favorited {
-        animation: liked .4s ease;
+        animation: liked .1s ease;
     }
 
 @keyframes liked {
