@@ -73,6 +73,10 @@ a, .btn-link {
     right: -10px;
 }
 
+.fav-toggle:focus{
+    border: none;
+}
+
     .fav-toggle:before {
         position: absolute;
         top: 0;

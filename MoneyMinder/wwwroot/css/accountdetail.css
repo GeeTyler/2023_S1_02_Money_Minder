@@ -13,6 +13,7 @@
 
 .percentage_of_spending_container {
     border: 1px solid black;
+    margin-left: 100px;
 }
 
 .percentage_of_spending_table {
@@ -41,12 +42,12 @@
 
 .account_number {
     margin: 0;
+    margin-right: 140px;
 }
 
 .transaction_label {
     display: flex;
     flex-wrap: wrap;
-    margin-left: 80px;
     color: #D20202;
 }
 
@@ -203,25 +204,20 @@
     width: 100px;
 }
 
-/*
-.table_description{
-
-}
-
-.table_transaction{
-
-}
-
-.table_category{
-
-}
-*/
-
-        .table_balance {
+.table_transaction_num {
     width: 200px;
 }
 
-/* .table_percentage{
+/*
+.table_transaction_type{
+
+}
+
+.table_transaction_amount{
+
+}
+
+.table_percentage{
 
 } */
 

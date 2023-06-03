@@ -93,9 +93,9 @@
                 <thead class="account_content_table_header">
                     <tr>
                         <th class="table_date" @onclick="@(e => OrderTransactions("Date"))">Date</th>
-                        <th class="table_balance" @onclick="@(e => OrderTransactions("TransactionNum"))">Transaction Number</th>
-                        <th class="table_description" @onclick="@(e => OrderTransactions("TransactionType"))">Transaction Type</th>
-                        <th class="table_transaction" @onclick="@(e => OrderTransactions("TransactionAmount"))">Amount</th>
+                        <th class="table_transaction_num" @onclick="@(e => OrderTransactions("TransactionNum"))">Transaction Number</th>
+                        <th class="table_transaction_type" @onclick="@(e => OrderTransactions("TransactionType"))">Transaction Type</th>
+                        <th class="table_transaction_amount" @onclick="@(e => OrderTransactions("TransactionAmount"))">Amount</th>
                         <th class="table_percentage" @onclick="@(e => OrderTransactions("TransactionAmount"))">Percentage</th>
                     </tr>
                 </thead>
