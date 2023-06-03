@@ -357,7 +357,7 @@ namespace MoneyMinder.Data
                 return start.AddDays(random.Next(range));
             }
 
-            double randomTransactionAmount = random.NextDouble() * (1000 - 1) + 1;
+            double randomTransactionAmount = random.NextDouble() * (500 - 1) + 1;
 
             using (var transaction = _db.Database.BeginTransaction())
             {

@@ -56,17 +56,17 @@
                     </thead>
                     <tbody>
                         <tr>
-                            @if (necessaryAmount != 0 && totalAmount != 0)
+                            @if (NecessaryAmount != 0 && TotalAmount != 0)
                             {
-                                <td>@String.Format("{0:N2}", PercentageOfTotal("necessary"))%</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTotal(TotalAmount, NecessaryAmount))%</td>
                             }
                             else
                             {
                                 <td class="content_spacing">Loading...</td>
                             }
-                            @if (discretionaryAmount != 0 && totalAmount != 0)
+                            @if (DiscretionaryAmount != 0 && TotalAmount != 0)
                             {
-                                <td>@String.Format("{0:N2}", PercentageOfTotal("discretionary"))%</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTotal(TotalAmount, DiscretionaryAmount))%</td>
                             }
                             else
                             {
@@ -90,13 +90,13 @@
 
         <div class="account_content">
             <table class="account_content_table">
-                <thead>
+                <thead class="account_content_table_header">
                     <tr>
-                        <th class="table_date">Date</th>
-                        <th class="table_balance">Transaction Number</th>
-                        <th class="table_description">Transaction Type</th>
-                        <th class="table_transaction">Amount</th>
-                        <th class="table_percentage">Percentage</th>
+                        <th class="table_date" @onclick="@(e => OrderTransactions("Date"))">Date</th>
+                        <th class="table_balance" @onclick="@(e => OrderTransactions("TransactionNum"))">Transaction Number</th>
+                        <th class="table_description" @onclick="@(e => OrderTransactions("TransactionType"))">Transaction Type</th>
+                        <th class="table_transaction" @onclick="@(e => OrderTransactions("TransactionAmount"))">Amount</th>
+                        <th class="table_percentage" @onclick="@(e => OrderTransactions("TransactionAmount"))">Percentage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,7 +111,14 @@
                                     <td>@item.TrasactionNum</td>
                                     <td>@item.TransactionType</td>
                                     <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
-                                    <td>@String.Format("{0:N2}", PercentageOfTransactions("all",item.TransactionAmount))%</td>
+                                    @if (item.TransactionType != "Transfer" && item.TransactionType != "Receive Transfer")
+                                    {
+                                        <td>@String.Format("{0:N2}", PercentageOfTotal(TotalAmount,item.TransactionAmount))%</td>
+                                    }
+                                    else
+                                    {
+                                        <td>-</td>
+                                    }
                                 </tr>
                             }
                         }
@@ -126,7 +133,7 @@
                                 <td>@item.TrasactionNum</td>
                                 <td>@item.TransactionType</td>
                                 <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
-                                <td>@String.Format("{0:N2}", PercentageOfTransactions("discretionary",item.TransactionAmount))%</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTotal(DiscretionaryAmount,item.TransactionAmount))%</td>
                             </tr>
                         }
                     }
@@ -140,7 +147,7 @@
                                 <td>@item.TrasactionNum</td>
                                 <td>@item.TransactionType</td>
                                 <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
-                                <td>@String.Format("{0:N2}", PercentageOfTransactions("necessary",item.TransactionAmount))%</td>
+                                <td>@String.Format("{0:N2}", PercentageOfTotal(NecessaryAmount,item.TransactionAmount))%</td>
                             </tr>
                         }
                     }
@@ -154,7 +161,7 @@
                                 <td>@item.TrasactionNum</td>
                                 <td>@item.TransactionType</td>
                                 <td>$ @String.Format("{0:N2}",item.TransactionAmount)</td>
-                                <td>@String.Format("{0:N2}", PercentageOfTransactions("transfer",item.TransactionAmount))%</td>
+                                <td>-</td>
                             </tr>
                         }
                     }
@@ -177,7 +184,19 @@
     private BankAccount CurrentBankAccount;
     private List<Transactions> AccountsTransactions;
 
-    private double TotalAmount;
+    private string Date = "Date";
+    private string TransactionNumber = "TransactionNum";
+    private string TransactType = "TransactionType";
+    private string TransactAmount = "TransactionAmount";
+    private bool isChecked = false;
+    private bool isClicked = false;
+    private bool isTransfer = false;
+    private bool isNecessary = false;
+    private bool isDiscretionary = false;
+    private bool Descending = false;
+    private double TotalAmount = 0.0;
+    private double NecessaryAmount = 0.0;
+    private double DiscretionaryAmount = 0.0;
 
     async Task<string> getUsersEmail()
     {
@@ -191,17 +210,9 @@
         CurrentBankAccount = DataAccessService.GetBankAccount(Convert.ToInt32(Text));
         AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum)
         .OrderByDescending(t => t.DateandTime).ToList();
+        SetAmounts();
         StateHasChanged();
     }
-
-    private bool isChecked = false;
-    private bool isClicked = false;
-    private bool isTransfer = false;
-    private bool isNecessary = false;
-    private bool isDiscretionary = false;
-    private double totalAmount = 0.0;
-    private double necessaryAmount = 0.0;
-    private double discretionaryAmount = 0.0;
 
     public void clickedOnTransfer(string account)
     {
@@ -219,8 +230,8 @@
     public void GenerateTransaction()
     {
         DataAccessService.GenerateRandomTransactions(CurrentBankAccount.AccountNum);
-        AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum)
-        .OrderByDescending(t => t.DateandTime).ToList();
+        AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum).ToList();
+        SetAmounts();
         StateHasChanged();
     }
 
@@ -257,74 +268,71 @@
         return string.Format("{0:###-###-###}", AccountNum);
     }
 
-    public double PercentageOfTransactions(string type, double TransAmount)
+    public double PercentageOfTotal(double total, double amount)
     {
-        double sum = 0;
-        if (type == "all")
-        {
-            foreach (var item in AccountsTransactions)
-            {
-                sum += item.TransactionAmount;
-            }
-            totalAmount = sum;
-
-        }
-
-        else if (type == "transfer")
-        {
-            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Transfer") || e.TransactionType.Equals("Receive Transfer")))
-            {
-                sum += item.TransactionAmount;
-            }
-        }
-
-        else if (type == "discretionary")
-        {
-            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
-            || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
-            {
-                sum += item.TransactionAmount;
-            }
-        }
-
-        else if (type == "necessary")
-        {
-            foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills")
-            || e.TransactionType.Equals("Supermarket")))
-            {
-                sum += item.TransactionAmount;
-            }
-        }
-        return (TransAmount / sum) * 100;
+        return (amount / total) * 100;
     }
 
-
-    public double PercentageOfTotal(string type)
+    public void SetAmounts()
     {
         double sum = 0;
         double sum2 = 0;
-        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping") 
-        || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
+        double sum3 = 0;
+
+        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
+            || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment") ||
+            e.TransactionType.Equals("Bills") || e.TransactionType.Equals("Supermarket")))
         {
             sum += item.TransactionAmount;
         }
-        discretionaryAmount = sum;
+
+        TotalAmount = sum;
+
+        foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
+        || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
+        {
+            sum2 += item.TransactionAmount;
+        }
+
+        DiscretionaryAmount = sum2;
 
         foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills")
         || e.TransactionType.Equals("Supermarket")))
         {
-            sum2 += item.TransactionAmount;
-        }
-        necessaryAmount = sum2;
-
-        if (type == "necessary")
-        {
-            return (necessaryAmount / totalAmount) * 100;
+            sum3 += item.TransactionAmount;
         }
 
-        else
+        NecessaryAmount = sum3;
+    }
+
+    public void OrderTransactions(string type)
+    {
+        List<Transactions> sortedTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum);
+
+        if (type == "Date")
         {
-            return (discretionaryAmount / totalAmount) * 100;
+            sortedTransactions.Sort((t1, t2) => t1.DateandTime.CompareTo(t2.DateandTime));
         }
+        else if (type == "TransactionNum")
+        {
+            sortedTransactions.Sort((t1, t2) => t1.TrasactionNum.CompareTo(t2.TrasactionNum));
+        }
+        else if (type == "TransactionType")
+        {
+            sortedTransactions.Sort((t1, t2) => t1.TransactionType.CompareTo(t2.TransactionType));
+        }
+        else if (type == "TransactionAmount")
+        {
+            sortedTransactions.Sort((t1, t2) => t2.TransactionAmount.CompareTo(t1.TransactionAmount));
+        }
+
+        if (Descending)
+        {
+            sortedTransactions.Reverse();
+        }
+
+        AccountsTransactions = sortedTransactions;
+        Descending = !Descending;
+        StateHasChanged();
     }
 }

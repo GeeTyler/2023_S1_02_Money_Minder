@@ -195,6 +195,10 @@
     width: 100%;
 }
 
+.account_content_table_header {
+    cursor: pointer;
+}
+
 .table_date {
     width: 100px;
 }
