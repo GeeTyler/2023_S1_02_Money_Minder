@@ -78,6 +78,62 @@
                     }
                 </div>
 
+                @*
+                @if (isEmailClicked)
+                {
+                    <div class="profile_content_container">
+                        <p class="heading_spacing">Email: </p>
+                        <div class="change_input_container">
+                            <input type="text" class="change_input" placeholder="Enter new Email" @bind="Current.Email">
+                            <button class="change_input_check" @onclick="changeEmailClicked">✓</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="profile_content_container">
+                        <p class="heading_spacing">Email: </p>
+                        @if (Current != null)
+                        {
+                            <p class="content_spacing">@Current.Email</p>
+                        }
+                        else
+                        {
+                            <p class="content_spacing">Loading...</p>
+                        }
+                        <button class="btn_in_profile" @onclick="changeEmailClicked">Change</button>
+                    </div>
+                }
+                *@
+
+                @*
+                @if (isPasswordClicked)
+                {
+                    <div class="profile_content_container">
+                        <p class="heading_spacing">Password: </p>
+                        <div class="change_input_container">
+                            <input type="text" class="change_input" placeholder="Enter new password" @bind="Current.">
+                            <button class="change_input_check" @onclick="changePasswordClicked">✓</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="profile_content_container">
+                        <p class="heading_spacing">Password: </p>
+                        @if (Current != null)
+                        {
+                            <p class="content_spacing">@Current.</p>
+                        }
+                        else
+                        {
+                            <p class="content_spacing">Loading...</p>
+                        }
+                        <button class="btn_in_profile" @onclick="changePasswordClicked">Change</button>
+                    </div>
+                }
+                *@
+
                 <br />
                 @if (!isDeleteProfileClicked)
                 {
@@ -222,6 +278,10 @@
     private int deleteAccountNum;
     private bool isFirstNameClicked = false;
     private bool isLastNameClicked = false;
+    @*
+    private bool isEmailClicked = false;
+    private bool isPasswordClicked = false;
+    *@
     private bool isRegisterClicked = false;
     private bool isDeleteProfileClicked = false;
     private bool viewBankAccounts = false;
@@ -269,6 +329,38 @@
             isLastNameClicked = true;
         }
     }
+
+    @*
+    private void changeEmailClicked()
+    {
+        if (isEmailClicked == true)
+        {
+            DataAccessService.changeEmail(Current., Current.);
+            isEmailClicked = false;
+            StateHasChanged();
+        }
+        else
+        {
+            isEmailClicked = true;
+        }
+    }
+    *@
+
+    @*
+    private void changePasswordClicked()
+    {
+        if (isPasswordClicked == true)
+        {
+            DataAccessService.changePassword(Current., Current.);
+            isPasswordClicked = false;
+            StateHasChanged();
+        }
+        else
+        {
+            isPasswordClicked = true;
+        }
+    }
+    *@
 
     private void viewAccountsClicked()
     {
