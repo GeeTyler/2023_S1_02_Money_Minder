@@ -252,6 +252,10 @@ namespace MoneyMinder.Data
 
             _db.BankAccount.RemoveRange(accounts);
 
+            var favs = _db.Favourite.Where(a=>a.Email == Email).ToList();
+
+            _db.Favourite.RemoveRange(favs);
+
             var users = _db.User.Where(a => a.Email == Email).ToList();
 
             _db.User.RemoveRange(users);
