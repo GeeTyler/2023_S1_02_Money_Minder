@@ -106,13 +106,13 @@
                 }
                 *@
 
-                @*
+                
                 @if (isPasswordClicked)
                 {
                     <div class="profile_content_container">
                         <p class="heading_spacing">Password: </p>
                         <div class="change_input_container">
-                            <input type="text" class="change_input" placeholder="Enter new password" @bind="Current.">
+                            <input type="password" class="change_input" placeholder="Enter new password" @bind="NewPassword">
                             <button class="change_input_check" @onclick="changePasswordClicked">✓</button>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                         <p class="heading_spacing">Password: </p>
                         @if (Current != null)
                         {
-                            <p class="content_spacing">@Current.</p>
+                            <p class="content_spacing">**Password is Hidden**</p>
                         }
                         else
                         {
@@ -132,7 +132,6 @@
                         <button class="btn_in_profile" @onclick="changePasswordClicked">Change</button>
                     </div>
                 }
-                *@
 
                 <br />
                 @if (!isDeleteProfileClicked)
@@ -276,12 +275,11 @@
     private string NewBankAccountName = "";
     private int editAccountNum;
     private int deleteAccountNum;
+    private string NewPassword = "";
     private bool isFirstNameClicked = false;
     private bool isLastNameClicked = false;
-    @*
-    private bool isEmailClicked = false;
+    //private bool isEmailClicked = false;
     private bool isPasswordClicked = false;
-    *@
     private bool isRegisterClicked = false;
     private bool isDeleteProfileClicked = false;
     private bool viewBankAccounts = false;
@@ -346,21 +344,20 @@
     }
     *@
 
-    @*
-    private void changePasswordClicked()
+    private async Task changePasswordClicked()
     {
-        if (isPasswordClicked == true)
+        if (isPasswordClicked && NewPassword != "")
         {
-            DataAccessService.changePassword(Current., Current.);
+            var user = await _userManager.GetUserAsync((System.Security.Claims.ClaimsPrincipal)SignInManager.Context.User);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            await _userManager.ResetPasswordAsync(user, token, NewPassword);
             isPasswordClicked = false;
-            StateHasChanged();
         }
         else
         {
             isPasswordClicked = true;
         }
     }
-    *@
 
     private void viewAccountsClicked()
     {
