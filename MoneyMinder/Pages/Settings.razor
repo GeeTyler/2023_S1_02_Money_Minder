@@ -1,0 +1,43 @@
+@page "/settings"
+@layout MainLayout
+
+<h3>Settings</h3>
+
+<p>Select Theme:</p>
+<div>
+    <label>
+        <input type="radio" name="theme" value="light" @onchange="() => SetThemeMode("light")" checked /> Light Mode
+    </label>
+</div>
+<div>
+    <label>
+        <input type="radio" name="theme" value="dark" @onchange="() => SetThemeMode("dark")" /> Dark Mode
+    </label>
+</div>
+
+@code {
+    private string currentTheme = "light";
+
+    private void SetThemeMode(string mode)
+    {
+        currentTheme = mode;
+        UpdateTheme();
+    }
+
+    private void UpdateTheme()
+    {
+        var themeLink = (HtmlLinkElement)document.querySelector("#themeLink");
+
+        if (themeLink != null)
+        {
+            if (currentTheme == "dark")
+            {
+                themeLink.Href = "dark-theme.css"; // Replace with your dark theme CSS file path
+            }
+            else
+            {
+                themeLink.Href = "light-theme.css"; // Replace with your light theme CSS file path
+            }
+        }
+    }
+}
