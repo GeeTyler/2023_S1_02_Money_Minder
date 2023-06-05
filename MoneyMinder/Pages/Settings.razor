@@ -3,41 +3,58 @@
 
 <h3>Settings</h3>
 
-<p>Select Theme:</p>
-<div>
-    <label>
-        <input type="radio" name="theme" value="light" @onchange="() => SetThemeMode("light")" checked /> Light Mode
-    </label>
+<div class="setting-option">
+    <label for="theme">Theme:</label>
+    <select id="theme" @bind="SelectedTheme">
+        <option value="light">Light Mode</option>
+        <option value="dark">Dark Mode</option>
+    </select>
 </div>
-<div>
-    <label>
-        <input type="radio" name="theme" value="dark" @onchange="() => SetThemeMode("dark")" /> Dark Mode
-    </label>
+
+<div class="setting-option">
+    <label for="font-size">Font Size:</label>
+    <select id="font-size" @bind="SelectedFontSize">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+    </select>
 </div>
 
 @code {
-    private string currentTheme = "light";
+    private string SelectedTheme { get; set; } = "light";
+    private string SelectedFontSize { get; set; } = "medium";
 
-    private void SetThemeMode(string mode)
+    protected override void OnInitialized()
     {
-        currentTheme = mode;
-        UpdateTheme();
+        // Apply initial settings when the component is initialized
+        ApplySettings();
     }
 
-    private void UpdateTheme()
+    private void ApplySettings()
     {
-        var themeLink = (HtmlLinkElement)document.querySelector("#themeLink");
+        // Update CSS variables based on the selected theme and font size
+        var theme = SelectedTheme == "dark" ? "dark-theme.css" : "light-theme.css";
+        var fontSize = SelectedFontSize == "small" ? "14px" :
+                       SelectedFontSize == "medium" ? "16px" :
+                       SelectedFontSize == "large" ? "18px" : "16px";
 
-        if (themeLink != null)
+        var root = document.documentElement;
+
+        root.Style.SetProperty("--font-size", fontSize);
+
+        // Load the CSS file for the selected theme
+        var themeLink = document.CreateElement("link");
+        themeLink.Href = theme;
+        themeLink.Rel = "stylesheet";
+        themeLink.Id = "theme-link";
+
+        var existingThemeLink = document.GetElementById("theme-link");
+        if (existingThemeLink != null)
         {
-            if (currentTheme == "dark")
-            {
-                themeLink.Href = "dark-theme.css";
-            }
-            else
-            {
-                themeLink.Href = "light-theme.css";
-            }
+            // Remove the existing theme link if it exists
+            existingThemeLink.Remove();
         }
+
+        document.Head.AppendChild(themeLink);
     }
 }
