@@ -6,3 +6,5 @@ When using this application. Before running make sure to open the Nuget package 
 Then type in the console -> add-migration Initial -> update-database
 
 Then you can start using the program.
+
+ 
