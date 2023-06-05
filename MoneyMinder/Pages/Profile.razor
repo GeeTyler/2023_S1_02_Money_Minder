@@ -212,7 +212,7 @@
                         {
                             foreach (var item in MyBankAccounts)
                             {
-                                <div class="profile_content_container">
+                                <div class="bankaccount_content_container">
                                     <div class="account_content_container">
                                         <div class="account_number_container">
                                             <p class="content_spacing">@item.Name</p>
@@ -220,8 +220,10 @@
                                             <br />
                                             <p class="content_spacing">$@String.Format("{0:N2}",item.Balance)</p>
                                             <p class="content_spacing">Blocked status: @item.Blocked</p>
-                                            <button class="btn_in_profile delete_btn" @onclick="(args) => deleteAccountClicked(item.AccountNum)">Delete Account</button>
+                                        </div>
+                                        <div class="btns_in_account_container">
                                             <button class="btn_in_profile" @onclick="(args) => editAccountNameClicked(item.AccountNum)">Change Name</button>
+                                            <button class="btn_in_profile delete_btn" @onclick="(args) => deleteAccountClicked(item.AccountNum)">Delete Account</button>
                                         </div>
                                     </div>
                                 </div>
@@ -330,9 +332,10 @@
         }
     }
 
-    @*
+    
     private void changeEmailClicked()
     {
+        @*
         if (isEmailClicked == true)
         {
             DataAccessService.changeEmail(Current., Current.);
@@ -343,12 +346,14 @@
         {
             isEmailClicked = true;
         }
+        *@
     }
-    *@
+ 
 
-    @*
+
     private void changePasswordClicked()
     {
+        @*
         if (isPasswordClicked == true)
         {
             DataAccessService.changePassword(Current., Current.);
@@ -359,8 +364,8 @@
         {
             isPasswordClicked = true;
         }
+        *@
     }
-    *@
 
     private void viewAccountsClicked()
     {
