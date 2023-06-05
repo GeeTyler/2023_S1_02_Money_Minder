@@ -376,5 +376,40 @@ namespace MoneyMinder.Data
                 transaction.Commit();
             }
         }
+
+        public void ChangeUsersEmail(string currentEmail, string newEmail)
+        {
+            // Update the User table
+            var user = _db.User.FirstOrDefault(u => u.Email.Equals(currentEmail));
+            if (user != null)
+            {
+                // Check if the new email already exists
+                var existingUser = _db.User.FirstOrDefault(u => u.Email.Equals(newEmail));
+                if (existingUser != null)
+                {
+                    // Email already exists
+                    return;
+                }
+
+                user.Email = newEmail;
+            }
+
+            // Update the Favourite table
+            var favourites = _db.Favourite.Where(f => f.Email.Equals(currentEmail));
+            foreach (var favourite in favourites)
+            {
+                favourite.Email = newEmail;
+            }
+
+            // Update the BankAccount table
+            var bankAccounts = _db.BankAccount.Where(b => b.Email.Equals(currentEmail));
+            foreach (var bankAccount in bankAccounts)
+            {
+                bankAccount.Email = newEmail;
+            }
+
+            // Save the changes
+            _db.SaveChanges();
+        }
     }
 }

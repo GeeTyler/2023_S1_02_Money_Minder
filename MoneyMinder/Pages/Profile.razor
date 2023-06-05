@@ -66,26 +66,13 @@
                     </div>
                 }
 
-                <div class="profile_content_container">
-                    <p class="heading_spacing">Email: </p>
-                    @if (Current != null)
-                    {
-                        <p class="content_spacing">@Current.Email</p>
-                    }
-                    else
-                    {
-                        <p class="content_spacing">Loading...</p>
-                    }
-                </div>
-
-                @*
                 @if (isEmailClicked)
                 {
                     <div class="profile_content_container">
                         <p class="heading_spacing">Email: </p>
                         <div class="change_input_container">
-                            <input type="text" class="change_input" placeholder="Enter new Email" @bind="Current.Email">
-                            <button class="change_input_check" @onclick="changeEmailClicked">✓</button>
+                            <input type="email" class="change_input" placeholder="Enter new Email" @bind="NewEmail">
+                            <button class="change_input_check" @onclick="ChangeEmailClicked">✓</button>
                         </div>
                     </div>
                 }
@@ -101,10 +88,9 @@
                         {
                             <p class="content_spacing">Loading...</p>
                         }
-                        <button class="btn_in_profile" @onclick="changeEmailClicked">Change</button>
+                        <button class="btn_in_profile" @onclick="ChangeEmailClicked">Change</button>
                     </div>
                 }
-                *@
 
                 
                 @if (isPasswordClicked)
@@ -278,9 +264,10 @@
     private int editAccountNum;
     private int deleteAccountNum;
     private string NewPassword = "";
+    private string NewEmail = "";
     private bool isFirstNameClicked = false;
     private bool isLastNameClicked = false;
-    //private bool isEmailClicked = false;
+    private bool isEmailClicked = false;
     private bool isPasswordClicked = false;
     private bool isRegisterClicked = false;
     private bool isDeleteProfileClicked = false;
@@ -330,13 +317,44 @@
         }
     }
 
-    @*
-    private void changeEmailClicked()
+    private async Task ChangeEmailClicked()
     {
-        @*
-        if (isEmailClicked == true)
+        if (isEmailClicked)
         {
-            DataAccessService.changeEmail(Current., Current.);
+            // Get the current user
+            var user = await _userManager.GetUserAsync((System.Security.Claims.ClaimsPrincipal)SignInManager.Context.User);
+
+            // Validate the email format
+            if (!IsValidEmail(NewEmail))
+            {
+                // Invalid email format
+                return;
+            }
+
+            // Check if the new email already exists
+            var existingUser = await _userManager.FindByEmailAsync(NewEmail);
+            if (existingUser != null && existingUser.Id != user.Id)
+            {
+                // Email already exists
+                return;
+            }
+
+            // Update the user's email
+            user.Email = NewEmail;
+            user.UserName = NewEmail;
+
+            // Save the changes
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                // Email updated successfully
+                DataAccessService.ChangeUsersEmail(Current.Email, NewEmail);
+            }
+            else
+            {
+                // Error updating the email
+            }
+
             isEmailClicked = false;
             StateHasChanged();
         }
@@ -345,7 +363,19 @@
             isEmailClicked = true;
         }
     }
-    *@
+
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var address = new System.Net.Mail.MailAddress(email);
+            return address.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     private async Task changePasswordClicked()
     {
@@ -361,6 +391,7 @@
             isPasswordClicked = true;
         }
     }
+
 
     private void viewAccountsClicked()
     {
