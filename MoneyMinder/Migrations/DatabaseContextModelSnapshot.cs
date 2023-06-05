@@ -330,6 +330,10 @@ namespace MoneyMinder.Migrations
 
             modelBuilder.Entity("MoneyMinder.Model.User", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
@@ -341,7 +345,7 @@ namespace MoneyMinder.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Email");
+                    b.HasKey("Id");
 
                     b.ToTable("User");
                 });

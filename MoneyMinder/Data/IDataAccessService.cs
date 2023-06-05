@@ -46,5 +46,7 @@ namespace MoneyMinder.Data
         void AddTransfer(int accountNum, int ToThisAccount, double Amount);
 
         void GenerateRandomTransactions(int AccountNum);
+
+        void ChangeUsersEmail(string currentEmail, string newEmail);
     }
 }
