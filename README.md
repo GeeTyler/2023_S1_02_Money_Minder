@@ -70,39 +70,39 @@ Text
 
 AccountDetail.razor:
 
-
+Description
 
 BankAccounts.razor:
 
-
+Description
 
 Company.razor:
 
-
+Description
 
 Login.razor:
 
-
+Description
 
 Profile.razor:
 
-
+Description
 
 Settings.razor:
 
-
+Description
 
 Signup.razor:
 
-
+Description
 
 StockMarket.razor:
 
-
+Description
 
 Transfer.razor:
 
-
+Description
 
 <hr>
 
