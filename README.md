@@ -68,7 +68,41 @@ Text
 
 ### Pages:
 
-Text
+AccountDetail.razor:
+
+
+
+BankAccounts.razor:
+
+
+
+Company.razor:
+
+
+
+Login.razor:
+
+
+
+Profile.razor:
+
+
+
+Settings.razor:
+
+
+
+Signup.razor:
+
+
+
+StockMarket.razor:
+
+
+
+Transfer.razor:
+
+
 
 <hr>
 
