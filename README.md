@@ -58,7 +58,32 @@ solution not only benefits individuals but also serves as a powerful tool for bi
 
 #### Installation Steps:
 
-Text
+Step 1:<br><br>
+
+Download the latest version of Visual Studio from the offical website: https://visualstudio.microsoft.com/.<br><br>
+
+Step 2:<br><br>
+
+Now you can add the ASP.NET and web development workload to your Visual Studio setup:<br><br>
+
+• Select the Windows key, type Visual Studio Installer, and press Enter.<br>
+• If prompted, allow the installer to update itself.<br>
+• If an update for Visual Studio 2022 is available, an Update button will be shown. Select it to update before modifying the installation.<br>
+• Find your Visual Studio 2022 installation and select the Modify button.<br>
+• If not selected already, select the ASP.NET and web development workload and select the Modify button. Otherwise, just close the dialog 
+window.<br><br>
+
+Step 3:<br><br>
+
+Now you can clone this repository in your Visual Studio editor or you can just download it to your local machine and run it that way.<br><br>
+
+Step 4:<br><br>
+
+Now press the play button in your Visual Studio IDE and the program should start up.<br><br>
+
+Facing any errors or difficulties:<br><br>
+
+Visit this website for a comprehensive guide on running the program: https://dotnet.microsoft.com/en-us/learn/aspnet/blazor-tutorial/install
 
 <hr>
 
