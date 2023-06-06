@@ -9,7 +9,7 @@
 
 <hr>
 
-### Table of Contents
+### Table of Contents:
 - [Description](#description)<br>
   - [Overview](#overview)<br>
   - [Key Features](#key-features)<br>
