@@ -39,11 +39,8 @@ solution not only benefits individuals but also serves as a powerful tool for bi
 #### Key Features:
 
 • Be able to view account balances, make transfers in between personal accounts and external accounts.<br>
-• Buisness' can view invoices made between them for easier viewing.<br>
 • Be able to view the current stock market, make stock purchases and sell stocks.<br>
 • Description on each stock company will be provided, making it easier for the user to know more before investing.<br>
-• A parent/guardian can link their child's account to their own so they are able to view and manage it from thier own account.<br>
-• A consumer will be able to get future predictions on their assets (e.g kiwisaver amount in 10 years time).<br>
 • Bright and easy to read UI.
 
 <hr>
@@ -104,57 +101,59 @@ Now you can start using the program.
 
 #### Using the Program:
 
-Text
+Once the program loads up, you should be on a signin page. There should be 2 buttons: a login button and a registration button. Click on the 
+registration button to register your account. Once you are register you can go and log in to your account. Once you log in you should be on the 
+main home page of the program. You should now be able to see all the pages on the left hand side navigation bar and interact with the program. All the pages should be self-explanatory.
 
 <hr>
 
 ### Pages:
 
-AccountDetail.razor:
+<br>AccountDetail.razor:
 
-Description
+A page containing all the details of a particular account.<br><br>
 
 BankAccounts.razor:
 
-Description
+A page containing all the bank accounts linked to a particular account.<br><br>
 
 Company.razor:
 
-Description
+A page containing all the different companies on the stock market.<br><br>
 
 Login.razor:
 
-Description
+A page containing the login system for this program.<br><br>
 
 Profile.razor:
 
-Description
+A page containing the profile details for a particular account that the user can change it they want.<br><br>
 
 Settings.razor:
 
-Description
+A page containing the settings for the program (i.e theme setting and font size).<br><br>
 
 Signup.razor:
 
-Description
+A page containing the signup system for this program.<br><br>
 
 StockMarket.razor:
 
-Description
+A page containing the stock market details for the program.<br><br>
 
 Transfer.razor:
 
-Description
+A page containing the money transfer system for the program.<br>
 
 <hr>
 
 ### Contributors:
 
-• Arzan Mohta<br>(Product Owner)<br><br>
+• Arzan Mohta<br>(Development Team)<br><br>
 • Dmitry Kirov<br>(Development Team)<br><br>
-• Michael Moon<br>(Development Team)<br><br>
+• Michael Moon<br>(Scrum Master)<br><br>
 • Shreyas Singh<br>(Development Team)<br><br>
-• Tyler Gee<br>(Scrum Master)
+• Tyler Gee<br>(Product Owner)
 
 <hr>
 
