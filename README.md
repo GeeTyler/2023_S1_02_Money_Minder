@@ -8,11 +8,23 @@
 
 ### Description:
 
+#### Overview:
+
+Text
+
+#### Key Features:
+
 Text
 
 <hr>
 
 ### Installation:
+
+#### Prerequisites:
+
+Text
+
+#### Installation Steps:
 
 Text
 
@@ -20,12 +32,18 @@ Text
 
 ### Usage:
 
-Be sure to open this program in Visual Studio.
+#### Configuration settings:
+
+Be sure to open this program in Visual Studio on a Windows device.
 
 When using this application. Before running make sure to open the Nuget package manager console in Visual Studio. 
 Then type in the console -> add-migration Initial -> update-database
 
 Then you can start using the program.
+
+#### Using the Program:
+
+Text
 
 <hr>
 
@@ -38,3 +56,11 @@ Text
 ### Contributors:
 
 Text
+
+<hr>
+
+### Credits:
+
+Text
+
+<hr>
