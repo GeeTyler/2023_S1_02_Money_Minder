@@ -19,31 +19,6 @@
     </div>
 
     <div class="content px-4">
-        @if (IsDarkMode)
-        {
-            <DarkTheme>
-                @Body
-            </DarkTheme>
-        }
-        else
-        {
-            <LightTheme>
-                @Body
-            </LightTheme>
-        }
+        @Body
     </div>
 </div>
-
-@code {
-    private bool isDarkMode;
-
-    private bool IsDarkMode
-    {
-        get => isDarkMode;
-        set
-        {
-            isDarkMode = value;
-            // Update the theme settings or trigger a theme change event here
-        }
-    }
-}
