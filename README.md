@@ -52,7 +52,9 @@ solution not only benefits individuals but also serves as a powerful tool for bi
 
 #### Prerequisites:
 
-Text
+• A device that can run windows
+• The latest version of Visual Studio
+• The .NET SDK
 
 #### Installation Steps:
 
