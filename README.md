@@ -9,6 +9,20 @@
 
 <hr>
 
+### Table of Contents
+- [Description](#description)<br>
+  - [Overview](#overview)<br>
+  - [Key Features](#key-features)<br>
+- [Installation](#installation)<br>
+  - [Prerequisites](#prerequisites)
+  - [Installation Steps](installation-steps)
+- [Usage](#usage)<br>
+  - [Configuration settings](#configuration-settings)
+  - [Using the Program](#using-the-program)
+- [Pages](#pages)<br>
+- [Contributors](#contributors)<br>
+- [Credits](#credits)<br>
+
 ### Description:
 
 #### Overview:
@@ -35,7 +49,7 @@ Text
 
 ### Usage:
 
-#### Configuration settings:
+#### Configuration Settings:
 
 Be sure to open this program in Visual Studio on a Windows device.
 
