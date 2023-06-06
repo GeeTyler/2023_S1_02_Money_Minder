@@ -48,8 +48,6 @@ namespace MoneyMinder
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<DatabaseContext>();
-            
-            services.AddSingleton<IJSRuntime, JSRuntime>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
