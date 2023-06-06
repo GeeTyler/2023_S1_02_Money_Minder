@@ -165,7 +165,9 @@
     {
         Current = DataAccessService.GetUser(await getUsersEmail());
         Stocks = DataAccessService.GetStocks(SortBy, Order);
+        StateHasChanged();
     }
+
 
     async Task<string> getUsersEmail()
     {

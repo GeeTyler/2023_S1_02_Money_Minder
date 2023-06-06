@@ -3,14 +3,18 @@
 @attribute [IgnoreAntiforgeryToken]
 @inject SignInManager<IdentityUser> SignInManager
 
-@functions{
+@functions {
+    // Handles the GET request for the logout page
     public async Task<IActionResult> OnGet()
     {
-        if(SignInManager.IsSignedIn(User))
+        // Check if the user is signed in
+        if (SignInManager.IsSignedIn(User))
         {
+            // Sign out the user
             await SignInManager.SignOutAsync();
         }
 
+        // Redirect the user to the home page
         return Redirect("~/");
     }
 }

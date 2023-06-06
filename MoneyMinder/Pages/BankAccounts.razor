@@ -29,12 +29,18 @@
         }
         @if (MyBankAccounts == null || MyBankAccounts.Count == 0)
         {
-            <br /><br /><br /><br />
+            <br />
+
+            <br />
+
+            <br />
+
+            <br />
             <h2 class="text-center">You have no Bank Accounts registered.</h2>
             <br />
             <div class="text-center">
                 <p class="text-center">Click here to go register an account</p>
-                <br/>
+                <br />
                 <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
                     <button class="btn_in_profile">Register</button>
                 </NavLink>
@@ -42,39 +48,36 @@
         }
     </Authorized>
     <NotAuthorized>
-        <p role="status">You are not authorised to see this component</p>
+        <p role="status">You are not authorized to see this component</p>
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private int AccountNum;
-
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-    private User Current;
-    private List<BankAccount> MyBankAccounts;
+    private Task<AuthenticationState> authenticationStateTask { get; set; } //Gets the authentication state
+    private User Current; //Stores the current user
+    private List<BankAccount> MyBankAccounts; //Stores the bank accounts
 
     async Task<string> getUsersEmail()
     {
-        var user = (await authenticationStateTask).User;
-        return user.Identity.Name;
+        var user = (await authenticationStateTask).User; //Retrieves the user from the authentication state
+        return user.Identity.Name; //Returns the user's email address
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Current = DataAccessService.GetUser(await getUsersEmail());
-        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
-        StateHasChanged();
+        Current = DataAccessService.GetUser(await getUsersEmail()); //Retrieves the current user
+        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email); //Retrieves the bank accounts for the current user
+        StateHasChanged(); //Notifies the component that its state has changed
     }
 
     public void clickedOnAccount(int account)
     {
-        NavManager.NavigateTo("/bankaccounts/" + account);
+        NavManager.NavigateTo("/bankaccounts/" + account); //Navigates to the account details page for the selected account
     }
 
     public string ConvertAccountNumToString(int AccountNum)
     {
-        return string.Format("{0:###-###-###}", AccountNum);
+        return string.Format("{0:###-###-###}", AccountNum); //Converts the account number to a formatted string
     }
-
 }

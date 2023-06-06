@@ -78,39 +78,48 @@
 </AuthorizeView>
 
 @code {
+    //Defines a parameter named "Text" of type string
     [Parameter]
     public string Text { get; set; }
 
-
+    //Declares a cascading parameter named "authenticationStateTask" of type Task<AuthenticationState>
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    private User Current;
-    private List<BankAccount> MyBankAccounts;
+    //Declares private variables
+    private User Current; //Represents the current user
+    private List<BankAccount> MyBankAccounts; //Represents the list of bank accounts associated with the current user
 
+    //Retrieves the email of the user asynchronously
     async Task<string> getUsersEmail()
     {
         var user = (await authenticationStateTask).User;
         return user.Identity.Name;
     }
 
+    //Executed when the component is initialized asynchronously
     protected override async Task OnInitializedAsync()
     {
+        //Retrieves the current user based on the email
         Current = DataAccessService.GetUser(await getUsersEmail());
+
+        //Retrieves the bank accounts associated with the current user
         MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
+
+        //Notifies the component that its state has changed
         StateHasChanged();
     }
 
-    private BankAccount fromAccount = new BankAccount();
-    private BankAccount toAccount = new BankAccount();
+    //Declares additional private variables
+    private BankAccount fromAccount = new BankAccount(); //Represents the selected "from" bank account
+    private BankAccount toAccount = new BankAccount(); //Represents the selected "to" bank account
+    private string from; //Represents the selected "from" account number as a string
+    private string to; //Represents the selected "to" account number as a string
+    private bool disabled = true; //Indicates whether the transfer button is disabled or not
+    private bool cantTransferTo = true; //Indicates whether it is possible to transfer to the selected account or not
+    public double amount { get; set; } //Represents the transfer amount
 
-    private string from;
-    private string to;
-    private bool disabled = true;
-    private bool cantTransferTo = true;
-
-    public double amount { get; set; }
-
+    //Checks if both the "from" and "to" accounts are selected
     private void CheckAccounts()
     {
         if (from != null && to != null)
@@ -123,6 +132,7 @@
         }
     }
 
+    //Updates the selected "from" account when changed
     private void OnFromChanged(ChangeEventArgs e)
     {
         from = e.Value.ToString();
@@ -131,6 +141,7 @@
         StateHasChanged();
     }
 
+    //Updates the selected "to" account when changed
     private void OnToChanged(ChangeEventArgs e)
     {
         to = e.Value.ToString();
@@ -139,6 +150,7 @@
         StateHasChanged();
     }
 
+    //Updates the transfer amount when changed and checks if transfer is possible
     private void OnAmountChanged(ChangeEventArgs e)
     {
         if (double.TryParse(e.Value.ToString(), out double parsedAmount))
@@ -148,10 +160,11 @@
         }
         else
         {
-
+            
         }
     }
 
+    //Checks if the transfer is possible based on account balances and conditions
     private void CheckTransfer()
     {
         if (fromAccount.Balance - amount < 0 || fromAccount.Blocked == true || amount < 0 || fromAccount == toAccount)
@@ -164,10 +177,16 @@
         }
     }
 
+    //Makes the transfer between accounts
     public void MakeTransfer()
     {
-            DataAccessService.AddTransfer(fromAccount.AccountNum, toAccount.AccountNum, amount);
-            StateHasChanged();
-            NavManager.NavigateTo("/bankaccounts/"+fromAccount.AccountNum);
+        //Adds the transfer transaction using the data access service
+        DataAccessService.AddTransfer(fromAccount.AccountNum, toAccount.AccountNum, amount);
+
+        //Notifies the component that its state has changed
+        StateHasChanged();
+
+        //Navigates to the bank accounts page for the "from" account
+        NavManager.NavigateTo("/bankaccounts/" + fromAccount.AccountNum);
     }
 }

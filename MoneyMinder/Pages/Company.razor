@@ -106,7 +106,7 @@
                         <th>AdjClose</th>
                         <th>Volume</th>
                     </tr>
-                    @foreach (var item in MarketPriceReverse)
+                    @foreach (var item in MarketPrices)
                     {
                         <tr>
                             <td>@item.Date.ToShortDateString()</td>
@@ -129,32 +129,31 @@
 
 
 @code {
+    //Defines a parameter named "Text" of type string
     [Parameter]
-    public string Text{ get; set; }
+    public string Text { get; set; }
 
-    public double CurrentPrice;
-    public bool isGraph = true;
-    public bool isTable = false;
+    public double CurrentPrice; //Represents the current price
+    public bool isGraph = true; //Indicates whether the graph view is active
+    public bool isTable = false; //Indicates whether the table view is active
 
-    public List<MarketPriceData> MarketPrices = new List<MarketPriceData>();
-    public List<MarketPriceData> MarketPriceReverse = new List<MarketPriceData>();
+    public List<MarketPriceData> MarketPrices = new List<MarketPriceData>(); //Represents a list of market price data
 
-
+    //Toggles between the graph and table view
     private void viewChangeClicked()
     {
         isGraph = !isGraph;
         isTable = !isTable;
     }
 
+    //Executed when the component is initialized
     protected override void OnInitialized()
     {
-        MarketPriceReverse = DataAccessService.GetMarketPrices();
-        MarketPriceReverse.Reverse();
+        //Retrieves the market price data
         MarketPrices = DataAccessService.GetMarketPrices();
-        CurrentPrice = MarketPriceReverse[0].Close;
-    }
 
-    IEnumerable<ColorScheme> colorSchemes = Enum.GetValues(typeof(ColorScheme)).Cast<ColorScheme>();
-    ColorScheme colorScheme = ColorScheme.Palette;
+        //Sets the current price to the close price of the first market price data entry
+        CurrentPrice = MarketPrices[0].Close;
+    }
    
 }

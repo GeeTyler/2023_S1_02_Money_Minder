@@ -37,6 +37,7 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                //Find user by email
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null)
                 {
@@ -44,9 +45,11 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    //Check if the entered password is valid
                     var passwordValid = await _userManager.CheckPasswordAsync(user, Input.Password);
                     if (passwordValid)
                     {
+                        //Sign in the user with the entered email and password
                         var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password,
                             isPersistent: false, lockoutOnFailure: false);
 
@@ -64,13 +67,13 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
             return Page();
         }
 
-
         public class InputModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-        [Required]
+        {
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; }
+
+            [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
         }

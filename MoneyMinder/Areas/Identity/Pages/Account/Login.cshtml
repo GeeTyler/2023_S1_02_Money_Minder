@@ -5,17 +5,25 @@
     <div class="col-12 row">
         <section>
             <form id="account" method="post">
+
+                <!-- Display validation errors for the model -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Email address-->
                 <div class="form-floating col-8 row" style="margin:50px">
                     <label asp-for="Input.Email" class="form-label">Email:</label>
                     <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
+
+                <!-- Password -->
                 <div class="form-floating col-8 row" style="margin:50px">
                     <label asp-for="Input.Password" class="form-label">Password:</label>
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    <!-- Display custom validation error message for incorrect password -->
                     @if (!ModelState.IsValid)
                     {
+                        <!--Loop through model state errors and display the error message if it matches "Incorrect Password." -->
                         <span asp-validation-for="Input.Password" class="text-danger">
                             @foreach (var modelState in ViewData.ModelState.Values)
                             {
@@ -30,9 +38,13 @@
                         </span>
                     }
                 </div>
+
+                <!--  Login Button -->
                 <div style="margin:10px">
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary"> Log In</button>
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log In</button>
                 </div>
+
+                <!-- Register page button -->
                 <div style="margin:10px">
                     <a href="/Register" class="col-3">Sign up</a>
                 </div>

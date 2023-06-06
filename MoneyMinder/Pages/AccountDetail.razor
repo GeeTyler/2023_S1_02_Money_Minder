@@ -175,66 +175,92 @@
 </AuthorizeView>
 
 @code {
+    //Defines a parameter named "Text" of type string
     [Parameter]
     public string Text { get; set; }
 
+    //Declares a cascading parameter named "authenticationStateTask" of type Task<AuthenticationState>
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
-    private User Current;
-    private BankAccount CurrentBankAccount;
-    private List<Transactions> AccountsTransactions;
 
-    private string Date = "Date";
-    private string TransactionNumber = "TransactionNum";
-    private string TransactType = "TransactionType";
-    private string TransactAmount = "TransactionAmount";
-    private bool isChecked = false;
-    private bool isClicked = false;
-    private bool isTransfer = false;
-    private bool isNecessary = false;
-    private bool isDiscretionary = false;
-    private bool Descending = false;
-    private double TotalAmount = 0.0;
-    private double NecessaryAmount = 0.0;
-    private double DiscretionaryAmount = 0.0;
+    //Declares private variables
+    private User Current; //Represents the current user
+    private BankAccount CurrentBankAccount; //Represents the current bank account
+    private List<Transactions> AccountsTransactions; //Represents the list of transactions associated with the current bank account
 
+    //Declares additional private variables
+    private bool isChecked = false; //Indicates whether the bank account is blocked or not
+    private bool isTransfer = false; //Indicates whether the transfer option is selected
+    private bool isNecessary = false; //Indicates whether the necessary option is selected
+    private bool isDiscretionary = false; //Indicates whether the discretionary option is selected
+    private bool Descending = false; //Indicates the order of transactions (ascending or descending)
+    private double TotalAmount = 0.0; //Represents the total amount of transactions
+    private double NecessaryAmount = 0.0; //Represents the total amount of necessary transactions
+    private double DiscretionaryAmount = 0.0; //Represents the total amount of discretionary transactions
+
+    //Retrieves the email of the user asynchronously
     async Task<string> getUsersEmail()
     {
         var user = (await authenticationStateTask).User;
         return user.Identity.Name;
     }
 
+    //Executed when the component is initialized asynchronously
     protected override async Task OnInitializedAsync()
     {
+        //Retrieves the current user and bank account based on the provided email
         Current = DataAccessService.GetUser(await getUsersEmail());
         CurrentBankAccount = DataAccessService.GetBankAccount(Convert.ToInt32(Text));
+
+        //Retrieves the transactions associated with the current bank account and orders them in descending order by date and time
         AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum)
-        .OrderByDescending(t => t.DateandTime).ToList();
+            .OrderByDescending(t => t.DateandTime).ToList();
+
+        //Sets the amounts for different types of transactions
         SetAmounts();
+
+        //Notifies the component that its state has changed
         StateHasChanged();
     }
 
+    //Navigates to the transfer page with the provided account number
     public void clickedOnTransfer(string account)
     {
         NavManager.NavigateTo("/transfer/" + account);
     }
 
+    //Toggles the checked status of the bank account
     private void changedChecked()
     {
         isChecked = !isChecked;
+
+        //Updates the checked status of the bank account in the data access service
         DataAccessService.BlockBankAccount(CurrentBankAccount.AccountNum, isChecked);
+
+        //Retrieves the updated bank account from the data access service
         CurrentBankAccount = DataAccessService.GetBankAccount(Convert.ToInt32(Text));
+
+        //Notifies the component that its state has changed
         StateHasChanged();
     }
 
+    //Generates random transactions for the current bank account
     public void GenerateTransaction()
     {
+        //Generates random transactions for the current bank account using the data access service
         DataAccessService.GenerateRandomTransactions(CurrentBankAccount.AccountNum);
+
+        //Retrieves the updated list of transactions for the current bank account
         AccountsTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum).ToList();
+
+        //Sets the amounts for different types of transactions
         SetAmounts();
+
+        //Notifies the component that its state has changed
         StateHasChanged();
     }
 
+    //Sets the transfer option as selected
     private void TransferClicked()
     {
         isNecessary = false;
@@ -242,6 +268,7 @@
         isTransfer = !isTransfer;
     }
 
+    //Sets the necessary option as selected
     private void NecessaryClicked()
     {
         isTransfer = false;
@@ -249,6 +276,7 @@
         isNecessary = !isNecessary;
     }
 
+    //Sets the discretionary option as selected
     private void DiscretionaryClicked()
     {
         isTransfer = false;
@@ -256,6 +284,7 @@
         isDiscretionary = !isDiscretionary;
     }
 
+    //Deselects all options
     private void AllClicked()
     {
         isTransfer = false;
@@ -263,52 +292,58 @@
         isDiscretionary = false;
     }
 
+    //Converts the account number to a formatted string
     public string ConvertAccountNumToString(int AccountNum)
     {
         return string.Format("{0:###-###-###}", AccountNum);
     }
 
+    //Calculates the percentage of amount with respect to the total
     public double PercentageOfTotal(double total, double amount)
     {
         return (amount / total) * 100;
     }
 
+    //Sets the total, necessary, and discretionary amounts based on the transactions
     public void SetAmounts()
     {
         double sum = 0;
         double sum2 = 0;
         double sum3 = 0;
 
+        //Calculates the total amount by summing the transaction amounts for specific types
         foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
             || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment") ||
             e.TransactionType.Equals("Bills") || e.TransactionType.Equals("Supermarket")))
         {
             sum += item.TransactionAmount;
         }
-
         TotalAmount = sum;
 
+        //Calculates the discretionary amount by summing the transaction amounts for specific types
         foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Shopping")
-        || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
+            || e.TransactionType.Equals("Eating Out") || e.TransactionType.Equals("Entertainment")))
         {
             sum2 += item.TransactionAmount;
         }
-
         DiscretionaryAmount = sum2;
 
+        //Calculates the necessary amount by summing the transaction amounts for specific types
         foreach (var item in AccountsTransactions.Where(e => e.TransactionType.Equals("Bills")
-        || e.TransactionType.Equals("Supermarket")))
+            || e.TransactionType.Equals("Supermarket")))
         {
             sum3 += item.TransactionAmount;
         }
-
         NecessaryAmount = sum3;
     }
 
+    //Orders the transactions based on the provided type
     public void OrderTransactions(string type)
     {
+        //Retrieves the transactions for the current bank account
         List<Transactions> sortedTransactions = DataAccessService.GetTransactions(CurrentBankAccount.AccountNum);
 
+        //Sorts the transactions based on the provided type
         if (type == "Date")
         {
             sortedTransactions.Sort((t1, t2) => t1.DateandTime.CompareTo(t2.DateandTime));
@@ -326,13 +361,17 @@
             sortedTransactions.Sort((t1, t2) => t2.TransactionAmount.CompareTo(t1.TransactionAmount));
         }
 
+        //Reverses the order if Descending is true
         if (Descending)
         {
             sortedTransactions.Reverse();
         }
 
+        //Updates the list of transactions and toggles the order
         AccountsTransactions = sortedTransactions;
         Descending = !Descending;
+
+        //Notifies the component that its state has changed
         StateHasChanged();
     }
 }

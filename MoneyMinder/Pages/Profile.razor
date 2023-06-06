@@ -8,6 +8,7 @@
 @inject UserManager<IdentityUser> _userManager
 @inject SignInManager<IdentityUser> SignInManager
 @inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
 
 <AuthorizeView>
     <Authorized>
@@ -17,6 +18,7 @@
                 <h3 class="profile_title">My Info</h3>
                 @if (isFirstNameClicked)
                 {
+                    <!-- If change first name button is clicked, display first name input field-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">First Name: </p>
                         <div class="change_input_container">
@@ -27,8 +29,10 @@
                 }
                 else
                 {
+                    <!-- If change first name button is not clicked, display first name-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">First Name: </p>
+                        <!-- If allow the page to load the first name-->
                         @if (Current != null)
                         {
                             <p class="content_spacing">@Current.FirstName</p>
@@ -42,6 +46,7 @@
                 }
                 @if (isLastNameClicked)
                 {
+                    <!-- If change last name button is clicked, display last name input field-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">Last Name: </p>
                         <div class="change_input_container">
@@ -52,8 +57,10 @@
                 }
                 else
                 {
+                    <!-- If change last name button is not clicked, display last name-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">Last Name: </p>
+                        <!-- If allow the page to load the last name-->
                         @if (Current != null)
                         {
                             <p class="content_spacing">@Current.LastName</p>
@@ -68,6 +75,7 @@
 
                 @if (isEmailClicked)
                 {
+                    <!-- If change email button is clicked, display email input field-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">Email: </p>
                         <div class="change_input_container">
@@ -78,8 +86,10 @@
                 }
                 else
                 {
+                    <!-- If change email button is not clicked, display email-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">Email: </p>
+                        <!-- If allow the page to load the email-->
                         @if (Current != null)
                         {
                             <p class="content_spacing">@Current.Email</p>
@@ -95,6 +105,7 @@
                 
                 @if (isPasswordClicked)
                 {
+                    <!-- If change password button is clicked, display password input field-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">Password: </p>
                         <div class="change_input_container">
@@ -105,6 +116,7 @@
                 }
                 else
                 {
+                    <!-- If change password button is not clicked, display password-->
                     <div class="profile_content_container">
                         <p class="heading_spacing">Password: </p>
                         @if (Current != null)
@@ -122,18 +134,22 @@
                 <br />
                 @if (!isDeleteProfileClicked)
                 {
+                    <!-- If delete user profile button is not clicked, display the delete profile button-->
                     <div class="delete_account_container">
                         <button class="delete_account_btn" @onclick="deleteProfileClicked">Delete Profile</button>
                     </div>
                 }
                 else
                 {
+                    <!-- If delete user profile button is clicked, display "are you sure?" -->
                     <h5>Are you sure you want to delete your profile?</h5>
+                    <!-- If yes delete profile -->
                     <div class="delete_account_container">
                         <NavLink class="nav-link" href="Delete" style="padding: 0;" Match="NavLinkMatch.All">
                                 <button class="delete_account_btn">Yes Delete</button>
                         </NavLink>
                     </div>
+                    <!-- If no, don't delete profile-->
                     <div class="delete_account_container">
                         <button class="btn_in_profile" @onclick="deleteProfileClicked">No</button>
                     </div>
@@ -143,6 +159,7 @@
                 <h3 class="profile_title">Bank Accounts</h3>
                 @if (!viewBankAccounts)
                 {
+                    <!-- If view bank accounts button is not clicked, display view bank accounts button-->
                     <div class="register_account_btn_container">
                         <p class="register_btn_spacing"></p>
                         <button class="btn_in_profile" @onclick="viewAccountsClicked">View Bank Accounts</button>
@@ -151,10 +168,12 @@
 
                 @if (viewBankAccounts)
                 {
+                    <!-- User has no bank accounts registered-->
                     if (MyBankAccounts == null || MyBankAccounts.Count == 0)
                     {
                         if (isRegisterClicked)
                         {
+                            <!-- If register bank account button is clicked. User can input an account name for their new bank account-->
                             <div class="register_account_btn_container">
                                 <p class="register_btn_spacing">Please input new account name. <br>Your account number will be automatically generated</p>
                                 <div class="change_input_container">
@@ -165,16 +184,19 @@
                         }
                         else
                         {
+                            <!-- Register account button is displayed-->
                             <div class="register_account_btn_container">
                                 <p class="register_btn_spacing">You need to register a bank account!</p>
                                 <button class="btn_in_profile" @onclick="registerClicked">Register</button>
                             </div>
                         }
                     }
+                    <!-- If user has a bank account registered-->
                     if (MyBankAccounts.Count > 0)
                     {
                         if (isChangeAccountNameClicked)
                         {
+                            <!-- Change bank account button clicked. User can input a new name for their bank account-->
                             <div class="register_account_btn_container">
                                 <p class="register_btn_spacing">Change Account Name:</p>
                                 <div class="change_input_container">
@@ -185,6 +207,7 @@
                         }
                         else if (isDeleteAccountClicked)
                         {
+                            <!-- Delete bank account button is clicked. User gets option to delete bank account or not-->
                             <h5>Are you sure you want to delete this account?</h5>
                             <div class="delete_account_container">
                                 <button class="btn_in_profile delete_btn" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
@@ -195,6 +218,7 @@
                         }
                         else
                         {
+                            <!--Display details of the users bank accounts. Display change name and delete bank account buttons per account.-->
                             foreach (var item in MyBankAccounts)
                             {
                                 <div class="bankaccount_content_container">
@@ -214,9 +238,10 @@
                                 </div>
                                 if (isDeleteAccountClicked)
                                 {
+                                    <!-- Delete bank account button is clicked. User gets option to delete bank account or not-->
                                     <h5>Are you sure you want to delete this account?</h5>
                                     <div class="delete_account_container">
-                                        <button class="btn_in_profile delete_btn" @onclick="(args) => deleteAccountClicked(deleteAccountNum)">Yes Delete</button>
+                                        <button class="btn_in_profile delete_btn" @onclick="(args) => deleteAccountClicked(item.AccountNum)">Yes Delete</button>
                                     </div>
                                     <div class="delete_account_container">
                                         <button class="btn_in_profile" @onclick="dontDeleteAccount">No</button>
@@ -225,6 +250,7 @@
                             }
                             @if (isRegisterClicked)
                             {
+                                <!-- If register bank account button is clicked. User can input an account name for their new bank account-->
                                 <div class="register_account_btn_container">
                                     <p class="register_btn_spacing">Please input new account name.</p>
                                     <div class="change_input_container">
@@ -236,6 +262,7 @@
                             else
                             {
                                 <br />
+                                <!-- Register account button is displayed-->
                                 <div class="register_account_btn">
                                     <p class="register_btn_spacing"></p>
                                     <button class="btn_in_profile" @onclick="registerClicked">Add New Account</button>
@@ -256,50 +283,50 @@
 @code 
 {
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-    private User Current;
-    public List<BankAccount> MyBankAccounts;
+    private Task<AuthenticationState> authenticationStateTask { get; set; } //Cascading parameter to retrieve the authentication state
+    private User Current; //Current user
+    public List<BankAccount> MyBankAccounts; //List of bank accounts belonging to the user
 
-    private string NewBankAccountName = "";
-    private int editAccountNum;
-    private int deleteAccountNum;
-    private string NewPassword = "";
-    private string NewEmail = "";
-    private bool isFirstNameClicked = false;
-    private bool isLastNameClicked = false;
-    private bool isEmailClicked = false;
-    private bool isPasswordClicked = false;
-    private bool isRegisterClicked = false;
-    private bool isDeleteProfileClicked = false;
-    private bool viewBankAccounts = false;
-    private bool isDeleteAccountClicked = false;
-    private bool isChangeAccountNameClicked = false;
+    private string NewBankAccountName = ""; //New bank account name for registration
+    private int editAccountNum; //Account number for editing
+    private int deleteAccountNum; //Account number for deletion
+    private string NewPassword = ""; //New password
+    private string NewEmail = ""; //New email
+    private bool isFirstNameClicked = false; //Flag to indicate if the first name field is being edited
+    private bool isLastNameClicked = false; //Flag to indicate if the last name field is being edited
+    private bool isEmailClicked = false; //Flag to indicate if the email field is being edited
+    private bool isPasswordClicked = false; //Flag to indicate if the password field is being edited
+    private bool isRegisterClicked = false; //Flag to indicate if the registration button is clicked
+    private bool isDeleteProfileClicked = false; //Flag to indicate if the delete profile button is clicked
+    private bool viewBankAccounts = false; //Flag to indicate if the bank accounts should be displayed
+    private bool isDeleteAccountClicked = false; //Flag to indicate if the delete account button is clicked
+    private bool isChangeAccountNameClicked = false; //Flag to indicate if the change account name button is clicked
 
     async Task<string> getUsersEmail()
     {
-        var user = (await authenticationStateTask).User;
-        return user.Identity.Name;
+        var user = (await authenticationStateTask).User; //Retrieve the authenticated user
+        return user.Identity.Name; //Return the user's email
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await Scrapit.DoScrapping();
-        Current = DataAccessService.GetUser(await getUsersEmail());
-        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
-        StateHasChanged();
+        await Scrapit.DoScrapping(); //Perform scraping operation in preparation for the stock market page
+        Current = DataAccessService.GetUser(await getUsersEmail()); //Get the current user based on their email
+        MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email); //Get the bank accounts belonging to the user
+        StateHasChanged(); //Notify the component that its state has changed
     }
 
     private void changeFirstNameClicked()
     {
         if (isFirstNameClicked == true)
         {
-            DataAccessService.ChangeFirstName(Current.FirstName, Current.Email);
-            isFirstNameClicked = false;
-            StateHasChanged();
+            DataAccessService.ChangeFirstName(Current.FirstName, Current.Email); //Change the first name of the user in the data access service
+            isFirstNameClicked = false; //Reset the flag
+            StateHasChanged(); //Notify the component that its state has changed
         }
         else
         {
-            isFirstNameClicked = true;
+            isFirstNameClicked = true; //Set the flag to indicate that the first name field is being edited
         }
     }
 
@@ -307,13 +334,13 @@
     {
         if (isLastNameClicked == true)
         {
-            DataAccessService.ChangeLastName(Current.LastName, Current.Email);
-            isLastNameClicked = false;
-            StateHasChanged();
+            DataAccessService.ChangeLastName(Current.LastName, Current.Email); //Change the last name of the user in the data access service
+            isLastNameClicked = false; //Reset the flag
+            StateHasChanged(); //Notify the component that its state has changed
         }
         else
         {
-            isLastNameClicked = true;
+            isLastNameClicked = true; //Set the flag to indicate that the last name field is being edited
         }
     }
 
@@ -321,46 +348,43 @@
     {
         if (isEmailClicked)
         {
-            // Get the current user
-            var user = await _userManager.GetUserAsync((System.Security.Claims.ClaimsPrincipal)SignInManager.Context.User);
+            var user = await _userManager.GetUserAsync((System.Security.Claims.ClaimsPrincipal)SignInManager.Context.User); //Get the current user
 
-            // Validate the email format
-            if (!IsValidEmail(NewEmail))
+            if (!IsValidEmail(NewEmail)) //Validate the email format
             {
-                // Invalid email format
+                //Invalid email format
                 return;
             }
 
-            // Check if the new email already exists
-            var existingUser = await _userManager.FindByEmailAsync(NewEmail);
+            var existingUser = await _userManager.FindByEmailAsync(NewEmail); //Check if the new email already exists
             if (existingUser != null && existingUser.Id != user.Id)
             {
                 // Email already exists
                 return;
             }
 
-            // Update the user's email
-            user.Email = NewEmail;
+            user.Email = NewEmail; //Update the user's email
             user.UserName = NewEmail;
 
-            // Save the changes
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user); //Save the changes
             if (result.Succeeded)
             {
-                // Email updated successfully
-                DataAccessService.ChangeUsersEmail(Current.Email, NewEmail);
+                //Email updated successfully
+
+                await DataAccessService.ChangeUsersEmail(Current.Email, NewEmail); //Change the user's email in the data access service
+                MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email); //Get the bank accounts belonging to the user
+                isEmailClicked = false; //Reset the flag
+                StateHasChanged(); //Notify the component that its state has changed
+                await Logout();
             }
             else
             {
                 // Error updating the email
             }
-
-            isEmailClicked = false;
-            StateHasChanged();
         }
         else
         {
-            isEmailClicked = true;
+            isEmailClicked = true; //Set the flag to indicate that the email field is being edited
         }
     }
 
@@ -368,12 +392,12 @@
     {
         try
         {
-            var address = new System.Net.Mail.MailAddress(email);
-            return address.Address == email;
+            var address = new System.Net.Mail.MailAddress(email); //Attempt to create a mail address from the email string
+            return address.Address == email; //Check if the address matches the email string
         }
         catch
         {
-            return false;
+            return false; //Return false if an exception occurs (indicating invalid email format)
         }
     }
 
@@ -381,84 +405,88 @@
     {
         if (isPasswordClicked && NewPassword != "")
         {
-            var user = await _userManager.GetUserAsync((System.Security.Claims.ClaimsPrincipal)SignInManager.Context.User);
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            await _userManager.ResetPasswordAsync(user, token, NewPassword);
-            isPasswordClicked = false;
+            var user = await _userManager.GetUserAsync((System.Security.Claims.ClaimsPrincipal)SignInManager.Context.User); //Get the current user
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user); //Generate a password reset token
+            await _userManager.ResetPasswordAsync(user, token, NewPassword); //Reset the user's password
+            isPasswordClicked = false; //Reset the flag
         }
         else
         {
-            isPasswordClicked = true;
+            isPasswordClicked = true; //Set the flag to indicate that the password field is being edited
         }
     }
 
-
     private void viewAccountsClicked()
     {
-        viewBankAccounts = !viewBankAccounts;
+        viewBankAccounts = !viewBankAccounts; //Toggle the flag to show or hide the bank accounts
     }
 
     private void registerClicked()
     {
         if (isRegisterClicked == true)
         {
-            DataAccessService.AddBankAccount(Current.Email, NewBankAccountName);
-            isRegisterClicked = false;
-            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
-            StateHasChanged();
+            DataAccessService.AddBankAccount(Current.Email, NewBankAccountName); //Add a new bank account for the user in the data access service
+            isRegisterClicked = false; //Reset the flag
+            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email); //Update the list of bank accounts
+            StateHasChanged(); //Notify the component that its state has changed
         }
         else
         {
-            NewBankAccountName = "";
-            isRegisterClicked = true;
+            NewBankAccountName = ""; //Reset the new bank account name
+            isRegisterClicked = true; //Set the flag to indicate that the registration button is clicked
         }
     }
 
     public string ConvertAccountNumToString(int AccountNum)
     {
-        return string.Format("{0:###-###-###}", AccountNum);
+        return string.Format("{0:###-###-###}", AccountNum); //Convert the account number to a formatted string
     }
 
     private void deleteProfileClicked()
     {
-        isDeleteProfileClicked = !isDeleteProfileClicked;
+        isDeleteProfileClicked = !isDeleteProfileClicked; //Toggle the flag to show or hide the delete profile button
     }
 
     public void editAccountNameClicked(int accountNum)
     {
-        editAccountNum = accountNum;
+        editAccountNum = accountNum; //Set the account number for editing
         if (isChangeAccountNameClicked == true)
         {
-            DataAccessService.ChangeBankAccountName(accountNum, NewBankAccountName);
-            isChangeAccountNameClicked = false;
-            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
-            StateHasChanged();
+            DataAccessService.ChangeBankAccountName(accountNum, NewBankAccountName); //Change the name of the bank account in the data access service
+            isChangeAccountNameClicked = false; //Reset the flag
+            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email); //Update the list of bank accounts
+            StateHasChanged(); //Notify the component that its state has changed
         }
         else
         {
-            NewBankAccountName = "";
-            isChangeAccountNameClicked = true;
+            NewBankAccountName = ""; //Reset the new bank account name
+            isChangeAccountNameClicked = true; //Set the flag to indicate that the change account name button is clicked
         }
     }
 
     private void deleteAccountClicked(int accountNum)
     {
-        deleteAccountNum = accountNum;
+        deleteAccountNum = accountNum; //Set the account number for deletion
         if (isDeleteAccountClicked == true)
         {
-            DataAccessService.DeleteBankAccount(accountNum);
-            isDeleteAccountClicked = false;
-            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email);
-            StateHasChanged();
+            DataAccessService.DeleteBankAccount(accountNum); //Delete the bank account from the data access service
+            isDeleteAccountClicked = false; //Reset the flag
+            MyBankAccounts = DataAccessService.GetBankAccounts(Current.Email); //Update the list of bank accounts
+            StateHasChanged(); //Notify the component that its state has changed
         }
         else
         {
-            isDeleteAccountClicked = true;
+            isDeleteAccountClicked = true; //Set the flag to indicate that the delete account button is clicked
         }
     }
 
     private void dontDeleteAccount()
     {
-        isDeleteAccountClicked = false;
+        isDeleteAccountClicked = false; //Reset the flag
+    }
+
+    private async Task Logout()
+    {
+        await JSRuntime.InvokeVoidAsync("window.location.assign", "/Logout");
     }
 }

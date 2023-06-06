@@ -1,5 +1,6 @@
 ﻿using MoneyMinder.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MoneyMinder.Data
 {
@@ -47,6 +48,6 @@ namespace MoneyMinder.Data
 
         void GenerateRandomTransactions(int AccountNum);
 
-        void ChangeUsersEmail(string currentEmail, string newEmail);
+        Task ChangeUsersEmail(string currentEmail, string newEmail);
     }
 }

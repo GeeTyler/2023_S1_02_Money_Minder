@@ -87,7 +87,7 @@ namespace MoneyMinder.Data
                 }
             }
 
-            //Storing all iformation from companys List into the database Stock table.
+            //Storing all information from companys List into the database Stock table.
             for (int n = 0; n < companys.Count; n++)
             {
                 var stck = new Stock()

@@ -9,17 +9,24 @@
 @functions {
     public async Task<IActionResult> OnGet()
     {
-            var user = await _userManager.GetUserAsync(User);
-            if (user != null)
+        //Retrieve the currently authenticated user
+        var user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            //Delete the user account
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
             {
-                var result = await _userManager.DeleteAsync(user);
-                if (result.Succeeded)
-                {
-                    DataAccessService.DeleteUsersInfo(user.Email);
-                    await SignInManager.SignOutAsync();
-                    return LocalRedirect("/");
-                }
+                //Delete the user's additional information from the data access service
+                DataAccessService.DeleteUsersInfo(user.Email);
+
+                //Sign out the user
+                await SignInManager.SignOutAsync();
+
+                //Redirect to the home page after successful deletion
+                return LocalRedirect("/");
             }
-            return Page();
+        }
+        return Page();
     }
 }

@@ -9,9 +9,9 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly DatabaseContext _db;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly DatabaseContext _db; //Database context for accessing user data
+        private readonly SignInManager<IdentityUser> _signInManager; //Manages user sign-in
+        private readonly UserManager<IdentityUser> _userManager; //Manages user accounts
 
         public RegisterModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, DatabaseContext db)
         {
@@ -21,9 +21,9 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } //Model for user registration input
 
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } //URL to redirect after registration
 
         public void OnGet()
         {
@@ -33,6 +33,7 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync()
         {
             ReturnUrl = Url.Content("/Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -58,12 +59,15 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
                         FirstName = Input.FirstName,
                         LastName = Input.LastName
                     };
+
                     _db.User.Add(registered);
                     _db.SaveChanges();
+
                     await _signInManager.SignInAsync(identity, isPersistent: false);
                     return LocalRedirect(ReturnUrl);
                 }
             }
+
             return Page();
         }
 
@@ -82,7 +86,6 @@ namespace MoneyMinder.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Password is required.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
-
         }
     }
 }
