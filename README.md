@@ -91,12 +91,16 @@ Visit this website for a comprehensive guide on running the program: https://dot
 
 #### Configuration Settings:
 
-Be sure to open this program in Visual Studio on a Windows device.
+Be sure to open this program in Visual Studio on a Windows device.<br><br>
 
-When using this application. Before running make sure to open the Nuget package manager console in Visual Studio. 
-Then type in the console -> add-migration Initial -> update-database
+Before running this application make sure to:<br><br>
+- Delete the migrations folder<br>
+- Open the Nuget package manager console in Visual Studio<br>
+- Type in the following two commands:<br><br>
+  - add-migration Initial
+  - update-database<br><br>
 
-Then you can start using the program.
+Now you can start using the program.
 
 #### Using the Program:
 
