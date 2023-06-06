@@ -29,9 +29,12 @@
 
 #### Overview:
 
-In today's world, finance has many departments. An individual can find it quite hard to manage their finances on different applications and 
-keep track with all purchases and investments made. Our goal was to create a single web application that merges all the functions together, 
-making it easier for the user to manage their finances. This web application can also be used by big companies to manage their reciepts.  
+In today's complex and interconnected world, managing personal finances can be a daunting task. With numerous financial applications available, 
+individuals often find it challenging to keep track of their purchases, investments, and overall financial health. Recognizing this problem, 
+our team set out to develop a comprehensive web application that consolidates all these functions into a single, user-friendly platform. Our 
+primary objective was to simplify the process of managing finances for individuals. By integrating various financial functions into a single 
+web application, we aimed to streamline the entire process and eliminate the need for users to navigate multiple platforms. This innovative 
+solution not only benefits individuals but also serves as a powerful tool for big companies to efficiently manage their receipts.
 
 #### Key Features:
 
