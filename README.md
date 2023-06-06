@@ -23,6 +23,8 @@
 - [Contributors](#contributors)<br>
 - [Credits](#credits)<br>
 
+<hr>
+
 ### Description:
 
 #### Overview:
