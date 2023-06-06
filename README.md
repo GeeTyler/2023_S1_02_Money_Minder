@@ -29,11 +29,19 @@
 
 #### Overview:
 
-Text
+In today's world, finance has many departments. An individual can find it quite hard to manage their finances on different applications and 
+keep track with all purchases and investments made. Our goal was to create a single web application that merges all the functions together, 
+making it easier for the user to manage their finances. This web application can also be used by big companies to manage their reciepts.  
 
 #### Key Features:
 
-Text
+• Be able to view account balances, make transfers in between personal accounts and external accounts.
+• Buisness' can view invoices made between them for easier viewing.
+• Be able to view the current stock market, make stock purchases and sell stocks.
+• Description on each stock company will be provided, making it easier for the user to know more before investing.
+• A parent/guardian can link their child's account to their own so they are able to view and manage it from thier own account.
+• A consumer will be able to get future predictions on their assets (e.g kiwisaver amount in 10 years time).
+• Bright and easy to read UI.
 
 <hr>
 
