@@ -52,9 +52,9 @@ solution not only benefits individuals but also serves as a powerful tool for bi
 
 #### Prerequisites:
 
-• A device that can run windows
-• The latest version of Visual Studio
-• The .NET SDK
+• A device that can run windows<br>
+• The latest version of Visual Studio<br>
+• The .NET SDK<br>
 
 #### Installation Steps:
 
