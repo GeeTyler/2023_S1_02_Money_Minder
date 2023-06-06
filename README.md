@@ -1,3 +1,6 @@
+
+<hr>
+
 <div id="user-content-toc">
   <ul>
     <summary><h1 style="display: inline-block;">2023_S1_02_Money_Minder</h1></summary>
@@ -55,12 +58,16 @@ Text
 
 ### Contributors:
 
-Text
+• Arzan Mohta<br>(Product Owner)<br><br>
+• Dmitry Kirov<br>(Development Team)<br><br>
+• Michael Moon<br>(Development Team)<br><br>
+• Shreyas Singh<br>(Development Team)<br><br>
+• Tyler Gee<br>(Scrum Master)
 
 <hr>
 
 ### Credits:
 
-Text
+We used the blazor framework for this project.
 
 <hr>
