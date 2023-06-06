@@ -159,6 +159,7 @@ A page containing the money transfer system for the program.<br>
 
 ### Credits:
 
-We used the blazor framework for this project.
+We used the blazor framework for this project. Blazor is a free and open-source web framework that enables developers to create web apps using 
+C# and HTML. It is being developed by Microsoft.
 
 <hr>
