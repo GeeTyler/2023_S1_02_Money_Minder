@@ -1,0 +1,6 @@
+/* Light mode styles */
+body {
+    background-color: #ffffff;
+    color: #000000;
+    font-size: var(--font-size);
+}
