@@ -1,0 +1,42 @@
+﻿<div>
+  <h3>Theme Manager</h3>
+  <label>
+    <input type="checkbox" @bind="IsDarkMode" /> Dark Mode
+  </label>
+  <br />
+  <label>
+    Font Size:
+    <input type="number" @bind="FontSize" min="12" max="24" />
+  </label>
+</div>
+
+@code {
+    private bool isDarkMode;
+    private int fontSize;
+
+    private bool IsDarkMode
+    {
+        get => isDarkMode;
+        set
+        {
+            isDarkMode = value;
+            UpdateTheme();
+        }
+    }
+
+    private int FontSize
+    {
+        get => fontSize;
+        set
+        {
+            fontSize = value;
+            UpdateTheme();
+        }
+    }
+
+    private void UpdateTheme()
+    {
+        // You can use the IsDarkMode and FontSize properties to update the theme settings of your components.
+        // You may need to emit an event or use a state management pattern like Flux/Redux to notify the components about the theme change.
+    }
+}

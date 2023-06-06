@@ -1,0 +1,23 @@
+﻿<style>
+    background-color: #ffffff;
+    color: #000000;
+    font-size: var(--font-size);
+</style>
+
+<ThemeProvider Theme="Theme.Light">
+    <!-- Render your light mode specific content here -->
+</ThemeProvider>
+
+@code {
+    private class Theme
+    {
+        public string Name { get; set; }
+        // Add other theme-specific properties here
+    }
+
+    private static readonly Theme LightTheme = new Theme
+    {
+        Name = "Light",
+        // Set other theme-specific properties here
+    };
+}

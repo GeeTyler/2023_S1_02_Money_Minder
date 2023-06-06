@@ -1,0 +1,23 @@
+﻿<style>
+    background-color: #222222;
+    color: #ffffff;
+    font-size: var(--font-size);
+</style>
+
+<ThemeProvider Theme="Theme.Dark">
+    <!-- Render your dark mode specific content here -->
+</ThemeProvider>
+
+@code {
+    private class Theme
+    {
+        public string Name { get; set; }
+        // Add other theme-specific properties here
+    }
+
+    private static readonly Theme DarkTheme = new Theme
+    {
+        Name = "Dark",
+        // Set other theme-specific properties here
+    };
+}

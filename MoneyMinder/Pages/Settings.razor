@@ -1,36 +1,42 @@
 @page "/settings"
-@inject IJSRuntime JSRuntime
 @layout MainLayout
+
+@using Microsoft.AspNetCore.Components.Web
 
 <h3>Settings</h3>
 
-<div class="setting-item">
-    <label>Theme:</label>
-    <select @bind="IsDarkMode" @onchange="ApplyTheme">
-        <option value="false">Light Mode</option>
-        <option value="true">Dark Mode</option>
+<div>
+    <label for="themeSelect">Select Theme:</label>
+    <select id="themeSelect" @onchange="ChangeTheme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
     </select>
 </div>
 
-<div class="setting-item">
-    <label>Font Size:</label>
-    <input type="number" min="8" max="24" @bind="FontSize" @oninput="ApplyFontSize" />
+<div>
+    <label for="fontSizeSelect">Select Font Size:</label>
+    <select id="fontSizeSelect" @onchange="ChangeFontSize">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+    </select>
 </div>
 
 @code {
-    private bool IsDarkMode = false;
-    private int FontSize = 16;
+    private string selectedTheme = "light";
+    private string selectedFontSize = "medium";
 
-    private async Task ApplyTheme()
+    private void ChangeTheme(ChangeEventArgs e)
     {
-        string stylesheetPath = IsDarkMode ? "dark-theme.css" : "light-theme.css";
-        string jsCode = $"document.querySelector('#themeStylesheet').href = '{stylesheetPath}';";
-        await JSRuntime.InvokeVoidAsync("eval", jsCode);
+        selectedTheme = e.Value.ToString();
+        // Update the theme in ThemeManager or call a method to handle the theme change
+        // ThemeManager.SetTheme(selectedTheme);
     }
 
-    private async Task ApplyFontSize()
+    private void ChangeFontSize(ChangeEventArgs e)
     {
-        string jsCode = $"document.body.style.fontSize = '{FontSize}px';";
-        await JSRuntime.InvokeVoidAsync("eval", jsCode);
+        selectedFontSize = e.Value.ToString();
+        // Update the font size in ThemeManager or call a method to handle the font size change
+        // ThemeManager.SetFontSize(selectedFontSize);
     }
 }
