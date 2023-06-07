@@ -32,7 +32,7 @@ namespace MoneyMinder.Data
             {
                 case "CompanyName":
                     //Sort by CompanyName in ascending order
-                    query = query.OrderBy(s => s.CompanyName);
+                    query = query.OrderBy(s => s.CompanyName.ToLower());
                     break;
                 case "StockCode":
                     //Sort by StockCode in ascending order
@@ -82,7 +82,7 @@ namespace MoneyMinder.Data
             {
                 case "CompanyName":
                     //Sort by CompanyName in ascending order
-                    query = query.OrderBy(s => s.CompanyName);
+                    query = query.OrderBy(s => s.CompanyName.ToLower());
                     break;
                 case "StockCode":
                     //Sort by StockCode in ascending order
